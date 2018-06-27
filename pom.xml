@@ -4,6 +4,21 @@
   <artifactId>linuxconf-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  <dependencies>
+<dependency>
+    <groupId>com.github.scribejava</groupId>
+    <artifactId>scribejava-apis</artifactId>
+    <version>5.5.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.0.1</version>
+    <scope>provided</scope>
+</dependency>
+
+</dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -31,7 +46,7 @@
         <url>http://linuxconf.feedthepenguin.org:8080/manager/text</url>
         <username>arwen</username>
         <password>imleaving</password>
-        <path>/linuxconf</path>
+        <path>/hehe</path>
     </configuration>
 </plugin>
 <plugin>
