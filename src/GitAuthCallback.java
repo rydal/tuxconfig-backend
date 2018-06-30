@@ -79,31 +79,29 @@ public class GitAuthCallback extends HttpServlet {
         JSONObject json = new JSONObject(git_result);
 		String repos_url = (String) json.get("repos_url").toString();
 		
-		List clone_urls = new ArrayList<String>(); 
+		List<String> clone_urls = new ArrayList<String>(); 
 			
 		URL url = new URL(repos_url);
-		    InputStream is = null;
-		    DataInputStream dis;
-		    String s;
-		    StringBuffer sb = new StringBuffer();
+		
+		      BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 
-		      is = url.openStream();
-		      dis = new DataInputStream(new BufferedInputStream(is));
-		
-		
-		while ((s = dis.readLine()) != null) {
-			final Pattern p = Pattern.compile("^\\s+\"url\".*");
-			Matcher m = p.matcher(s);
-			if(m.find()) {
-				out.write(s);
-				out.flush();
-			}
-	
-		}
-		is.close();
+		      // write the output to stdout
+		      String line = reader.readLine();
+		      String[] lines = line.split(",");
+		      for (String current_line : lines)
+		      {
+		          Pattern r = Pattern.compile("\"clone_url\"");
+		    	  Matcher m = r.matcher(current_line);
+		          if (m.find( )) {
+		             String[] clone_url = current_line.split(":");
+		             String final_url = clone_url[1] + clone_url[2];
+		             clone_urls.add(final_url.replaceAll("\"", ""));
+		       
+		      }
+		      }
 
 		for (int i = 0 ; i < clone_urls.size() ; i++) {
-			out.write("item" + i + clone_urls.get(i));
+			out.write(clone_urls.get(i) + "\n");
 		}
 		} catch (Exception ex) { ex.printStackTrace(); }
 
