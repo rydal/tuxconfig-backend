@@ -98,7 +98,6 @@ public class GitAuthCallback extends HttpServlet {
 		             final_url = final_url.replace("https//", "https://");
 		             clone_urls.add(final_url.replaceAll("\"", ""));
 		             
-		       
 		      }
 		      }
 
