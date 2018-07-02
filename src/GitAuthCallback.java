@@ -95,14 +95,15 @@ public class GitAuthCallback extends HttpServlet {
 		          if (m.find( )) {
 		             String[] clone_url = current_line.split(":");
 		             String final_url = clone_url[1] + clone_url[2];
+		             final_url = final_url.replace("https//", "https://");
 		             clone_urls.add(final_url.replaceAll("\"", ""));
+		             
 		       
 		      }
 		      }
 
-		for (int i = 0 ; i < clone_urls.size() ; i++) {
-			out.write(clone_urls.get(i) + "\n");
-		}
+		session.setAttribute("clone_urls", clone_urls);
+		response.sendRedirect("http://linuxconf.feedthepenguin.org/hehe/SetRepositries.jsp");
 		} catch (Exception ex) { ex.printStackTrace(); }
 
 	}

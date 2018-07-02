@@ -5,11 +5,20 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <dependencies>
+
+<!-- https://mvnrepository.com/artifact/com.github.scribejava/scribejava-apis -->
 <dependency>
     <groupId>com.github.scribejava</groupId>
     <artifactId>scribejava-apis</artifactId>
-    <version>5.5.0</version>
+    <version>5.4.0</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/com.github.scribejava/scribejava-core -->
+<dependency>
+    <groupId>com.github.scribejava</groupId>
+    <artifactId>scribejava-core</artifactId>
+    <version>5.4.0</version>
+</dependency>
+
 <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 <dependency>
     <groupId>javax.servlet</groupId>
