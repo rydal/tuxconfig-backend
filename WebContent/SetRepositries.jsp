@@ -22,16 +22,17 @@ try {
 	out.write("<th style='width:50%'>Git Repositry</th><th style='width:25%'>Device ID</th><th style='width:25%'>Name of device</th></tr>");
 	for(int i = 0; i < clone_urls.size(); i++) {
 		out.write("<tr>");
-		out.write("<td style='width:50%'>" + i + ": "  + clone_urls.get(i) + ": <input type='checkbox' name='url" + i + "' value='" + clone_urls.get(i) + "></td> '");
-		out.write("<td style='width:25%'><input type='text' name='device_id" + i + "' > </td>");
+		out.write("<td style='width:50%'>" + i + ": "  + clone_urls.get(i) + ": <input type='checkbox' name='git_url" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' > </td>");
 		out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' > </td>");
-		out.write("</tr>");
+		out.write("</tr><br>");
 		out.flush();
 	}
 	out.write("</table>");
 	out.write("<input type='image' src='submit.png' alt='Submit Form' />");
 
 	out.println("</form>");
+	
 	
 } catch (Exception ex) { ex.printStackTrace(new java.io.PrintWriter(out)); }
 

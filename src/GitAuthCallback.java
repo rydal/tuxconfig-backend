@@ -78,7 +78,9 @@ public class GitAuthCallback extends HttpServlet {
         String git_result = git_response.getBody();
         JSONObject json = new JSONObject(git_result);
 		String repos_url = (String) json.get("repos_url").toString();
-		
+		String git_id = (String) json.get("id").toString();
+		String git_email = (String) json.get("email").toString();
+
 		List<String> clone_urls = new ArrayList<String>(); 
 			
 		URL url = new URL(repos_url);
@@ -100,8 +102,9 @@ public class GitAuthCallback extends HttpServlet {
 		             
 		      }
 		      }
-
 		session.setAttribute("clone_urls", clone_urls);
+		session.setAttribute("git_id", git_id);
+		session.setAttribute("git_email", git_email);
 		response.sendRedirect("http://linuxconf.feedthepenguin.org/hehe/SetRepositries.jsp");
 		} catch (Exception ex) { ex.printStackTrace(); }
 
