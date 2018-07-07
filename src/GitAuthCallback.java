@@ -105,7 +105,7 @@ public class GitAuthCallback extends HttpServlet {
 		session.setAttribute("clone_urls", clone_urls);
 		session.setAttribute("git_id", git_id);
 		session.setAttribute("git_email", git_email);
-		response.sendRedirect("http://linuxconf.feedthepenguin.org/hehe/SetRepositries.jsp");
+		response.sendRedirect("http://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
 		} catch (Exception ex) { ex.printStackTrace(); }
 
 	}

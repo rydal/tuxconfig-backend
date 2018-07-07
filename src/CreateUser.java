@@ -17,23 +17,21 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class SetRepositries
  */
-@WebServlet("/setrepositries")
-public class SetRepositries extends HttpServlet {
+@WebServlet("/createuser")
+public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SetRepositries() {
+    public CreateUser() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
 		ArrayList<String> clone_urls = new ArrayList<String>();
@@ -45,6 +43,15 @@ public class SetRepositries extends HttpServlet {
 			
 		    String git_id = (String) session.getAttribute("git_id");
 		    String git_email = (String) session.getAttribute("git_email");
+		    
+		    String webpage = request.getParameter("url");
+		    String description = request.getParameter("desctiption");
+		    
+		    PreparedStatement contributor_details = con.prepareStatement("insert into contributor (url,description,owner_git_id, contributor_email) values (?,?,?,?)");
+		    contributor_details.setObject(1, webpage);
+		    contributor_details.setObject(2, description);
+		    contributor_details.setObject(3, git_id);
+		    contributor_details.setObject(4, git_email);
 		    
 		    
 		    int i = 0;
@@ -61,6 +68,7 @@ public class SetRepositries extends HttpServlet {
 			
 		    
 		}catch (Exception ex) { ex.printStackTrace(out);}
+		
 
 	}
 
