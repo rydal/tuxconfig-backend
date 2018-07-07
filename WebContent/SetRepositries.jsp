@@ -29,7 +29,7 @@ try {
 		out.flush();
 	}
 	out.write("</table>");
-	out.write("<input type='image' src='submit.png' alt='Submit Form' />");
+	out.write("<input type='image' src='./img/submit.png' alt='Submit Form' />");
 
 	out.println("</form>");
 	
