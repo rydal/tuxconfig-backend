@@ -47,11 +47,12 @@ public class CreateUser extends HttpServlet {
 		    String webpage = request.getParameter("url");
 		    String description = request.getParameter("desctiption");
 		    
-		    PreparedStatement contributor_details = con.prepareStatement("insert into contributor (url,description,owner_git_id, contributor_email) values (?,?,?,?)");
+		    PreparedStatement contributor_details = con.prepareStatement("insert into contributor (url,description,owner_git_id, email) values (?,?,?,?)");
 		    contributor_details.setObject(1, webpage);
 		    contributor_details.setObject(2, description);
 		    contributor_details.setObject(3, git_id);
 		    contributor_details.setObject(4, git_email);
+		    contributor_details.executeUpdate();
 		    
 		    
 		    int i = 0;

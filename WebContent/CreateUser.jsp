@@ -23,7 +23,7 @@ try {
 	out.println("Your homepage / linkedin etc:");
 	out.println("<input type='text' name='url' id='url' required maxlength='255'>");
 	out.println("Your description:");
-	out.println("<input type='text' name='description' id='description' required maxlength='768' onkeydown='handleChange()' >");
+	out.println("<input type='text' name='description' id='description' required maxlength='768' >");
 	
 	
 	

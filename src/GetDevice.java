@@ -43,7 +43,7 @@ public class GetDevice extends HttpServlet {
 			Connection con=DriverManager.getConnection(  
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
-			PreparedStatement get_device_request = con.prepareStatement("select owner_git_id, git_url,git_commit from devices where device_id = ?");
+			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ?");
 			get_device_request.setObject(1, device_id);
 			
 			ResultSet got_device_request = get_device_request.executeQuery();
@@ -54,15 +54,18 @@ public class GetDevice extends HttpServlet {
 				// return your json object
 				out.print(json2);
 			}  else {
-				PreparedStatement insert_success_code = con.prepareStatement("insert into success_code ( success_code, devices_device_id, devices_owner_git_id) values ?,?,?");
-				insert_success_code.setObject(1, randomString(64));
+				PreparedStatement insert_success_code = con.prepareStatement("insert into success_code ( success_code, devices_device_id, devices_owner_git_id, timestamp ) values ( ?,?,?,?)");
+				insert_success_code.setObject(1, randomString(64)); 
 				insert_success_code.setObject(2, device_id);
-				insert_success_code.setObject(3, got_device_request.getString("owner_git_id"));
+				insert_success_code.setObject(3, got_device_request.getInt("owner_git_id"));
+				java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+				insert_success_code.setObject(4, date);
 				insert_success_code.executeUpdate();
 				JSONObject json2 = new JSONObject();
 				
-				json2.put("form", got_device_request.getString("git_url"));
-				json2.put("form", got_device_request.getString("git_commit"));
+				json2.put("url", got_device_request.getString("git_url"));
+				json2.put("commit", got_device_request.getString("git_commit"));
+				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object
 				out.print(json2);
@@ -93,6 +96,6 @@ public class GetDevice extends HttpServlet {
 		return sb.toString();
 	}
 
-}
+
 
 }
