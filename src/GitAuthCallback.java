@@ -69,6 +69,12 @@ public class GitAuthCallback extends HttpServlet {
 		
 		try {
 		OAuth20Service service = (OAuth20Service) session.getAttribute("git_login"); 
+		
+		if (service == null) {
+			out.write("Github login hasn't worked, please retry");
+			return;
+		}
+		 
 		OAuth2AccessToken accessToken = service.getAccessToken(verifier);
 
         final OAuthRequest git_request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
