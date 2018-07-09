@@ -47,7 +47,9 @@ public class CreateUser extends HttpServlet {
 		    String webpage = request.getParameter("url");
 		    String description = request.getParameter("desctiption");
 		    
-		    PreparedStatement contributor_details = con.prepareStatement("insert into contributor (url,description,owner_git_id, email) values (?,?,?,?)");
+		    
+		    
+		    PreparedStatement contributor_details = con.prepareStatement("insert into contributor (url,description,owner_git_id, email) values (?,?,?,?) ON DUPLICATE KEY UPDATE");
 		    contributor_details.setObject(1, webpage);
 		    contributor_details.setObject(2, description);
 		    contributor_details.setObject(3, git_id);
@@ -57,7 +59,7 @@ public class CreateUser extends HttpServlet {
 		    
 		    int i = 0;
 			while( request.getParameter("git_url" + i) != null) {
-				PreparedStatement stmt = con.prepareStatement("insert into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?)");
+				PreparedStatement stmt = con.prepareStatement("insert into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?) ON DUPLICATE KEY UPDATE");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
 			    stmt.setObject(2, request.getParameter("device_name" + i));
 			    stmt.setObject(3, git_id);
