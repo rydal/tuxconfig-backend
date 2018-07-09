@@ -48,6 +48,13 @@
     <artifactId>mysql-connector-java</artifactId>
     <version>8.0.11</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit.java7 -->
+<dependency>
+    <groupId>org.eclipse.jgit</groupId>
+    <artifactId>org.eclipse.jgit.java7</artifactId>
+    <version>3.7.1.201504261725-r</version>
+</dependency>
+
 
 </dependencies>
   <build>

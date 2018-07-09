@@ -1,11 +1,16 @@
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +18,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
 
 /**
  * Servlet implementation class SetRepositries
@@ -49,7 +68,7 @@ public class CreateUser extends HttpServlet {
 		    
 		    
 		    
-		    PreparedStatement contributor_details = con.prepareStatement("insert into contributor (url,description,owner_git_id, email) values (?,?,?,?) ON DUPLICATE KEY UPDATE");
+		    PreparedStatement contributor_details = con.prepareStatement("replace into contributor (url,description,owner_git_id, email) values (?,?,?,?) ");
 		    contributor_details.setObject(1, webpage);
 		    contributor_details.setObject(2, description);
 		    contributor_details.setObject(3, git_id);
@@ -59,7 +78,10 @@ public class CreateUser extends HttpServlet {
 		    
 		    int i = 0;
 			while( request.getParameter("git_url" + i) != null) {
-				PreparedStatement stmt = con.prepareStatement("insert into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?) ON DUPLICATE KEY UPDATE");
+				
+				
+				getCommits(request.getParameter("git_url" + i), out);
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?)");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
 			    stmt.setObject(2, request.getParameter("device_name" + i));
 			    stmt.setObject(3, git_id);
@@ -83,4 +105,23 @@ public class CreateUser extends HttpServlet {
 		doPost(request, response);
 	}
 
+	 public boolean getCommits(String url, PrintWriter out) {
+		 try {
+		 
+			   
+			   Git git = Git.cloneRepository()
+			  .setURI(url)
+			  .setDirectory(new File("/tmp/linuxconf/" + url))
+			  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
+			  .setBranch( "refs/heads/master" )
+			  .call();
+		 
+			   git.checkout().setName( "<id-to-commit>" ).call();
+
+
+
+		 } catch (Exception ex) { ex.printStackTrace(out); }
+		 return true; 
+		 
+	 }
 }
