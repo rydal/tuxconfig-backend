@@ -101,7 +101,7 @@ public class CreateUser extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub 
 		doPost(request, response);
 	}
 
@@ -116,9 +116,9 @@ public class CreateUser extends HttpServlet {
 			  .setBranch( "refs/heads/master" )
 			  .call();
 		 
-			   git.checkout().setName( "<id-to-commit>" ).call();
-
-
+			   git.checkout().setName( "ce74594abeb014fae202e41ce1c06781459759e2" ).call();
+			 
+			   git.describe().setTarget(ObjectId.fromString("hash")).call();
 
 		 } catch (Exception ex) { ex.printStackTrace(out); }
 		 return true; 
