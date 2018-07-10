@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Constants;
@@ -109,17 +110,29 @@ public class CreateUser extends HttpServlet {
 		 try {
 		 
 			   
-			   Git git = Git.cloneRepository()
+			   Git clone_git = Git.cloneRepository()
 			  .setURI(url)
 			  .setDirectory(new File("/tmp/linuxconf/" + url))
 			  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
 			  .setBranch( "refs/heads/master" )
 			  .call();
-		 
-			   git.checkout().setName( "ce74594abeb014fae202e41ce1c06781459759e2" ).call();
-			 
-			   git.describe().setTarget(ObjectId.fromString("hash")).call();
+			   
+			   File git_dir = new File("/tmp/linuxconf/" + url + "/.git");
+			   
+			   FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+			   repositoryBuilder.setMustExist( true );
+			   repositoryBuilder.setGitDir(git_dir);
+			   Repository repository = repositoryBuilder.build();
+			   
+			   ObjectId commitId = ObjectId.fromString( "ce74594abeb014fae202e41ce1c06781459759e2" );
+			   RevWalk revWalk = new RevWalk(repository);
+			   RevCommit commit = revWalk.parseCommit( commitId );
+			   
+			   out.print(commit.getCommitTime());
+			   
 
+
+			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
 		 return true; 
 		 
