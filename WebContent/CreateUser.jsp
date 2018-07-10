@@ -9,6 +9,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Linuxconf</title>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
 <script src="./js/createuser.js"></script>
 </head>
 <body>
@@ -55,30 +59,36 @@ try {
 	
 	
 	out.write("<table><tr>");
-	out.write("<th style='width:50%'>Git Repositry</th><th style='width:25%'>Device ID</th><th style='width:25%'>Name of device</th></tr>");
-	
-	for(int i = 0; i < clone_urls.size(); i++) {
+	out.write("<th style='width:50%'>Git Repositry</th><th style='width:1%'>Device ID</th><th style='width:25%'>Device Name</th><th style='width:25%'>Git Commit</th></tr>");
+	int i =  0;
+	while ( i < clone_urls.size()) {
+		
 		out.write("<tr>");
 	
-		PreparedStatement get_device_by_id = con.prepareStatement("select device_id,name from devices where git_url = ?");
+		PreparedStatement get_device_by_id = con.prepareStatement("select device_id,name,git_commit from devices where git_url = ?");
 		get_device_by_id.setObject(1, clone_urls.get(i) );
 		ResultSet got_device_by_id = get_device_by_id.executeQuery();
 		if(got_device_by_id.next()) {
-			out.write("<td style='width:50%'>" + i + ": "  + clone_urls.get(i) + ": <input type='checkbox' name='git_url" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 			out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' value=" + got_device_by_id.getString("device_id") + " > </td>");
-			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
+			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
+			out.write("<td style='width:25%'><input type='text' name='git_commit" + i + "' id='git_commit" + i +  "' value=" + got_device_by_id.getString("git_commit") +  "> </td>");
+			
 			out.write("</tr><br>");
 			out.flush();
 		} else {
 		
 		
-		out.write("<td style='width:50%'>" + i + ": "  + clone_urls.get(i) + ": <input type='checkbox' name='git_url" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' > </td>");
-		out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' > </td>");
+		out.write("<td style='width:25%'><input type='text' name='device_name" + i  + "' id='device_name" + i  +"' > </td>");
+		out.write("<td style='width:25%'><input type='text' name='git_commit" + i + "' id='git_commit" + i + "' > </td>");
 		out.write("</tr><br>");
 		out.flush();
 	}
+		i++;
 	}
+	out.write("<script> var i = " + i + ";</script>");
 	out.write("</table>");
 	out.write("<input type='image' src='./img/submit.png' alt='Submit Form' />");
 
