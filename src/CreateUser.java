@@ -19,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -83,11 +85,11 @@ public class CreateUser extends HttpServlet {
 			while( request.getParameter("git_url" + i) != null) {
 				
 				
-				boolean is_valid = getCommits(request.getParameter("git_url" + i),request.getParameter("git_commit" + i), git_id, out);
-				if(!is_valid) {
+				String is_valid = getCommits(request.getParameter("git_url" + i), git_id, out);
+				if(! is_valid.equals("ok")) {
 					JSONObject json2 = new JSONObject();
 					
-					json2.put("form", "Error at device " + Integer.toString(i));
+					json2.put("error", "Error at device " + Integer.toString(i) + is_valid);
 					// Assuming your json object is **jsonObject**, perform the following, it will
 					// return your json object
 					out.print(json2);
@@ -118,11 +120,12 @@ public class CreateUser extends HttpServlet {
 		doPost(request, response);
 	}
 
-	 public boolean getCommits(String url, String commit_hash,  String git_id, PrintWriter out) {
+	 public String getCommits(String url, String git_id, PrintWriter out) {
 		 try {
 			   
-			 
-			   Git.cloneRepository()
+			 FileUtils.deleteDirectory(new File("/tmp/linuxconf/" + url + ":" + git_id));
+
+			   Git cloned_git = Git.cloneRepository()
 			  .setURI(url)
 			  .setDirectory(new File("/tmp/linuxconf/" + url + ":" + git_id))
 			  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
@@ -131,26 +134,34 @@ public class CreateUser extends HttpServlet {
 			   
 			   File git_dir = new File("/tmp/linuxconf/" + url + "/.git");
 			   
-			   FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-			   repositoryBuilder.setMustExist( true );
-			   repositoryBuilder.setGitDir(git_dir);
-			   Repository repository = repositoryBuilder.build();
 			   
-			   ObjectId commitId = ObjectId.fromString( commit_hash);
-			   RevWalk revWalk = new RevWalk(repository);
-			   RevCommit commit = revWalk.parseCommit( commitId );
+			   Repository repository = cloned_git.getRepository();
 			   
-			   long commit_time = commit.getCommitTime();
+			   RevCommit youngestCommit = null;    
+			   List<Ref> branches = new Git(repository).branchList().setListMode(ListMode.ALL).call();
+			   RevWalk walk = new RevWalk(cloned_git.getRepository());
+			       for(Ref branch : branches) {
+			           RevCommit commit = walk.parseCommit(branch.getObjectId());
+			           if(commit.getAuthorIdent().getWhen().compareTo(
+			              youngestCommit.getAuthorIdent().getWhen()) > 0)
+			              youngestCommit = commit;
+			       }
+			   
+			   if (youngestCommit == null) {
+				   return "not found";
+			   }
+			   String commit_definition = youngestCommit.getShortMessage();
+			   
+			   long commit_time = youngestCommit.getCommitTime();
 			   long now = System.currentTimeMillis();
 			   
 			   if (commit_time < (now - (1000 * 60 * 60 * 24 * 7))) {
-				   return false;
-			   } else {
-				   return true;
+				   return ("commit too young");
 			   }
+			   return "ok";
 			   			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
-		 return true; 
+		  return null;
 		 
 	 }
 }

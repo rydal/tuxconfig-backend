@@ -59,7 +59,7 @@ try {
 	
 	
 	out.write("<table><tr>");
-	out.write("<th style='width:50%'>Git Repositry</th><th style='width:1%'>Device ID</th><th style='width:25%'>Device Name</th><th style='width:25%'>Git Commit</th></tr>");
+	out.write("<th style='width:50%'>Git Repositry</th><th style='width:1%'>Device ID</th><th style='width:25%'>Device Name</th></tr>");
 	int i =  0;
 	while ( i < clone_urls.size()) {
 		
@@ -72,7 +72,6 @@ try {
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 			out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' value=" + got_device_by_id.getString("device_id") + " > </td>");
 			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
-			out.write("<td style='width:25%'><input type='text' name='git_commit" + i + "' id='git_commit" + i +  "' value=" + got_device_by_id.getString("git_commit") +  "> </td>");
 			
 			out.write("</tr><br>");
 			out.flush();
@@ -82,7 +81,6 @@ try {
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' > </td>");
 		out.write("<td style='width:25%'><input type='text' name='device_name" + i  + "' id='device_name" + i  +"' > </td>");
-		out.write("<td style='width:25%'><input type='text' name='git_commit" + i + "' id='git_commit" + i + "' > </td>");
 		out.write("</tr><br>");
 		out.flush();
 	}

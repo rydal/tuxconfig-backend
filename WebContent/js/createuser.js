@@ -42,11 +42,33 @@ function subimit_reposities() {
 		alert(result);
 		return false;
 	} else {
-		return true;
+		send_ajax()
 	}
 }
 
+
+function send_ajax(){
 	
+    $.ajax({
+        type: "POST",
+        url: "https://linuxconf.feedthepenguin.org/hehe/createuser",
+        data: $("#theform").serialize(),
+        dataType: "json",
+        success: function(data, textStatus) {
+            if (data.redirect) {
+                // data.redirect contains the string URL to redirect to
+                
+            	window.location.href = data.redirect;
+            }
+            else {
+                // data.form contains the HTML for the replacement form
+                $("#server_response").replaceWith(data.form);
+                $("#server_response2").replaceWith(data.form);
+             location.reload();
+            }
+        }
+    });
+    }	
 
 
 
