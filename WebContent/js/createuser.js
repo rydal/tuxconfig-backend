@@ -1,5 +1,4 @@
-function subimit_reposities() {
-
+function subimit_repositries() {
 	var i = 0;
 	var success = true;
 	var result = "";
@@ -15,21 +14,24 @@ function subimit_reposities() {
 				success = false;
 				result += "Device Name not filled out\n";
 			}
-			if (document.getElementById("git_commit" + i).value === "") {
-				success = false;
-				result += "Git Commit not filled out\n";
-			}
+			
 			
 			if (document.getElementById("device_id" + i).value != "" ) {
 			var usb_id = document.getElementById("device_id" + i).value;
 			var res = usb_id.split(":", 1);
 			
-			if ( res != undefined && ( res[0].length == 4 || res[1].length == 4 )) {
+			if ( res == undefined || res[0] == undefined || res[1] == undefined){
+				success = false;
+				result = "Device id not correctly formed";
+				break;
+			}
+		    if ( res[0].length != 4 || res[1].length != 4 ) {
 
 			result += "Usb Id number not in the correct format, NNNN:NNNN\n";
 				success = false;
 			}
 			}
+			
 			if (success == false) {
 				result += "For device number " + i + "\n\n";
 			}
@@ -42,33 +44,29 @@ function subimit_reposities() {
 		alert(result);
 		return false;
 	} else {
-		send_ajax()
+		send_ajax();
 	}
 }
 
 
 function send_ajax(){
-	
-    $.ajax({
+alert("called");
+$.ajax({
         type: "POST",
         url: "https://linuxconf.feedthepenguin.org/hehe/createuser",
         data: $("#theform").serialize(),
         dataType: "json",
         success: function(data, textStatus) {
-            if (data.redirect) {
-                // data.redirect contains the string URL to redirect to
-                
-            	window.location.href = data.redirect;
-            }
-            else {
-                // data.form contains the HTML for the replacement form
-                $("#server_response").replaceWith(data.form);
-                $("#server_response2").replaceWith(data.form);
-             location.reload();
-            }
+        	var results = JSON.parse(data);
+        	var j = 0; 
+        	while (document.getElementById("device_checkbox" + i) != undefined) {
+        		document.getElementById("divid" + j).innerHTML = (results.result + j);
+        		j++;
+        	}        
         }
     });
     }	
+
 
 
 

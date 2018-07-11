@@ -28,8 +28,10 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.RefDatabase;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -82,29 +84,31 @@ public class CreateUser extends HttpServlet {
 		    
 		    
 		    int i = 0;
+			JSONObject json2 = new JSONObject();
+			
 			while( request.getParameter("git_url" + i) != null) {
 				
 				
 				String is_valid = getCommits(request.getParameter("git_url" + i), git_id, out);
-				if(! is_valid.equals("ok")) {
-					JSONObject json2 = new JSONObject();
+				if(! is_valid.startsWith("ok")) {
 					
-					json2.put("error", "Error at device " + Integer.toString(i) + is_valid);
+					json2.put("result" + i, "Error at device " + Integer.toString(i) + " " + is_valid);
 					// Assuming your json object is **jsonObject**, perform the following, it will
 					// return your json object
-					out.print(json2);
+				} else {
+					json2.put("result" + i , "Commit description " + is_valid.replaceAll("ok", ""));
 				}
-				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url,git_commit) values (?,?,?,?,?,?)");
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?)");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
 			    stmt.setObject(2, request.getParameter("device_name" + i));
 			    stmt.setObject(3, git_id);
 			    stmt.setObject(4, git_email);
 			    stmt.setObject(5, request.getParameter("git_url" + i));
-			    contributor_details.setObject(6, request.getParameter("git_commit" + i));
 			    
 			    stmt.executeUpdate();
 				i++;
 			}
+			out.println(json2);
 			
 		    
 		}catch (Exception ex) { ex.printStackTrace(out);}
@@ -132,33 +136,28 @@ public class CreateUser extends HttpServlet {
 			  .setBranch( "refs/heads/master" )
 			  .call();
 			   
-			   File git_dir = new File("/tmp/linuxconf/" + url + "/.git");
-			   
-			   
 			   Repository repository = cloned_git.getRepository();
 			   
-			   RevCommit youngestCommit = null;    
-			   List<Ref> branches = new Git(repository).branchList().setListMode(ListMode.ALL).call();
-			   RevWalk walk = new RevWalk(cloned_git.getRepository());
-			       for(Ref branch : branches) {
-			           RevCommit commit = walk.parseCommit(branch.getObjectId());
-			           if(commit.getAuthorIdent().getWhen().compareTo(
-			              youngestCommit.getAuthorIdent().getWhen()) > 0)
-			              youngestCommit = commit;
-			       }
+			   RevWalk revWalk = new RevWalk( repository );  
+				   revWalk.sort( RevSort.COMMIT_TIME_DESC );
+				   Map<String, Ref> allRefs = repository.getRefDatabase().getRefs( RefDatabase.ALL );
+				   for( Ref ref : allRefs.values() ) {
+				     RevCommit commit = revWalk.parseCommit( ref.getLeaf().getObjectId() );
+				     revWalk.markStart( commit );
+				   }
+				   RevCommit newestCommit = revWalk.next();
+				 
 			   
-			   if (youngestCommit == null) {
-				   return "not found";
-			   }
-			   String commit_definition = youngestCommit.getShortMessage();
 			   
-			   long commit_time = youngestCommit.getCommitTime();
+			   String commit_definition = newestCommit.getShortMessage();
+			   
+			   long commit_time = newestCommit.getCommitTime();
 			   long now = System.currentTimeMillis();
 			   
-			   if (commit_time < (now - (1000 * 60 * 60 * 24 * 7))) {
-				   return ("commit too young");
+			   if (commit_time > (now - (1000 * 60 * 60 * 24 * 7))) {
+				   return ("latest commit too young");
 			   }
-			   return "ok";
+			   return "ok " + commit_definition;
 			   			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
 		  return null;

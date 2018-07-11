@@ -46,7 +46,7 @@ try {
 	} else {
 		out.println("Error retrieving projects form git");
 	}
-	out.println("<form method='post' id='theform' action='http://linuxconf.feedthepenguin.org/hehe/createuser' onsubmit='subimit_reposities()'>");
+	out.println("<form  id='theform' onsubmit='subimit_repositries()'>");
 	out.println("Your Email:" + email + "<br>");
 	out.println("Your Git Id:" + owner_git_id + "<br>");
 	
@@ -72,7 +72,7 @@ try {
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 			out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' value=" + got_device_by_id.getString("device_id") + " > </td>");
 			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
-			
+			out.write("<div id='divid" + i + "' style='display: none;'></div>");
 			out.write("</tr><br>");
 			out.flush();
 		} else {
@@ -81,6 +81,8 @@ try {
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' > </td>");
 		out.write("<td style='width:25%'><input type='text' name='device_name" + i  + "' id='device_name" + i  +"' > </td>");
+		out.write("<div id='divid" + i + "' style='display: none;'></div>");
+		
 		out.write("</tr><br>");
 		out.flush();
 	}
@@ -88,7 +90,7 @@ try {
 	}
 	out.write("<script> var i = " + i + ";</script>");
 	out.write("</table>");
-	out.write("<input type='image' src='./img/submit.png' alt='Submit Form' />");
+	out.write("<input type='submit' src='./img/submit.png' alt='Submit Form' />");
 
 	out.println("</form>");
 	
