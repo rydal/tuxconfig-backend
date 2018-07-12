@@ -46,7 +46,7 @@ try {
 	} else {
 		out.println("Error retrieving projects form git");
 	}
-	out.println("<form  id='theform' onsubmit='subimit_repositries()'>");
+	out.println("<form  id='theform'  onsubmit='submit_reposities()'>");
 	out.println("Your Email:" + email + "<br>");
 	out.println("Your Git Id:" + owner_git_id + "<br>");
 	
