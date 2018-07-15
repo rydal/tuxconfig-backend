@@ -49,8 +49,11 @@ function submit_repositries() {
 			}
 
 		}
-		dataString += "git_url" + i + "=" +  "device_id" + i + "=" +  document.getElementById("device_id" + i).value + "&" + "device_name" + i + "=" +  document.getElementById("device_name" + i).value + "&";
-		i++;
+		alert ( document.getElementById("git_url_hidden" + i).value);
+		dataString += "git_url" + i + "=" + document.getElementById("git_url_hidden" + i).value ; 
+		dataString += "&device_id" + i + "=" + document.getElementById("device_id" + i).value ;
+		dataString += "&device_name" + i + "=" + document.getElementById("device_name" + i).value ;
+				i++;
 	}
 
 	if (success == false) {
@@ -132,20 +135,19 @@ try {
 		ResultSet got_device_by_id = get_device_by_id.executeQuery();
 		if(got_device_by_id.next()) {
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
-			out.write("<td>" +  "<input type='hidden' name='git_url" + i + "' value='" + clone_urls.get(i) + "' id='git_url" + i + "'/></td>" );
+			out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
 			out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' value=" + got_device_by_id.getString("device_id") + " > </td>");
 			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
-			out.write("<div id='divid" + i + "' style='display: none;'></div>");
 			out.write("</tr><br>");
 			out.flush();
 		} else {
 		
 		
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
-		out.write("<td>" +  "<input type='hidden' name='git_url" + i + "' value='" + clone_urls.get(i) + "' id='git_url" + i + "'/></td>" );
+		out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
 		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' > </td>");
 		out.write("<td style='width:25%'><input type='text' name='device_name" + i  + "' id='device_name" + i  +"' > </td>");
-		out.write("<div id='divid" + i + "' style='display: none;'></div>");
+		
 		
 		out.write("</tr><br>");
 		out.flush();
