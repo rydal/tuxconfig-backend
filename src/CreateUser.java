@@ -37,6 +37,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -84,20 +85,19 @@ public class CreateUser extends HttpServlet {
 		    
 		    
 		    int i = 0;
-			JSONObject json2 = new JSONObject();
-			
+			JSONArray json_array = new JSONArray();
+
 			while( request.getParameter("git_url" + i) != null) {
 				
 				
 				String is_valid = getCommits(request.getParameter("git_url" + i), git_id, out);
-				out.write("function response= " + is_valid);
 				if(! is_valid.startsWith("ok")) {
 					
-					json2.put("result" + i, "Error at device " + Integer.toString(i) + " " + is_valid);
+					json_array.put("Error at device " + Integer.toString(i) + " " + is_valid);
 					// Assuming your json object is **jsonObject**, perform the following, it will
 					// return your json object
 				} else {
-					json2.put("result" + i , "Commit description " + is_valid.replaceAll("ok", ""));
+					json_array.put("Commit description :" + is_valid.replaceAll("ok", ""));
 				}
 				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?)");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
@@ -109,7 +109,7 @@ public class CreateUser extends HttpServlet {
 			    stmt.executeUpdate();
 				i++;
 			}
-			out.println(json2);
+			out.println(json_array);
 			
 		    
 		}catch (Exception ex) { ex.printStackTrace(out);}
@@ -122,7 +122,7 @@ public class CreateUser extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub 
-		doPost(request, response);
+		doGet(request, response);
 	}
 
 	 public String getCommits(String url, String git_id, PrintWriter out) {

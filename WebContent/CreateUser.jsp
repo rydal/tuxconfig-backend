@@ -19,12 +19,11 @@ function submit_repositries() {
 	var i = 0;
 	var success = true;
 	var result = "";
-	var dataString = "";
+	var dataString = "url=" + document.getElementById("url").value + "&description=" + document.getElementById("description").value + "&" ;
 	
 	while (document.getElementById("device_checkbox" + i) != undefined) {
 		if (document.getElementById("device_checkbox" + i).checked) {
 			if (document.getElementById("device_id" + i).value === "") {
-
 				success = false;
 				result += "Device ID not filled out\n";
 			}
@@ -49,10 +48,12 @@ function submit_repositries() {
 			}
 
 		}
-		alert ( document.getElementById("git_url_hidden" + i).value);
+		if (document.getElementById("device_checkbox" + i).checked) {
+		
 		dataString += "git_url" + i + "=" + document.getElementById("git_url_hidden" + i).value ; 
 		dataString += "&device_id" + i + "=" + document.getElementById("device_id" + i).value ;
 		dataString += "&device_name" + i + "=" + document.getElementById("device_name" + i).value ;
+		}
 				i++;
 	}
 
@@ -63,17 +64,15 @@ function submit_repositries() {
 		    $.ajax({
 		        type: "POST",
 		        url: "https://linuxconf.feedthepenguin.org/hehe/createuser",
-		        data: {dataString},
+		        data: dataString,
 		        dataType: "json",
 		        success: function(data, textStatus) {
-		            if (data.result1) {
-		                // data.redirect contains the string URL to redirect to
-		            	alert("got result");
-		            }
-		            else {
-		                alert("no result");
-
-		            }
+		        	for(var i = 0; i < data.length; i++) {
+					document.getElementById("output").innerHTML += data[i];
+		        		
+		                	
+		        
+		            		            }
 		        }
 		    });
 		    
@@ -116,7 +115,7 @@ try {
 	out.println("Your Git Id:" + owner_git_id + "<br>");
 	
 	out.println("Your homepage / linkedin etc:");
-	out.println("<input type='text' name='url' id='url' required maxlength='255' value=" + url + ">");
+	out.println("<input type='text' name='url' id='url' required maxlength='255' value='" + url + "'>");
 	out.println("Your description:");
 	out.println("<input type='text' name='description' id='description' required maxlength='768' value=" + description + ">");
 	
@@ -157,6 +156,7 @@ try {
 	out.write("<script> var i = " + i + ";</script>");
 	out.write("</table>");
 	out.write("<input type='image' src='./img/submit.jpg' onclick='submit_repositries()' alt='Submit Form' />");
+	out.write("<div id='output'></div>");
 
 	
 	
