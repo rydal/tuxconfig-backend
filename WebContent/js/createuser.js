@@ -1,9 +1,10 @@
-function submit_reposities() {
+function submit_repositries() {
 
 	var i = 0;
 	var success = true;
 	var result = "";
-
+	;
+	
 	while (document.getElementById("device_checkbox" + i) != undefined) {
 		if (document.getElementById("device_checkbox" + i).checked) {
 			if (document.getElementById("device_id" + i).value === "") {
@@ -32,43 +33,31 @@ function submit_reposities() {
 			}
 
 		}
+
 		i++;
+	}
 	}
 
 	if (success == false) {
 		alert(result);
 		return false;
 	} else {
-		$('theform').submit(function(event) {
-
-			// get the form data
-			// there are many ways to get this data using jQuery (you can
-			// use the class or id also)
-
-			// process the form
-			$.ajax({
-				type : 'POST', // define the type of HTTP verb we
-				// want to use (POST for our form)
-				url : $('http://linuxconf.feedthepenguin.org/hehe/createuser'),
-				data : $("theform"),
-				dataType : 'json', // what type of data do we
-				// expect back from the
-				// server
-				encode : true
-			})
-			// using the done promise callback
-			.done(function(data) {
-
-				// log data to the console so we can see
-				console.log(data);
-
-				// here we will handle errors and validation messages
-			});
-
-			// stop the form from submitting the normal way and refreshing
-			// the page
-			event.preventDefault();
-		});
-
-	}
+		dataString = JSON.stringify(dataString);
+		 $.ajax({
+		        type: "POST",
+		        url: "https://linuxconf.feedthepenguin.org/hehe/createuser",
+		        data: $("#theform").serializeArray(),
+		        dataType: "json",
+		        success: function(data) {
+		            if (data.result1) {
+		                // data.redirect contains the string URL to redirect to
+		                
+		            	alert("yeah");
+		            }
+		            else {
+		                alert("no");
+		            }
+		        }
+		    });
+	
 }

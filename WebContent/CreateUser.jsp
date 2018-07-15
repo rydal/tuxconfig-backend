@@ -13,7 +13,70 @@
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
-<script src="./js/createuser.js"></script>
+<script>
+function submit_repositries() {
+
+	var i = 0;
+	var success = true;
+	var result = "";
+	var dataString = "";
+	
+	while (document.getElementById("device_checkbox" + i) != undefined) {
+		if (document.getElementById("device_checkbox" + i).checked) {
+			if (document.getElementById("device_id" + i).value === "") {
+
+				success = false;
+				result += "Device ID not filled out\n";
+			}
+			if (document.getElementById("device_name" + i).value === "") {
+				success = false;
+				result += "Device Name not filled out\n";
+			}
+
+			if (document.getElementById("device_id" + i).value != "") {
+				var usb_id = document.getElementById("device_id" + i).value;
+				var res = usb_id.split(':', 2);
+
+				if (res != undefined
+						&& (res[0].length != 4 || res[1].length != 4)) {
+
+					result += "Usb Id number not in the correct format, NNNN:NNNN\n";
+					success = false;
+				}
+			}
+			if (success == false) {
+				result += "For device number " + i + "\n\n";
+			}
+
+		}
+		dataString += "git_url" + i + "=" +  "device_id" + i + "=" +  document.getElementById("device_id" + i).value + "&" + "device_name" + i + "=" +  document.getElementById("device_name" + i).value + "&";
+		i++;
+	}
+
+	if (success == false) {
+		alert(result);
+		return false;
+	} else {
+		    $.ajax({
+		        type: "POST",
+		        url: "https://linuxconf.feedthepenguin.org/hehe/createuser",
+		        data: {dataString},
+		        dataType: "json",
+		        success: function(data, textStatus) {
+		            if (data.result1) {
+		                // data.redirect contains the string URL to redirect to
+		            	alert("got result");
+		            }
+		            else {
+		                alert("no result");
+
+		            }
+		        }
+		    });
+		    
+	}
+}
+</script>
 </head>
 <body>
 <img src="./img/linuxconf.png" height="200" width="400">
@@ -46,7 +109,6 @@ try {
 	} else {
 		out.println("Error retrieving projects form git");
 	}
-	out.println("<form  id='theform'  onsubmit='submit_reposities()'>");
 	out.println("Your Email:" + email + "<br>");
 	out.println("Your Git Id:" + owner_git_id + "<br>");
 	
@@ -70,6 +132,7 @@ try {
 		ResultSet got_device_by_id = get_device_by_id.executeQuery();
 		if(got_device_by_id.next()) {
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+			out.write("<td>" +  "<input type='hidden' name='git_url" + i + "' value='" + clone_urls.get(i) + "' id='git_url" + i + "'/></td>" );
 			out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' value=" + got_device_by_id.getString("device_id") + " > </td>");
 			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
 			out.write("<div id='divid" + i + "' style='display: none;'></div>");
@@ -79,6 +142,7 @@ try {
 		
 		
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+		out.write("<td>" +  "<input type='hidden' name='git_url" + i + "' value='" + clone_urls.get(i) + "' id='git_url" + i + "'/></td>" );
 		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' > </td>");
 		out.write("<td style='width:25%'><input type='text' name='device_name" + i  + "' id='device_name" + i  +"' > </td>");
 		out.write("<div id='divid" + i + "' style='display: none;'></div>");
@@ -90,9 +154,8 @@ try {
 	}
 	out.write("<script> var i = " + i + ";</script>");
 	out.write("</table>");
-	out.write("<input type='submit' src='./img/submit.png' alt='Submit Form' />");
+	out.write("<input type='image' src='./img/submit.jpg' onclick='submit_repositries()' alt='Submit Form' />");
 
-	out.println("</form>");
 	
 	
 } catch (Exception ex) { ex.printStackTrace(new java.io.PrintWriter(out)); }

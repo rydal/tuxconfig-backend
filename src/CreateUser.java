@@ -56,7 +56,7 @@ public class CreateUser extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
 		ArrayList<String> clone_urls = new ArrayList<String>();
@@ -90,6 +90,7 @@ public class CreateUser extends HttpServlet {
 				
 				
 				String is_valid = getCommits(request.getParameter("git_url" + i), git_id, out);
+				out.write("function response= " + is_valid);
 				if(! is_valid.startsWith("ok")) {
 					
 					json2.put("result" + i, "Error at device " + Integer.toString(i) + " " + is_valid);
@@ -119,7 +120,7 @@ public class CreateUser extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub 
 		doPost(request, response);
 	}
