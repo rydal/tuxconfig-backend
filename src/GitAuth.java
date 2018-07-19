@@ -39,7 +39,7 @@ public class GitAuth extends HttpServlet {
 		HttpSession session = request.getSession();
 		String clientId = "af9623acb5be449d2aa7";
 		String clientSecret = "37260e1b85ec32a26530486562879071765c5b24";
-		
+		 
 		final OAuth20Service service = new ServiceBuilder(clientId)
 	                .apiSecret(clientSecret)
 	                .scope("public_repo")

@@ -42,6 +42,13 @@
 	<artifactId>unix4j-command</artifactId>
 	<version>0.5</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/org.codehaus.mojo/tomcat-maven-plugin -->
+<dependency>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>tomcat-maven-plugin</artifactId>
+    <version>1.1</version>
+</dependency>
+
 <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 <dependency>
     <groupId>mysql</groupId>
@@ -82,6 +89,7 @@
           <warSourceDirectory>WebContent</warSourceDirectory>
         </configuration>
       </plugin>
+      
       <!-- Deploy wars to Tomcat 7 with mvn tomcat7:deploy or tomcat7:redeploy -->
 <plugin>
     <groupId>org.apache.tomcat.maven</groupId>
@@ -92,13 +100,15 @@
         <username>arwen</username>
         <password>imleaving</password>
         <path>/hehe</path>
+       <warSourceDirectory>/var/lib/tomcat8/webapps/</warSourceDirectory>
+       
     </configuration>
 </plugin>
 <plugin>
     <!-- enable deploying to tomcat -->
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
-    <version>2.2</version>
+    <version>1.1</version>
     <configuration>
         <server>${tomcat-server}</server>
         <url>${tomcat-url}</url>

@@ -148,16 +148,13 @@ public class CreateUser extends HttpServlet {
 				   }
 				   RevCommit newestCommit = revWalk.next();
 				 
-			   
-			   
+			   out.write(newestCommit.toString());
+
+			   cloned_git.checkout().setName( newestCommit.toString() ).call();
+
 			   String commit_definition = newestCommit.getShortMessage();
 			   
-			   long commit_time = newestCommit.getCommitTime();
-			   long now = System.currentTimeMillis();
 			   
-			   if (commit_time > (now - (1000 * 60 * 60 * 24 * 7))) {
-				   return ("latest commit too young");
-			   }
 			   return "ok " + commit_definition;
 			   			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
