@@ -127,7 +127,8 @@ public class CreateUser extends HttpServlet {
 
 	 public String getCommits(String url, String git_id, PrintWriter out) {
 		 try {
-			   
+		
+			 
 			 FileUtils.deleteDirectory(new File("/tmp/linuxconf/" + url + ":" + git_id));
 
 			   Git cloned_git = Git.cloneRepository()
@@ -137,25 +138,11 @@ public class CreateUser extends HttpServlet {
 			  .setBranch( "refs/heads/master" )
 			  .call();
 			   
-			   Repository repository = cloned_git.getRepository();
-			   
-			   RevWalk revWalk = new RevWalk( repository );  
-				   revWalk.sort( RevSort.COMMIT_TIME_DESC );
-				   Map<String, Ref> allRefs = repository.getRefDatabase().getRefs( RefDatabase.ALL );
-				   for( Ref ref : allRefs.values() ) {
-				     RevCommit commit = revWalk.parseCommit( ref.getLeaf().getObjectId() );
-				     revWalk.markStart( commit );
-				   }
-				   RevCommit newestCommit = revWalk.next();
-				 
-			   out.write(newestCommit.toString());
-
-			   cloned_git.checkout().setName( newestCommit.toString() ).call();
-
-			   String commit_definition = newestCommit.getShortMessage();
-			   
-			   
-			   return "ok " + commit_definition;
+			 
+			   ObjectId previousCommitId = cloned_git.getRepository().resolve( "HEAD^" );
+			   cloned_git.checkout().setName( previousCommitId.toString() ).call();
+			   			   
+			   return "ok " + previousCommitId.getName();
 			   			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
 		  return null;
