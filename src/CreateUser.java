@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +24,10 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.internal.storage.dfs.DfsPacksChangedEvent;
+import org.eclipse.jgit.internal.storage.dfs.DfsRepositoryDescription;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -118,7 +122,7 @@ public class CreateUser extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse resp	onse)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub 
@@ -138,11 +142,13 @@ public class CreateUser extends HttpServlet {
 			  .setBranch( "refs/heads/master" )
 			  .call();
 			   
-			 
-			   ObjectId previousCommitId = cloned_git.getRepository().resolve( "HEAD^" );
-			   cloned_git.checkout().setName( previousCommitId.toString() ).call();
-			   			   
-			   return "ok " + previousCommitId.getName();
+			   Repository repo = cloned_git.getRepository();
+			   
+			   Config cfg = repo.getConfig();
+			   String name = cfg.getString("user", null, "name");
+			   return ("ok " + name);
+			   
+			   
 			   			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
 		  return null;

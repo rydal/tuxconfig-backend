@@ -54,8 +54,9 @@ public class GetDevice extends HttpServlet {
 				// return your json object
 				out.print(json2);
 			}  else {
+				String randomString = randomString(64);
 				PreparedStatement insert_success_code = con.prepareStatement("insert into success_code ( success_code, devices_device_id, devices_owner_git_id, timestamp ) values ( ?,?,?,?)");
-				insert_success_code.setObject(1, randomString(64)); 
+				insert_success_code.setObject(1, randomString); 
 				insert_success_code.setObject(2, device_id);
 				insert_success_code.setObject(3, got_device_request.getInt("owner_git_id"));
 				java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
@@ -65,6 +66,8 @@ public class GetDevice extends HttpServlet {
 				
 				json2.put("url", got_device_request.getString("git_url"));
 				json2.put("commit", got_device_request.getString("git_commit"));
+				json2.put("success_code", randomString);
+				
 				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object

@@ -82,6 +82,7 @@ public class GitAuthCallback extends HttpServlet {
         final Response git_response = service.execute(git_request);
         
         String git_result = git_response.getBody();
+        out.write(git_result);
         JSONObject json = new JSONObject(git_result);
 		String repos_url = (String) json.get("repos_url").toString();
 		String git_id = (String) json.get("id").toString();

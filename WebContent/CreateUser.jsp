@@ -90,6 +90,9 @@ try {
 	Connection con=DriverManager.getConnection(  
 	"jdbc:mysql://localhost/linuxconf","arwen","imleaving");
 	
+	if((String) session.getAttribute("git_email") == null ) {
+		response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/GitAuth.html");
+	}
 	String email = (String) session.getAttribute("git_email");
 	String url = "";
 	String description= "";
