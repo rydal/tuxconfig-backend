@@ -91,17 +91,19 @@ public class CreateUser extends HttpServlet {
 		    int i = 0;
 			JSONArray json_array = new JSONArray();
 
+			
+			
 			while( request.getParameter("git_url" + i) != null) {
+				 String url = request.getParameter("git_url" + i) ;
 				
-				
-				String is_valid = getCommits(request.getParameter("git_url" + i), git_id, out);
+				String is_valid = getCommits(url, git_id, out);
 				if(! is_valid.startsWith("ok")) {
 					
-					json_array.put("Error at device " + Integer.toString(i) + " " + is_valid);
+					json_array.put("Error importing repository: " + url + " Reason: " + is_valid);
 					// Assuming your json object is **jsonObject**, perform the following, it will
 					// return your json object
 				} else {
-					json_array.put("Commit description :" + is_valid.replaceAll("ok", ""));
+					json_array.put("Repository: " + url   + is_valid.replaceAll("ok", ""));
 				}
 				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?)");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
@@ -125,33 +127,37 @@ public class CreateUser extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse resp	onse)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub 
 		doGet(request, response);
 	}
 
 	 public String getCommits(String url, String git_id, PrintWriter out) {
 		 try {
 		
-			 
-			 FileUtils.deleteDirectory(new File("/tmp/linuxconf/" + url + ":" + git_id));
+			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + git_id;
+			 FileUtils.deleteDirectory(new File(cloned_directory));
 
 			   Git cloned_git = Git.cloneRepository()
 			  .setURI(url)
-			  .setDirectory(new File("/tmp/linuxconf/" + url + ":" + git_id))
+			  .setDirectory(new File(cloned_directory))
 			  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
 			  .setBranch( "refs/heads/master" )
 			  .call();
 			   
-			   Repository repo = cloned_git.getRepository();
+			   if(cloned_git == null) {
+				   return "Error, could not import repository " + url;
+			   }
 			   
-			   Config cfg = repo.getConfig();
-			   String name = cfg.getString("user", null, "name");
-			   return ("ok " + name);
+			   Repository repo = cloned_git.getRepository();
+			   if(! new File(cloned_directory + "/penguin.sh").isFile()) {
+				   return "Error, penguin.sh not included in git repository";
+			   }
+			   
+			   return ("ok repository added");
 			   
 			   
 			   			   
 		 } catch (Exception ex) { ex.printStackTrace(out); }
-		  return null;
+		  return "Error, could not import repository";
 		 
 	 }
 }

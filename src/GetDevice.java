@@ -43,7 +43,7 @@ public class GetDevice extends HttpServlet {
 			Connection con=DriverManager.getConnection(  
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
-			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ?");
+			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and triaged = 'approved' ");
 			get_device_request.setObject(1, device_id);
 			
 			ResultSet got_device_request = get_device_request.executeQuery();

@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -23,13 +24,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
@@ -146,9 +152,34 @@ public class GetErrorLog extends HttpServlet {
 			out.println(response1.getStatusLine());
 			   String inputLine ;
 			BufferedReader br = new BufferedReader(new InputStreamReader(response1.getEntity().getContent()));
+			
+			boolean seen = false;
 			while ((inputLine = br.readLine()) != null) {
-	              out.println(inputLine);
+	              if( inputLine.contains("^Penguin: " + uploaded_log.hashCode())) {
+	            	  seen  = true;
+	              }
 	       }
+			if (!seen) {
+				byte[] body = uploaded_log.get();
+				
+				
+				CloseableHttpClient send_issue_client = HttpClients.createDefault();
+				HttpPost httpPost = new HttpPost(issue_url + "?access_token=" + oauth_token);
+				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
+
+				 List<NameValuePair> params = new ArrayList<NameValuePair>();
+				 
+				 				    
+				    params.add(new BasicNameValuePair("title","Penguin: " + uploaded_log.hashCode()));
+				    params.add(new BasicNameValuePair("body", body.toString()));
+				    params.add(new BasicNameValuePair("labels", "bug"));
+				    
+				    httpPost.setEntity(new UrlEncodedFormEntity(params));
+				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
+				    out.println(post_response.getStatusLine());
+				    
+			}
+			
 	       br.close();
 
 		} catch (Exception ex) {
