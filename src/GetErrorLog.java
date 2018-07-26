@@ -32,6 +32,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -122,7 +123,6 @@ public class GetErrorLog extends HttpServlet {
 					output += temp;
 
 				}
-				out.write(temp);
 			}
 
 
@@ -146,7 +146,6 @@ public class GetErrorLog extends HttpServlet {
 			
 			issue_url = git_url + "/issues";
 			
-			out.write(issue_url);
 			CloseableHttpClient httpclient = HttpClients.createDefault();
 			HttpGet httpGet = new HttpGet(issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret);
 			httpGet.setHeader("Accept", "application/vnd.github.v3+json");
@@ -158,28 +157,38 @@ public class GetErrorLog extends HttpServlet {
 			
 			boolean seen = false;
 			while ((inputLine = br.readLine()) != null) {
-	              if( inputLine.contains("^Penguin: " + uploaded_log.hashCode())) {
+	              if( inputLine.contains("^Configure me " + uploaded_log.hashCode())) {
 	            	  seen  = true;
+	            	  
+	              }
+	              if (inputLine.contains(device_id)) {
+	            	 inputLine = inputLine.replace(":", "\\:");
 	              }
 	       }
 			if (!seen) {
 				byte[] body = uploaded_log.get();
+				String body_string = new String(body);
 				
 				
 				CloseableHttpClient send_issue_client = HttpClients.createDefault();
 				HttpPost httpPost = new HttpPost((issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret));
 				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
-
-				 List<NameValuePair> params = new ArrayList<NameValuePair>();
+				httpPost.setHeader("Authorization", "token 199f04bde200233cb1fb0852eb70939145eea564");
 				 
-				 				    
-				    params.add(new BasicNameValuePair("title","Penguin: " + uploaded_log.hashCode()));
-				    params.add(new BasicNameValuePair("body", body.toString()));
-				    params.add(new BasicNameValuePair("labels", "bug"));
+				 StringEntity json_parameters = new StringEntity ( "{\"title\":Configure me " + uploaded_log.hashCode() + ", body : " + body_string + ", labels : bug }");
+				
+				 out.write(EntityUtils.toString(json_parameters));
 				    
-				    httpPost.setEntity(new UrlEncodedFormEntity(params));
+				    httpPost.setEntity(json_parameters);
 				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
 				    out.println(post_response.getStatusLine());
+			
+				    BufferedReader br2 = new BufferedReader(new InputStreamReader(post_response.getEntity().getContent()));
+					
+
+					while ((inputLine = br2.readLine()) != null) {
+						out.write(inputLine);
+					}
 				    
 			}
 			
