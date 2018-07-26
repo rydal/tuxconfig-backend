@@ -70,6 +70,7 @@ public class GetErrorLog extends HttpServlet {
 		String git_url = null;
 		String device_id = null;
 		String owner_git_id = null;
+		
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
@@ -88,7 +89,7 @@ public class GetErrorLog extends HttpServlet {
 
 			// Parse the requeste
 			List<FileItem> items = upload.parseRequest(request);
-			if (items.size() > 1) {
+			if (items.size() != 1) {
 				JSONObject json2 = new JSONObject();
 				json2.put("Error", "multiple file uploads");
 				out.println(json2);
@@ -97,8 +98,8 @@ public class GetErrorLog extends HttpServlet {
 			FileItem uploaded_log = items.get(0);
 
 			String issue_url;
-			String oauth_token = "562ddba46a97992e54a5efa60616c1a6dfe5c7cc";
-
+			String clientId = "af9623acb5be449d2aa7";
+			String clientSecret = "37260e1b85ec32a26530486562879071765c5b24";
 			// The fluent API relieves the user from having to deal with manual deallocation
 			// of system
 			// resources at the cost of having to buffer response content in memory in some
@@ -121,7 +122,9 @@ public class GetErrorLog extends HttpServlet {
 					output += temp;
 
 				}
+				out.write(temp);
 			}
+
 
 			PreparedStatement get_git_url = con
 					.prepareStatement("select git_url  from devices where device_id = ? and owner_git_id = ? ");
@@ -145,7 +148,7 @@ public class GetErrorLog extends HttpServlet {
 			
 			out.write(issue_url);
 			CloseableHttpClient httpclient = HttpClients.createDefault();
-			HttpGet httpGet = new HttpGet(issue_url + "?access_token=" + oauth_token);
+			HttpGet httpGet = new HttpGet(issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret);
 			httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 			CloseableHttpResponse response1 = httpclient.execute(httpGet);
 			
@@ -164,7 +167,7 @@ public class GetErrorLog extends HttpServlet {
 				
 				
 				CloseableHttpClient send_issue_client = HttpClients.createDefault();
-				HttpPost httpPost = new HttpPost(issue_url + "?access_token=" + oauth_token);
+				HttpPost httpPost = new HttpPost((issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret));
 				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
 
 				 List<NameValuePair> params = new ArrayList<NameValuePair>();
