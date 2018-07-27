@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -154,20 +155,22 @@ public class GetErrorLog extends HttpServlet {
 			out.println(response1.getStatusLine());
 			   String inputLine ;
 			BufferedReader br = new BufferedReader(new InputStreamReader(response1.getEntity().getContent()));
+			byte[] file_in_bytes = uploaded_log.get();
+			
+			String md5hash = DigestUtils.md5Hex(file_in_bytes);
 			
 			boolean seen = false;
 			while ((inputLine = br.readLine()) != null) {
-	              if( inputLine.contains("^Configure me " + uploaded_log.hashCode())) {
+				if( inputLine.contains("Configure me " + md5hash)) {
 	            	  seen  = true;
 	            	  
 	              }
-	              if (inputLine.contains(device_id)) {
-	            	 inputLine = inputLine.replace(":", "\\:");
-	              }
 	       }
 			if (!seen) {
+				
 				byte[] body = uploaded_log.get();
-				String body_string = new String(body);
+				String body_string = new String(body).replace("\n", "\r\n");
+				
 				
 				
 				CloseableHttpClient send_issue_client = HttpClients.createDefault();
@@ -175,8 +178,9 @@ public class GetErrorLog extends HttpServlet {
 				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
 				httpPost.setHeader("Authorization", "token 199f04bde200233cb1fb0852eb70939145eea564");
 				 
-				 StringEntity json_parameters = new StringEntity ( "{\"title\":Configure me " + uploaded_log.hashCode() + ", body : " + body_string + ", labels : bug }");
-				
+				 //StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
+				StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + md5hash + " \""
+						+ " , \"body\" : \"" + body_string.trim() + "\" }");
 				 out.write(EntityUtils.toString(json_parameters));
 				    
 				    httpPost.setEntity(json_parameters);
