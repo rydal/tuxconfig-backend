@@ -139,6 +139,20 @@ public class GetErrorLog extends HttpServlet {
 				out.println(json2);
 				return;
 			}
+			
+			String git_token = null;
+			
+			PreparedStatement get_owner_cookie = con.prepareStatement("select git_token from contributor where owner_git_id = ? ");
+			get_owner_cookie.setObject(1, owner_git_id);
+			ResultSet got_owner_cookie = get_owner_cookie.executeQuery();
+			if (! got_owner_cookie.next()) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "Can't find owner token");
+				out.println(json2);
+				return;
+			} else {
+				git_token = got_owner_cookie.getString("git_token");
+			}
 
 			PreparedStatement get_git_url = con
 					.prepareStatement("select git_url  from devices where device_id = ? and owner_git_id = ? ");
@@ -198,7 +212,7 @@ public class GetErrorLog extends HttpServlet {
 				CloseableHttpClient send_issue_client = HttpClients.createDefault();
 				HttpPost httpPost = new HttpPost((issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret));
 				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
-				httpPost.setHeader("Authorization", "token 199f04bde200233cb1fb0852eb70939145eea564");
+				httpPost.setHeader("Authorization", "token " + git_token );
 				 
 				 //StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
 				StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + md5hash + " \""
