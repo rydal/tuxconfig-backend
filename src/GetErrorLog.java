@@ -113,6 +113,7 @@ public class GetErrorLog extends HttpServlet {
 			is = uploaded_log.getInputStream();
 			bfReader = new BufferedReader(new InputStreamReader(is));
 			String temp = null;
+			
 			while ((temp = bfReader.readLine()) != null) {
 				if (temp.contains("device_id")) {
 					temp = temp.replace("device_id", "").trim();
@@ -125,7 +126,19 @@ public class GetErrorLog extends HttpServlet {
 
 				}
 			}
+			if (device_id == null ) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "device_id not found");
+				out.println(json2);
+				return;
+			}
 
+			if (owner_git_id == null ) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "owner_git_id not found");
+				out.println(json2);
+				return;
+			}
 
 			PreparedStatement get_git_url = con
 					.prepareStatement("select git_url  from devices where device_id = ? and owner_git_id = ? ");
@@ -152,7 +165,16 @@ public class GetErrorLog extends HttpServlet {
 			httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 			CloseableHttpResponse response1 = httpclient.execute(httpGet);
 			
-			out.println(response1.getStatusLine());
+			
+			if (response1.getStatusLine().getStatusCode() > 200 &&  response1.getStatusLine().getStatusCode()  < 227) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "Error pulling issues");
+				out.println(json2);
+				return;
+				
+
+			}
+				
 			   String inputLine ;
 			BufferedReader br = new BufferedReader(new InputStreamReader(response1.getEntity().getContent()));
 			byte[] file_in_bytes = uploaded_log.get();
@@ -181,22 +203,30 @@ public class GetErrorLog extends HttpServlet {
 				 //StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
 				StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + md5hash + " \""
 						+ " , \"body\" : \"" + body_string.trim() + "\" }");
-				 out.write(EntityUtils.toString(json_parameters));
 				    
 				    httpPost.setEntity(json_parameters);
 				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
-				    out.println(post_response.getStatusLine());
-			
-				    BufferedReader br2 = new BufferedReader(new InputStreamReader(post_response.getEntity().getContent()));
-					
-
-					while ((inputLine = br2.readLine()) != null) {
-						out.write(inputLine);
-					}
+					if (post_response.getStatusLine().getStatusCode() > 200 &&  response1.getStatusLine().getStatusCode()  < 227) {
+				    	JSONObject json2 = new JSONObject();
+						json2.put("Error ", "Error pulling issues");
+						out.println(json2);
+						return;
+				    } else {
+				    	JSONObject json2 = new JSONObject();
+						json2.put("Ok", "Posted issue successfully");
+						out.println(json2);
+						return;
+				    }
 				    
-			}
 			
-	       br.close();
+			} else {
+				JSONObject json2 = new JSONObject();
+				json2.put("Ok", "Issue already posted");
+				out.println(json2);
+				return;
+			}
+		
+			
 
 		} catch (Exception ex) {
 			ex.printStackTrace(out);
