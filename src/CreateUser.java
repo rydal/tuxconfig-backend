@@ -147,7 +147,9 @@ public class CreateUser extends HttpServlet {
 				   return "Error, could not import repository " + url;
 			   }
 			   
+			   
 			   Repository repo = cloned_git.getRepository();
+		
 			   if(! new File(cloned_directory + "/penguin.sh").isFile()) {
 				   return "Error, penguin.sh not included in git repository";
 			   }
