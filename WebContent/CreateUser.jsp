@@ -4,6 +4,12 @@
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
+<%@ page import="org.apache.commons.io.FileUtils"%>
+<%@ page import="org.eclipse.jgit.*"%>
+<%@ page import="org.eclipse.jgit.api.Git"%>
+<%@ page import="org.eclipse.jgit.lib.Repository"%>
+
+
 
 <html>
 <head>
@@ -122,7 +128,12 @@ try {
 	out.println("Your description:");
 	out.println("<input type='text' name='description' id='description' required maxlength='768' value=" + description + ">");
 	
+
 	
+	   
+	   
+	   
+
 	
 	
 	out.write("<table><tr>");
@@ -130,13 +141,41 @@ try {
 	int i =  0;
 	while ( i < clone_urls.size()) {
 		
-		out.write("<tr>");
+		
+
 	
 		PreparedStatement get_device_by_id = con.prepareStatement("select device_id,name,git_commit from devices where git_url = ?");
 		get_device_by_id.setObject(1, clone_urls.get(i) );
 		ResultSet got_device_by_id = get_device_by_id.executeQuery();
 		if(got_device_by_id.next()) {
+
+			int version_number = 1;
+			PreparedStatement get_version_number = con.prepareStatement("select max(version)  from devices where device_id = ? and owner_git_id = ? ");
+			ResultSet got_version_number = get_version_number.executeQuery();
+			if (got_version_number.next()) {
+			 version_number = got_version_number.getInt(1) + 1 ;
+			}
+			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + owner_git_id + ":" + version_number;
+			 FileUtils.deleteDirectory(new File(cloned_directory));
+
+			
+			 Git cloned_git = Git.cloneRepository()
+					  .setURI( clone_urls.get(i))
+					  .setDirectory(new File(cloned_directory))
+					  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
+					  .setBranch( "refs/heads/master" )
+					  .call();
+					   Set<String> project_description = cloned_git.getRepository().getRemoteNames();
+					   
+			out.write("<tr>");
+			
+			
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+			out.write("Project Names:");
+			for(String s : project_description ) {
+				out.write(s + "\n");
+			}
+			out.write("<hr>");	
 			out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
 			out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' value=" + got_device_by_id.getString("device_id") + " > </td>");
 			out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name" + i + "' value=" + got_device_by_id.getString("name") +  "> </td>");
@@ -144,8 +183,30 @@ try {
 			out.flush();
 		} else {
 		
+			int version_number  = 1;
+			PreparedStatement get_version_number = con.prepareStatement("select max(version)  from devices where device_id = ? and owner_git_id = ? ");
+			ResultSet got_version_number = get_version_number.executeQuery();
+			if (got_version_number.next()) {
+			 version_number = got_version_number.getInt(1) + 1 ;
+			}
+			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + owner_git_id + ":" + version_number;
+			 FileUtils.deleteDirectory(new File(cloned_directory));
+
+			
+			 Git cloned_git = Git.cloneRepository()
+					  .setURI( clone_urls.get(i))
+					  .setDirectory(new File(cloned_directory))
+					  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
+					  .setBranch( "refs/heads/master" )
+					  .call();
+					   Set<String> project_description = cloned_git.getRepository().getRemoteNames();
 		
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
+		out.write("Project Names:");
+		for(String s : project_description ) {
+			out.write(s + "\n");
+		}
+		out.write("<hr>");
 		out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
 		out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i +"' > </td>");
 		out.write("<td style='width:25%'><input type='text' name='device_name" + i  + "' id='device_name" + i  +"' > </td>");
@@ -155,7 +216,8 @@ try {
 		out.flush();
 	}
 		i++;
-	}
+		out.write("<HR>");
+		 	}
 	out.write("<script> var i = " + i + ";</script>");
 	out.write("</table>");
 	out.write("<input type='image' src='./img/submit.jpg' onclick='submit_repositries()' alt='Submit Form' />");

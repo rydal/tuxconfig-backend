@@ -36,18 +36,33 @@ public class GetDevice extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String device_id = request.getParameter("deviceid");
+		String attempt_number  = request.getParameter("attempt");
 		PrintWriter out = response.getWriter();
+		
+		if(device_id == null ) {
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "deviceid not found");
+			out.println(json2);
+			return;
+		}
+		if(attempt_number == null ) {
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "attempt number not found");
+			out.println(json2);
+			return;
+		}
 		
 		try { 
 			Class.forName("com.mysql.jdbc.Driver");  
 			Connection con=DriverManager.getConnection(  
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
-			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and triaged = 'approved' order by (upvotes - downvotes) limit 1");
+			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and triaged = 'approved' order by (upvotes - downvotes) limit ?");
 			get_device_request.setObject(1, device_id);
-			
+			get_device_request.setObject(2, attempt_number);
+						
 			ResultSet got_device_request = get_device_request.executeQuery();
-			if (!got_device_request.next()) {
+			if (!got_device_request.last()) {
 				JSONObject json2 = new JSONObject();
 				json2.put("form", "Device not found");
 				// Assuming your json object is **jsonObject**, perform the following, it will

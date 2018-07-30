@@ -40,6 +40,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
+import org.omg.PortableInterceptor.SUCCESSFUL;
 
 import com.github.scribejava.apis.GitHubApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
@@ -72,6 +73,7 @@ public class GetErrorLog extends HttpServlet {
 		String git_url = null;
 		String device_id = null;
 		String owner_git_id = null;
+		String status_token = null;
 		
 		try {
 
@@ -121,6 +123,11 @@ public class GetErrorLog extends HttpServlet {
 				} else if (temp.contains("owner_git_id")) {
 					temp = temp.replace("owner_git_id", "").trim();
 					owner_git_id = temp;
+				}	else if (temp.contains("status_token")) {
+					temp = temp.replace("status_token", "").trim();
+					status_token = temp;
+						
+					
 				} else {
 					output += temp;
 
@@ -139,6 +146,18 @@ public class GetErrorLog extends HttpServlet {
 				out.println(json2);
 				return;
 			}
+			
+			//Check status 
+			PreparedStatement get_status_token = con.prepareStatement("select success_code from success_code where success_code = ? ");
+			get_status_token.setObject(1, status_token);
+			ResultSet got_status_token = get_status_token.executeQuery();
+			if (! got_status_token.next()) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "success_token not found");
+				out.println(json2);
+				return;
+			}
+
 			
 			String git_token = null;
 			
@@ -205,7 +224,8 @@ public class GetErrorLog extends HttpServlet {
 			if (!seen) {
 				
 				byte[] body = uploaded_log.get();
-				String body_string = new String(body).replace("\n", "\r\n");
+				String body_string = new String(body);
+				body_string = body_string.replace("\n", "\r\n");
 				
 				
 				
