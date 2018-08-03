@@ -1,0 +1,47 @@
+2018-07-30	made several changes, need to test.
+2018-07-29	database pulling highest values for each device by id
+2018-07-27	Got contributor token, using it to write to issue page.
+2018-07-27	Added http status checks on github.com to return success status.
+2018-07-27	Error reporting working. backend nearly done.
+2018-07-26	oauth logging in as contributor to write to issue wall.
+2018-07-26	using app based authetciation, working on file uploads not parsing,  caused by \n not accepted.
+2018-07-25	Failed posting issue. Gist? (Scrapped in favour of git issue wall)
+2018-07-24	still working on ouath logins
+2018-07-24	working on issue oauth logins
+
+INFO: was plannng on using code 2 weeks or more old to prevent malware.
+
+2018-07-20	referencing master branch of project
+2018-07-19	might not work
+2018-07-18	displaying commit ids
+2018-07-15	create user displaying commits.
+
+
+2018-07-15	data being sent correctly
+2018-07-15	tomcat 8 errors fixed a while after daemon startup time, reason unknown.
+2018-07-12	javascript submitting, empty response from servlet, crash.
+2018-07-11	device_id bugging out
+2018-07-11	git stuff in progress
+2018-07-10	Textfield checks properly sorted, using json to return import status.
+2018-07-10	Error checked the setrepositries input
+2018-07-10	got commit time of latest commit.
+2018-07-09	working on getting commit description
+2018-07-09	refactor to get specific commit (for safety checking, scrapped)
+2018-07-09	createuser now retains details filled in by the user.
+2018-07-08	Base cases done.
+2018-07-08	get device draft working.
+2018-07-07	Create user page working, add cookies to help login? (Scrapped)
+2018-07-07	Moved images to thir own folder.
+2018-07-05	Add device page half working.
+2018-07-05	sorting textfield sizes
+2018-07-05	Building forms to enter device ids  and contributor details.
+2018-07-02	Got repositry urls
+2018-07-02	Selecting individual urls.
+2018-06-30	Found urls of projects.
+2018-06-28	Parsing oauth output to find list of public repositries
+2018-06-28	oauth login working
+2018-06-27	buiding github.com Ouath login
+2018-06-25	databse implemented, see Appendix
+2018-06-20	inital commit
+
+
