@@ -1,11 +1,14 @@
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -92,28 +95,36 @@ public class CreateUser extends HttpServlet {
 			JSONArray json_array = new JSONArray();
 
 			
-			
 			while( request.getParameter("git_url" + i) != null) {
-				 String url = request.getParameter("git_url" + i) ;
+				 String url = request.getParameter("git_url") ;
 				
-				String is_valid = getCommits(url, git_id, out);
-				if(! is_valid.startsWith("ok")) {
+				String[] got_commits = getCommits(url,git_id, out);
+				
+				if(! got_commits[0].equals("Success")) {
 					
-					json_array.put("Error importing repository: " + url + " Reason: " + is_valid);
+					json_array.put("Error importing repository: " + url + " Reason: " + got_commits[1]);
 					// Assuming your json object is **jsonObject**, perform the following, it will
 					// return your json object
 				} else {
-					json_array.put("Repository: " + url   + is_valid.replaceAll("ok", ""));
-				}
-				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url) values (?,?,?,?,?)");
-			    stmt.setObject(1, request.getParameter("device_id" + i));
-			    stmt.setObject(2, request.getParameter("device_name" + i));
-			    stmt.setObject(3, git_id);
+					
+					//Assumet version number starts at 0
+				PreparedStatement get_version_number = con.prepareStatement("select max(version) as version from devices where device_id = ? and owner_git_id = ?");
+				ResultSet got_version_number = get_version_number.executeQuery();
+				int version_number = got_version_number.getInt("version") + 1;
+					
+				
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,owner_git_id, name,  contributor_email,git_url) values (?,?,?,?,?)");
+			    
+				
+				stmt.setObject(1, got_commits[1]);
+			    stmt.setObject(2, got_commits[2]);
+			    stmt.setObject(2, got_commits[3]);
 			    stmt.setObject(4, git_email);
 			    stmt.setObject(5, request.getParameter("git_url" + i));
 			    
 			    stmt.executeUpdate();
 				i++;
+			}
 			}
 			out.println(json_array);
 			
@@ -130,10 +141,15 @@ public class CreateUser extends HttpServlet {
 		doGet(request, response);
 	}
 
-	 public String getCommits(String url, String git_id, PrintWriter out) {
+	 public String[] getCommits(String url,String git_id, PrintWriter out) {
 		 try {
+				Class.forName("com.mysql.jdbc.Driver");  
+				Connection con=DriverManager.getConnection(  
+				"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
+				
+			 
 		
-			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + git_id;
+			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + git_id; 
 			 FileUtils.deleteDirectory(new File(cloned_directory));
 
 			   Git cloned_git = Git.cloneRepository()
@@ -144,22 +160,64 @@ public class CreateUser extends HttpServlet {
 			  .call();
 			   
 			   if(cloned_git == null) {
-				   return "Error, could not import repository " + url;
+				   return new String[] {"Error" , "Error, could not import repository " + url };
 			   }
 			   
 			   
 			   Repository repo = cloned_git.getRepository();
-		
-			   if(! new File(cloned_directory + "/penguin.sh").isFile()) {
-				   return "Error, penguin.sh not included in git repository";
+			   File config_file = new File(cloned_directory + "/penguin.sh"); 
+			   if(! config_file.isFile() ) {
+				   return new String[] {"Error" , "penguin.sh not included in git repository"};
 			   }
 			   
-			   return ("ok repository added");
+			   RevCommit youngestCommit = null;    
+			   List<Ref> branches = new Git(repo).branchList().setListMode(ListMode.ALL).call();
+			   try(RevWalk walk = new RevWalk(cloned_git.getRepository())) {
+			       for(Ref branch : branches) {
+			           RevCommit commit = walk.parseCommit(branch.getObjectId());
+			           if(commit.getAuthorIdent().getWhen().compareTo(
+			              youngestCommit.getAuthorIdent().getWhen()) > 0)
+			              youngestCommit = commit;
+			       }
+			       Set<String> remote_names = repo.getRemoteNames();
+			       
+			       BufferedReader br = new BufferedReader(new FileReader(config_file));
+				   String line;
+				   String device_id = null;
+				   String owner_git_id = null;
+				   String device_name = null;
+				   int code_version = 0;
+				   
+				   while ((line = br.readLine()) != null)
+					   if (line.contains("device_id")) {
+							line = line.replace("device_id", "").trim();
+							device_id = line;
+						} else if (line.contains("owner_git_id")) {
+							line = line.replace("owner_git_id", "").trim();
+							owner_git_id = line;
+						}  else if (line.contains("comfigureme_name")) {
+							line = line.replace("configureme_name", "").trim();
+							device_name = line;
+						}
+				   
 			   
+					  
+				   if (device_id == null) {
+					   return new String[] {"Error", "device_id not set in configuration file penguin.sh"};
+					   
+				   }
+				   if (owner_git_id == null) {
+					   return new String[] {"Error", "owner_git_id not set in configuration file penguin.sh"};
+					   
+				   }
+				  
+			       
+			       return new String[] {"Success", device_id, owner_git_id, device_name, youngestCommit.getId().toString(), "Repository names: " + String.join(" ", remote_names) + " Latest commit message: " + youngestCommit.getId().toString(), youngestCommit.getShortMessage() };
 			   
-			   			   
-		 } catch (Exception ex) { ex.printStackTrace(out); }
-		  return "Error, could not import repository";
-		 
-	 }
+			   }
+			   //Assume failed
+			   
+			   } catch (Exception ex) {ex.printStackTrace(out); return new String[] {"Error", "unspecified error"}; }
+			   
+		 }
 }
