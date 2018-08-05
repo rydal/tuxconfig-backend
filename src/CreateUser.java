@@ -70,10 +70,11 @@ public class CreateUser extends HttpServlet {
 		HttpSession session = request.getSession();
 		ArrayList<String> clone_urls = new ArrayList<String>();
 		
-		try { 
-			Class.forName("com.mysql.jdbc.Driver");  
+		try ( 
 			Connection con=DriverManager.getConnection(  
-			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
+			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");
+			    PreparedStatement contributor_details = con.prepareStatement("replace into contributor ( url , description , owner_git_id , email) values (?,?,?,?) ");
+) {  
 			
 		    String git_id = (String) session.getAttribute("git_id");
 		    String git_email = (String) session.getAttribute("git_email");
@@ -84,7 +85,6 @@ public class CreateUser extends HttpServlet {
 		    
 		    
 		    
-		    PreparedStatement contributor_details = con.prepareStatement("replace into contributor (url,description,owner_git_id, email) values (?,?,?,?) ");
 		    contributor_details.setObject(1, webpage);
 		    contributor_details.setObject(2, description);
 		    contributor_details.setObject(3, git_id);
@@ -120,21 +120,20 @@ public class CreateUser extends HttpServlet {
 					// return your json object
 				} else {
 					
-					//Assumet version number starts at 0
-				PreparedStatement get_version_number = con.prepareStatement("select max(version) as version from devices where device_id = ? and owner_git_id = ?");
+					//Assume version number starts at 0
+				try( PreparedStatement get_version_number = con.prepareStatement("select max(version) as version from devices where device_id = ? and owner_git_id = ?");
 				ResultSet got_version_number = get_version_number.executeQuery();
-				int version_number = got_version_number.getInt("version") + 1;
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,owner_git_id,  version, name, commit_id, contributor_email,git_url) values (?,?,?,?,?,?,?)");) {
+		
+				int version_number = got_version_number.getInt("version") + 1;  
 					
-				
-				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,owner_git_id, name, version, contributor_email,git_url) values (?,?,?,?,?,?)");
-			    
-				
-				stmt.setObject(1, got_commits[1]);
-			    stmt.setObject(2, got_commits[2]);
-			    stmt.setObject(2, got_commits[3]);
-			    stmt.setObject(4,got_commits[4]);
-			    stmt.setObject(5, git_email);
-			    stmt.setObject(6, request.getParameter("git_url" + i));
+				stmt.setObject(1, got_commits[0]);
+			    stmt.setObject(2, got_commits[1]);
+			    stmt.setObject(3, got_commits[2]);
+			    stmt.setObject(4, got_commits[3]);
+			    stmt.setObject(5, got_commits[4]);
+			    stmt.setObject(6, git_email);
+			    stmt.setObject(7, request.getParameter("git_url" + i));
 			    
 			    stmt.executeUpdate();
 				i++;
@@ -143,7 +142,7 @@ public class CreateUser extends HttpServlet {
 			out.println(json_array);
 			
 		    
-		}catch (Exception ex) { ex.printStackTrace(out);}
+			} }catch (Exception ex) { ex.printStackTrace(out);}
 		
 
 	}
@@ -156,12 +155,11 @@ public class CreateUser extends HttpServlet {
 	}
 
 	 public String[] getCommits(String url,String git_id, String commit_id, PrintWriter out) {
-		 try {
-				Class.forName("com.mysql.jdbc.Driver");  
-				Connection con=DriverManager.getConnection(  
+		 try (Connection con=DriverManager.getConnection(  
 				"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
-				
-			 
+				PreparedStatement get_version_number = con.prepareStatement("select max(version) as version from devices where device_id = ? and owner_git_id = ?");
+				ResultSet got_version_number = get_version_number.executeQuery(); ) { 
+			 	int version = got_version_number.getInt("version");
 		
 			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + git_id; 
 			 FileUtils.deleteDirectory(new File(cloned_directory));
@@ -189,11 +187,13 @@ public class CreateUser extends HttpServlet {
 	           
 			  
 			       
-			       BufferedReader br = new BufferedReader(new FileReader(config_file));
+			   try (    BufferedReader br = new BufferedReader(new FileReader(config_file));) {
 				   String line;
 				   String device_id = null;
 				   String owner_git_id = null;
 				   String device_name = null;
+				   String distribution = null;
+				   String linux_version = null;
 				   int code_version = 0;
 				   
 				   while ((line = br.readLine()) != null)
@@ -206,8 +206,14 @@ public class CreateUser extends HttpServlet {
 						}  else if (line.contains("comfigureme_name")) {
 							line = line.replace("configureme_name", "").trim();
 							device_name = line;
+						} else if (line.contains("comfigureme_distributon")) {
+							line = line.replace("configureme_distribution", "").trim();
+							distribution = line;
+						}else if (line.contains("comfigureme_linux_version")) {
+							line = line.replace("configureme_linux_version", "").trim();
+							linux_version = line;
 						}
-				   
+			   
 			   
 					  
 				   if (device_id == null) {
@@ -218,16 +224,26 @@ public class CreateUser extends HttpServlet {
 					   return new String[] {"Error", "owner_git_id not set in configuration file penguin.sh"};
 					   
 				   }
+				   if (device_name == null) {
+					   return new String[] {"Error", "configureme_name not set in configuration file penguin.sh"};
+					   
+				   }
+				   if (distribution == null) {
+					   return new String[] {"Error", "configureme_distribution not set in configuration file penguin.sh"};
+					   
+				   }if (linux_version == null) {
+					   return new String[] {"Error", "configureme_linux_version not set in configuration file penguin.sh"};
+					   
+				   }
 				  
 			       
-			       return new String[] {"Success", device_id,  device_name, commit_id, "Repository names: " + String.join(" ", remote_names) + " Commit message: "  };
-			   
+			       return new String[] {"Success", device_id,  git_id, Integer.toString(version), device_name, commit_id, "Repository names: " + String.join(" ", remote_names) + " Commit message: "  };
+			   }
 			   
 			   //Assume failed
 			   
-			   }catch (RefNotFoundException ex) { JSONObject json2 = new JSONObject();
-				json2.put("Error", "Commit id " + commit_id + " not found");
-				out.println(json2);
+				 }catch (RefNotFoundException ex) { 
+			   return new String[] {"Error", "Cannot find commit"}; 
 			}
 		 catch (Exception ex) {ex.printStackTrace(out); return new String[] {"Error", "unspecified error"}; }
 			   

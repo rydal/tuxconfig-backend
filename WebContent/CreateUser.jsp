@@ -19,18 +19,20 @@ function submit_repositries() {
 	var i = 0;
 	var success = true;
 	var result = "";
+	var dataString = "url=" + document.getElementById("url").value + "&description=" + document.getElementById("description").value + "&" ;
 	
 	while (document.getElementById("device_checkbox" + i) != undefined) {
 		if (document.getElementById("device_checkbox" + i).checked) {
 		
 		dataString += "git_url" + i + "=" + document.getElementById("git_url_hidden" + i).value ; 
+		dataString += "&commit_id" + i + "=" + document.getElementById("commitid" + i).value ; 
 		
 		}
 				i++;
 	}
 
 		    $.ajax({
-		        type: "POST",
+		        type: "GET",
 		        url: "https://linuxconf.feedthepenguin.org/hehe/createuser",
 		        data: dataString,
 		        dataType: "json",
@@ -86,7 +88,8 @@ try {
 	out.println("Your Git Id:" + owner_git_id + "<br>");
 	
 	out.println("Your homepage / linkedin etc:");
-	out.println("<input type='text' name='url' id='url' required maxlength='255' value='" + url + "'>");
+	out.println("<input type='text' id='url' required maxlength='255' value='" + url + "'>");
+	
 	out.println("Your description:");
 	out.println("<input type='text' name='description' id='description' required maxlength='768' value=" + description + ">");
 	
@@ -94,19 +97,19 @@ try {
 	
 	
 	out.write("<table><tr>");
-	out.write("<th style='width:50%'>Git Repositry</th><th style='width:1%'>Device ID</th><th style='width:25%'>Device Name</th></tr>");
+	out.write("<th style='width:50%'>Git Repositry</th><th style='width:50%'>commit id</th></tr>");
 	int i =  0;
 	while ( i < clone_urls.size()) {
 		
 		out.write("<tr>");
 	
-		PreparedStatement get_device_by_id = con.prepareStatement("select device_id,name,git_commit from devices where git_url = ?");
+		PreparedStatement get_device_by_id = con.prepareStatement("select device_id,name,commit_id from devices where git_url = ?");
 		get_device_by_id.setObject(1, clone_urls.get(i) );
 		ResultSet got_device_by_id = get_device_by_id.executeQuery();
 		if(got_device_by_id.next()) {
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 			out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
-			out.write("<td>" + "input type='text' name ='commitd" + i + "' id='commitid'" + i + "'</td>");
+			out.write("<td>" + "<input type='text' name ='commitd" + i + "' id='commitid" + i + "' > </td>");
 		out.write("</tr><br>");
 			out.flush();
 		} else {
@@ -114,7 +117,7 @@ try {
 		
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 		out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
-		out.write("<td>" + "input type='text' name ='commitd" + i + "' id='commitid'" + i + "'</td>");
+		out.write("<td>" + "<input type='text' name ='commitd" + i + "' id='commitid" + i + "' > </td>");
 
 		
 		out.write("</tr><br>");
