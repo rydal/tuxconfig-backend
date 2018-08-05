@@ -27,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.internal.storage.dfs.DfsPacksChangedEvent;
 import org.eclipse.jgit.internal.storage.dfs.DfsRepositoryDescription;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
@@ -82,6 +83,7 @@ public class CreateUser extends HttpServlet {
 		    
 		    
 		    
+		    
 		    PreparedStatement contributor_details = con.prepareStatement("replace into contributor (url,description,owner_git_id, email) values (?,?,?,?) ");
 		    contributor_details.setObject(1, webpage);
 		    contributor_details.setObject(2, description);
@@ -95,10 +97,21 @@ public class CreateUser extends HttpServlet {
 			JSONArray json_array = new JSONArray();
 
 			
+			
+			
 			while( request.getParameter("git_url" + i) != null) {
-				 String url = request.getParameter("git_url") ;
+				String commit_id = request.getParameter("commit_id" + i);
+				String url = request.getParameter("git_url");
 				
-				String[] got_commits = getCommits(url,git_id, out);
+				if (commit_id == null) {
+					JSONObject json2 = new JSONObject();
+					json2.put("Error", "Commit id for project" + i + " not entered");
+					out.println(json2);
+					return;
+				
+				}
+				
+				String[] got_commits = getCommits(url,git_id, commit_id, out);
 				
 				if(! got_commits[0].equals("Success")) {
 					
@@ -113,14 +126,15 @@ public class CreateUser extends HttpServlet {
 				int version_number = got_version_number.getInt("version") + 1;
 					
 				
-				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,owner_git_id, name,  contributor_email,git_url) values (?,?,?,?,?)");
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,owner_git_id, name, version, contributor_email,git_url) values (?,?,?,?,?,?)");
 			    
 				
 				stmt.setObject(1, got_commits[1]);
 			    stmt.setObject(2, got_commits[2]);
 			    stmt.setObject(2, got_commits[3]);
-			    stmt.setObject(4, git_email);
-			    stmt.setObject(5, request.getParameter("git_url" + i));
+			    stmt.setObject(4,got_commits[4]);
+			    stmt.setObject(5, git_email);
+			    stmt.setObject(6, request.getParameter("git_url" + i));
 			    
 			    stmt.executeUpdate();
 				i++;
@@ -141,7 +155,7 @@ public class CreateUser extends HttpServlet {
 		doGet(request, response);
 	}
 
-	 public String[] getCommits(String url,String git_id, PrintWriter out) {
+	 public String[] getCommits(String url,String git_id, String commit_id, PrintWriter out) {
 		 try {
 				Class.forName("com.mysql.jdbc.Driver");  
 				Connection con=DriverManager.getConnection(  
@@ -158,28 +172,22 @@ public class CreateUser extends HttpServlet {
 			  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
 			  .setBranch( "refs/heads/master" )
 			  .call();
-			   
-			   if(cloned_git == null) {
-				   return new String[] {"Error" , "Error, could not import repository " + url };
-			   }
-			   
+			  
+			   cloned_git.checkout().setName( commit_id ).call();
+ 
 			   
 			   Repository repo = cloned_git.getRepository();
+			   
+		       Set<String> remote_names = repo.getRemoteNames();
+		       
+		       //get commit message
+			   
 			   File config_file = new File(cloned_directory + "/penguin.sh"); 
 			   if(! config_file.isFile() ) {
 				   return new String[] {"Error" , "penguin.sh not included in git repository"};
 			   }
-			   
-			   RevCommit youngestCommit = null;    
-			   List<Ref> branches = new Git(repo).branchList().setListMode(ListMode.ALL).call();
-			   try(RevWalk walk = new RevWalk(cloned_git.getRepository())) {
-			       for(Ref branch : branches) {
-			           RevCommit commit = walk.parseCommit(branch.getObjectId());
-			           if(commit.getAuthorIdent().getWhen().compareTo(
-			              youngestCommit.getAuthorIdent().getWhen()) > 0)
-			              youngestCommit = commit;
-			       }
-			       Set<String> remote_names = repo.getRemoteNames();
+	           
+			  
 			       
 			       BufferedReader br = new BufferedReader(new FileReader(config_file));
 				   String line;
@@ -212,12 +220,16 @@ public class CreateUser extends HttpServlet {
 				   }
 				  
 			       
-			       return new String[] {"Success", device_id, owner_git_id, device_name, youngestCommit.getId().toString(), "Repository names: " + String.join(" ", remote_names) + " Latest commit message: " + youngestCommit.getId().toString(), youngestCommit.getShortMessage() };
+			       return new String[] {"Success", device_id,  device_name, commit_id, "Repository names: " + String.join(" ", remote_names) + " Commit message: "  };
 			   
-			   }
+			   
 			   //Assume failed
 			   
-			   } catch (Exception ex) {ex.printStackTrace(out); return new String[] {"Error", "unspecified error"}; }
+			   }catch (RefNotFoundException ex) { JSONObject json2 = new JSONObject();
+				json2.put("Error", "Commit id " + commit_id + " not found");
+				out.println(json2);
+			}
+		 catch (Exception ex) {ex.printStackTrace(out); return new String[] {"Error", "unspecified error"}; }
 			   
 		 }
 }

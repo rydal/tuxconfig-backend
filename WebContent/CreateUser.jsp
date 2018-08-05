@@ -106,6 +106,7 @@ try {
 		if(got_device_by_id.next()) {
 			out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 			out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
+			out.write("<td>" + "input type='text' name ='commitd" + i + "' id='commitid'" + i + "'</td>");
 		out.write("</tr><br>");
 			out.flush();
 		} else {
@@ -113,7 +114,8 @@ try {
 		
 		out.write("<td style='width:50%'>" + i + ": <A HREF='"  + clone_urls.get(i) + "'>" + clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
 		out.write("<td>" +  "<input type='hidden' name='git_url_hidden" + i + "' value='" + clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>" );
-		
+		out.write("<td>" + "input type='text' name ='commitd" + i + "' id='commitid'" + i + "'</td>");
+
 		
 		out.write("</tr><br>");
 		out.flush();
@@ -127,7 +129,8 @@ try {
 
 	
 	
-} catch (Exception ex) { ex.printStackTrace(new java.io.PrintWriter(out)); }
+} 
+catch (Exception ex) { ex.printStackTrace(new java.io.PrintWriter(out)); }
 
 %>
 </body>
