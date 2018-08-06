@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
@@ -105,8 +112,8 @@ public class CreateUser extends HttpServlet {
 				String device_id = request.getParameter("device_id" + i) ;
 				
 				
-				
 				String[] is_valid = getCommits(url, git_id, name, device_id, out);
+				
 				if( is_valid[0].startsWith("Error")) {
 					JSONObject json2 = new JSONObject();
 					json2.put("Error ",  url + " Reason: " + is_valid[1]);
@@ -163,29 +170,44 @@ public class CreateUser extends HttpServlet {
 			 } else {
 				 version = got_highest_version.getInt("version") +  1;
 			 }
-		
-			 String cloned_directory = "/tmp/linuxconf/" + url + ":" + git_id + ":" + version; 
-			 FileUtils.deleteDirectory(new File(cloned_directory));
-
-			   Git cloned_git = Git.cloneRepository()
-			  .setURI(url)
-			  .setDirectory(new File(cloned_directory))
-			  .setBranchesToClone( Arrays.asList( "refs/heads/master" ) )
-			  .setBranch( "refs/heads/master" )
-			  .call();
+				String escaped_url = url.replaceAll("/", "%2F");
+				 String cloned_directory = "/tmp/linuxconf/" + escaped_url + ":" + git_id + ":" + version;
+				 FileUtils.deleteDirectory(new File(cloned_directory));
+				 
+			        Path linuxconf_path = FileSystems.getDefault().getPath(cloned_directory);
+				    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwx---");
+				    FileAttribute<Set<PosixFilePermission>> fileAttributes
+	                = PosixFilePermissions.asFileAttribute(permissions);
+				 Files.createDirectory(linuxconf_path, fileAttributes ) ;
+				 File directory = new File(cloned_directory);
+				 
+				 new File(cloned_directory).mkdir();
+				   Git cloned_git = Git.cloneRepository()
+				  .setURI(url)
+				  .setDirectory(directory)
+				  .call();
+				   
+				  
+				   
+				   
+				   Repository repo = cloned_git.getRepository();
+			
+				   File config_file = new File(cloned_directory + "/penguin.sh"); 
+				   if(! config_file.isFile() ) {
+					   return new String[] {"Error" , "penguin.sh not included in git repository"};
+				   }
 			  
 			   
 			   
-			   Repository repo = cloned_git.getRepository();
 			   
 		       Set<String> remote_names = repo.getRemoteNames();
 		       
+		       repo.close();
+		       cloned_git.close();
+		       
 		       //get commit message
 			   
-			   File config_file = new File(cloned_directory + "/penguin.sh"); 
-			   if(! config_file.isFile() ) {
-				   return new String[] {"Error" , "penguin.sh not included in git repository"};
-			   }
+			   
 	           
 			  
 			       
@@ -207,13 +229,7 @@ public class CreateUser extends HttpServlet {
 						}  else if (line.contains("comfigureme_name")) {
 							line = line.replace("configureme_name", "").trim();
 							read_device_name = line;
-						} else if (line.contains("comfigureme_distributon")) {
-							line = line.replace("configureme_distribution", "").trim();
-							distribution = line;
-						}else if (line.contains("comfigureme_linux_version")) {
-							line = line.replace("configureme_linux_version", "").trim();
-							linux_version = line;
-						}
+						} 
 			   
 			   
 				   
