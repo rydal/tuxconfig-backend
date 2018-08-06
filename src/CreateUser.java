@@ -107,7 +107,6 @@ public class CreateUser extends HttpServlet {
 			
 			while( request.getParameter("git_url" + i) != null) {
 				String url = request.getParameter("git_url" + i) ;
-				String commit_id = request.getParameter("commit_id" + i) ;
 				String name = request.getParameter("device_name" + i) ;
 				String device_id = request.getParameter("device_id" + i) ;
 				
@@ -131,12 +130,13 @@ public class CreateUser extends HttpServlet {
 			    stmt.executeUpdate();
 			    
 				JSONObject json2 = new JSONObject();
-				json2.put("Success ",  url + " Reason: " + is_valid[2]);
+				json2.put("Success ",  url + " " + is_valid[2]);
 				out.println(json2);
 
 			    
-				i++;
+				
 				}
+				i++;
 			}
 			out.println(json_array);
 			
@@ -172,11 +172,12 @@ public class CreateUser extends HttpServlet {
 			 }
 				String escaped_url = url.replaceAll("/", "%2F");
 				 String cloned_directory = "/tmp/linuxconf/" + escaped_url + ":" + git_id + ":" + version;
-				 FileUtils.deleteDirectory(new File(cloned_directory));
 				 
-			        Path linuxconf_path = FileSystems.getDefault().getPath(cloned_directory);
+				 FileUtils.deleteDirectory(new File(cloned_directory));
+				    Path linuxconf_path = FileSystems.getDefault().getPath(cloned_directory);
 				    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwx---");
-				    FileAttribute<Set<PosixFilePermission>> fileAttributes
+				  
+			       FileAttribute<Set<PosixFilePermission>> fileAttributes
 	                = PosixFilePermissions.asFileAttribute(permissions);
 				 Files.createDirectory(linuxconf_path, fileAttributes ) ;
 				 File directory = new File(cloned_directory);
@@ -226,7 +227,7 @@ public class CreateUser extends HttpServlet {
 						} else if (line.contains("owner_git_id")) {
 							line = line.replace("owner_git_id", "").trim();
 							owner_git_id = line;
-						}  else if (line.contains("comfigureme_name")) {
+						}  else if (line.contains("configureme_name")) {
 							line = line.replace("configureme_name", "").trim();
 							read_device_name = line;
 						} 
@@ -234,7 +235,7 @@ public class CreateUser extends HttpServlet {
 			   
 				   
 					  
-				   if (device_id == null) {
+				   if (read_device_id == null) {
 					   return new String[] {"Error", "device_id not set in configuration file penguin.sh"};
 					   
 				   }
@@ -247,10 +248,10 @@ public class CreateUser extends HttpServlet {
 					   
 				   }
 				
-				   if (! read_device_id.equals(device_id)) {
+				   if (! read_device_id.equalsIgnoreCase(device_id.toLowerCase())) {
 					   return new String[] {"Error", "Submitted device id does not equal device id on penguin.sh file"};
 				   }
-				   if (! name.equals(read_device_name)) {
+				   if (! name.equalsIgnoreCase(read_device_name)) {
 					   return new String[] {"Error", "Submitted name does not equal name on penguin.sh file"};
 				   }
 				  
@@ -259,6 +260,7 @@ public class CreateUser extends HttpServlet {
 			   }
 			   
 			   //Assume failed
+			   
 			   
 				 }catch (RefNotFoundException ex) { 
 			   return new String[] {"Error", "Cannot find commit"}; 
