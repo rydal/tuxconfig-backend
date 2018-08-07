@@ -96,6 +96,7 @@
 				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/GitAuth.html");
 			}
 			String email = (String) session.getAttribute("git_email");
+			session.setAttribute("email", email);
 			String url = "";
 			String description = "";
 			String owner_git_id = (String) session.getAttribute("git_id");
