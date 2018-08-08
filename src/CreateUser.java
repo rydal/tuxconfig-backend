@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
@@ -119,20 +120,27 @@ public class CreateUser extends HttpServlet {
 					out.println(json2);
 					
 				} else if (is_valid[0].equals("Success")){
-					
-				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url, version) values (?,?,?,?,?,?)");
+				PreparedStatement check_commit = con.prepareStatement("select * from devices where device_id = ?  and owner_git_id = ? and commit_hash = ?");
+				check_commit.setObject(1, request.getParameter("device_id" + i));
+				check_commit.setObject(2, request.getParameter(git_id));
+				check_commit.setObject(3, is_valid[1]);
+				ResultSet checked_commit = check_commit.executeQuery();
+				if (! checked_commit.next()) {
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url, version, commit_hash) values (?,?,?,?,?,?,?)");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
 			    stmt.setObject(2, request.getParameter("device_name" + i));
 			    stmt.setObject(3, git_id);
 			    stmt.setObject(4, git_email);
 			    stmt.setObject(5, request.getParameter("git_url" + i));
 			    stmt.setObject(6, is_valid[1]);
+			    stmt.setObject(7, is_valid[2]);
+			    
 			    stmt.executeUpdate();
 			    
 				JSONObject json2 = new JSONObject();
 				json2.put("Success ",  url + " " + is_valid[2]);
 				out.println(json2);
-
+				}
 			    
 				
 				}
@@ -157,24 +165,22 @@ public class CreateUser extends HttpServlet {
 	 public String[] getCommits(String url,String git_id, String name, String device_id, PrintWriter out) {
 		 try (Connection con=DriverManager.getConnection(  
 				"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
-				 PreparedStatement highest_version = con.prepareStatement("select version from devices where device_id = ? and owner_git_id = ? order by version");
 
 			){
-			 int version;
 			 
-			 highest_version.setObject(1, device_id);
-			 highest_version.setObject(2, git_id);
-			 ResultSet got_highest_version = highest_version.executeQuery();
-			 if (! got_highest_version.next()) {
-				 	return new String[] {"Error" ,"connot find highest version"};
-			 } else {
-				 version = got_highest_version.getInt("version") +  1;
-			 }
+			 String generatedString = RandomStringUtils.random( 20, true, true);
 				String escaped_url = url.replaceAll("/", "%2F");
-				 String cloned_directory = "/tmp/linuxconf/" + escaped_url + ":" + git_id + ":" + version;
-				 
+				 String cloned_directory;
+				 Path linuxconf_path ;
+				 int version = 0;
+				 do {
+					 cloned_directory = "/tmp/linuxconf/" + escaped_url + ":" + git_id + ":" + version;
+					  linuxconf_path = FileSystems.getDefault().getPath(cloned_directory);
+					  version++;
+					     
+				 } while (Files.exists(linuxconf_path) );
+
 				 FileUtils.deleteDirectory(new File(cloned_directory));
-				    Path linuxconf_path = FileSystems.getDefault().getPath(cloned_directory);
 				    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwx---");
 				  
 			       FileAttribute<Set<PosixFilePermission>> fileAttributes
@@ -189,22 +195,26 @@ public class CreateUser extends HttpServlet {
 				  .call();
 				   
 				  
-				   
+				   String commit_hash = null;
 				   
 				   Repository repo = cloned_git.getRepository();
+				   
+				   ObjectId id = repo.resolve(Constants.HEAD);
+				    commit_hash = id.getName();
 			
+				    
+				    
 				   File config_file = new File(cloned_directory + "/penguin.sh"); 
 				   if(! config_file.isFile() ) {
 					   return new String[] {"Error" , "penguin.sh not included in git repository"};
 				   }
 			  
 			   
-			   
-			   
 		       Set<String> remote_names = repo.getRemoteNames();
 		       
 		       repo.close();
 		       cloned_git.close();
+				
 		       
 		       //get commit message
 			   
@@ -256,7 +266,7 @@ public class CreateUser extends HttpServlet {
 				   }
 				  
 			       
-			       return new String[] {"Success",  Integer.toString(version), "Repository names: " + String.join(" ", remote_names) };
+			       return new String[] {"Success",  commit_hash, "Repository names: " + String.join(" ", remote_names) };
 			   }
 			   
 			   //Assume failed
@@ -265,7 +275,8 @@ public class CreateUser extends HttpServlet {
 				 }catch (RefNotFoundException ex) { 
 			   return new String[] {"Error", "Cannot find commit"}; 
 			}
-		 catch (Exception ex) {ex.printStackTrace(out); return new String[] {"Error", "unspecified error"}; }
-			   
+		 catch (Exception ex) {ex.printStackTrace(out);  return new String[] {"Error", "unspecified error"}; }
+			  
 		 }
+	 
 }

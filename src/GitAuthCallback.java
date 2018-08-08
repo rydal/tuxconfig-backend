@@ -99,6 +99,7 @@ public class GitAuthCallback extends HttpServlet {
 		      String[] lines = line.split(",");
 		      for (String current_line : lines)
 		      {
+		    	  out.println(current_line);
 		          Pattern r = Pattern.compile("\"clone_url\"");
 		    	  Matcher m = r.matcher(current_line);
 		          if (m.find( )) {
@@ -112,7 +113,7 @@ public class GitAuthCallback extends HttpServlet {
 		session.setAttribute("clone_urls", clone_urls);
 		session.setAttribute("git_id", git_id);
 		session.setAttribute("git_email", git_email);
-		response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
+		//response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
 		} catch (Exception ex) { ex.printStackTrace(); }
 
 	}

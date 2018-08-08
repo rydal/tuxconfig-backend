@@ -1,12 +1,20 @@
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Random;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +22,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.eclipse.jgit.api.Git;
 import org.json.JSONObject;
 
 /**
@@ -57,9 +68,10 @@ public class GetDevice extends HttpServlet {
 			Connection con=DriverManager.getConnection(  
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
+			
 			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and triaged = 'approved' order by (upvotes - downvotes) limit ?");
 			get_device_request.setObject(1, device_id);
-			get_device_request.setObject(2, attempt_number);
+			get_device_request.setInt(2, Integer.parseInt(attempt_number));
 						
 			ResultSet got_device_request = get_device_request.executeQuery();
 			if (!got_device_request.last()) {
@@ -79,8 +91,10 @@ public class GetDevice extends HttpServlet {
 				insert_success_code.executeUpdate();
 				JSONObject json2 = new JSONObject();
 				
+
+				
 				json2.put("url", got_device_request.getString("git_url"));
-				json2.put("commit", got_device_request.getString("git_commit"));
+				json2.put("commit", got_device_request.getString("commit_hash"));
 				json2.put("success_code", randomString);
 				
 				

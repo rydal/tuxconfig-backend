@@ -46,7 +46,16 @@
 					}
 				}
 
-				if (success == false) {
+				if (succesRevCommit youngestCommit = null;    
+				List<Ref> branches = new Git(repository).branchList().setListMode(ListMode.ALL).call();
+				try(RevWalk walk = new RevWalk(git.getRepository())) {
+				    for(Ref branch : branches) {
+				        RevCommit commit = walk.parseCommit(branch.getObjectId());
+				        if(commit.getAuthorIdent().getWhen().compareTo(
+				           youngestCommit.getAuthorIdent().getWhen()) > 0)
+				           youngestCommit = commit;
+				    }
+				}s == false) {
 					result += "For device number " + i + "\n\n";
 				}
 
@@ -95,11 +104,15 @@
 			if ((String) session.getAttribute("git_email") == null) {
 				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/GitAuth.html");
 			}
-			String email = (String) session.getAttribute("git_email");
 			String url = "";
 			String description = "";
 			String owner_git_id = (String) session.getAttribute("git_id");
+			String email = (String) session.getAttribute("git_email");
 
+			session.setAttribute("git_id", owner_git_id);
+			session.setAttribute("git_email", email);
+			
+			
 			PreparedStatement get_details = con
 					.prepareStatement("select * from contributor where owner_git_id = ?");
 			get_details.setObject(1, (String) session.getAttribute("git_id"));
