@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.brickred.socialauth.SocialAuthConfig;
-import org.brickred.socialauth.SocialAuthManager;
 import org.json.JSONObject;
 
 /**
@@ -79,10 +77,9 @@ public class DoLogin extends HttpServlet {
 			}			
 			
 			
-			  if (request.getParameter("loginimage.x") != null || request.getParameter("loginimage") != null) {
-
+			
 				PreparedStatement stmt3 = conn
-						.prepareStatement("SELECT id,email, verified, fbsession, password, fblogin FROM user where email = ?");
+						.prepareStatement("SELECT email, verified, fbsession, password, fblogin FROM user where email = ?");
 				stmt3.setString(1, email);
 				ResultSet rs3 = stmt3.executeQuery();
 				if (!rs3.next()) {
@@ -102,7 +99,7 @@ public class DoLogin extends HttpServlet {
 		
 
 				PreparedStatement stmt = conn.prepareStatement(
-						"SELECT id,verified,email,password FROM user where email= ?  and verified = '0'");
+						"SELECT verified,email,password FROM user where email= ?  and verified = '0'");
 				stmt.setString(1, email);
 				ResultSet rs = stmt.executeQuery();
 				if (rs.next()) {
@@ -130,10 +127,9 @@ public class DoLogin extends HttpServlet {
 
 				// use normal login:
 				ChkPassword chkpassword = new ChkPassword();
-				if (hash.equals(rs3.getString("password")) || Password.verifyPassword(password, rs3.getString("password")) || chkpassword.correct_password(email, fbsession).equals("true"))	
+				if (hash.equals(rs3.getString("password")) || Password.verifyPassword(password, rs3.getString("password")) )	
 						 {
-					session.setAttribute("id", rs3.getString("id"));
-					PreparedStatement stmt2 = conn.prepareStatement("SELECT id,email,verified FROM user where email = ? and verified = '1'");
+					PreparedStatement stmt2 = conn.prepareStatement("SELECT email,verified FROM user where email = ? and verified = '1'");
 					stmt2.setObject(1, email);
 					ResultSet rs2 = stmt2.executeQuery();
 					if (!rs2.next()) {
@@ -164,7 +160,7 @@ public class DoLogin extends HttpServlet {
 					response.setContentType("application/json");
 					// Get the printwriter object from response to write the required json object to the output stream      
 					 JSONObject json2 = new JSONObject();
-					 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/ChooseUserType.jsp");
+					 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/AdminConsole.jsp");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
 					return;
@@ -188,19 +184,8 @@ public class DoLogin extends HttpServlet {
 				}
 				
 				}
-				} 
-			 else {
-				 
-				response.setContentType("application/json");
-				// Get the printwriter object from response to write the required json object to the output stream      
-				 JSONObject json2 = new JSONObject();
-				 json2.put("form", "invalid login method");
-				// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
-				out.print(json2);
-				return;
-			
-			}
-
+				
+	
 			// Clean-up environment
 
 			} catch (

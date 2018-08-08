@@ -72,7 +72,7 @@ public class ForgotPassword extends HttpServlet {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/linuxconf", "arwen", "imleaving");
 			// here sonoo is database name, root is username and password
-			PreparedStatement stmt = con.prepareStatement("select id,email,verified from user where email = ?");
+			PreparedStatement stmt = con.prepareStatement("select email,verified from user where email = ?");
 			stmt.setObject(1, email);
 			ResultSet rs = stmt.executeQuery();
 
@@ -90,12 +90,10 @@ public class ForgotPassword extends HttpServlet {
 				out.print(json2);
 				return;
 			} else if (rs.getByte("verified") == 1) {
-				if (session.getAttribute("email_fb") != null) {
-					new GenEmail(email,  out,"Linked to Facebook", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code="  + code +  "&email=" + email + "\"><BR><img src=\"https://linuxconf.feedthepenguin.org/hehe/img/facebook.png\" ></A><BR><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code=" + code + "&email=" + email +   "\">Link account to Facebook</A>");
-				} else {
+				
 				new GenEmail(email,  out,"Reset Password", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code="  + code +  "&email=" + email + "\"><BR><img src=\"https://linuxconf.feedthepenguin.org/hehe/img/reset.jpg\" ></A><BR><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code=" + code + "&email=" + email +   "\">Reset Password</A>\""); 
-				}
-			PreparedStatement insert_statement = con.prepareStatement("update user set  email_code=? where id=?");
+				
+			PreparedStatement insert_statement = con.prepareStatement("update user set  email_code=? where email = ? ");
 				insert_statement.setObject(1, code);
 				insert_statement.setObject(2, rs.getInt("id"));
 				insert_statement.executeUpdate();

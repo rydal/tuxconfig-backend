@@ -11,10 +11,14 @@
 if ((String) session.getAttribute("flag") != null) {
 	out.write((String) session.getAttribute("flag")); session.setAttribute("flag",null);
 }
-%><h2>Email:<br><input type=text id="email" name="email" onfocusout="ValidateEmail()" >Password:</h2>
-<input type="password" id="password" name="password" />
-<img src="./img/forgot_password.png" onclick="location.href='https://linuxconf.feedthepenguin.org/hehe/forgot_password.html'">
-<img  src="./img/login.png" name="loginimage" id="login" onclick="send_post()"	class="center">
+%><h2>Email:<br><input type=text id="email" name="email" onfocusout="ValidateEmail()" ><br>
+Password:</h2><br>
+
+<input type="password" id="password" name="password" /><br>
+<img  src="./img/login.png" name="loginimage" id="login" onclick="send_post()"	class="center"><br>
+Forgot Password:<br>
+<img src="./img/forgot_password.png" onclick="location.href='https://linuxconf.feedthepenguin.org/hehe/forgot_password.html'"><br>
+<input type="image" src="./img/register.png" name="register_image" class="center"  onclick="location.href='https://mycode.feedthepenguin.org/mycard/Register.jsp'">
 </form>
 </div>
 </body>

@@ -25,7 +25,7 @@ public class ChkPassword {
 
 			Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 			String sql;
-			sql = "SELECT id,email,password, fbsession FROM user where email = ? ";
+			sql = "SELECT email,password, FROM user where email = ? ";
 			// Execute SQL query
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setObject(1, email);
@@ -35,7 +35,7 @@ public class ChkPassword {
 				output = "email not found";
 			} else {
 				
-				if (hash.equals(rs.getString("password")) || hash.equals(rs.getString("fbsession"))) {
+				if (hash.equals(rs.getString("password")) ) {
 					output = "true";
 				} else {
 					output = "Invalid password";
