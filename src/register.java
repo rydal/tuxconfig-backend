@@ -65,24 +65,15 @@ public class register extends HttpServlet {
 			ResultSet rs = stmt.executeQuery();
 
 			if (!rs.next()) {
-				PreparedStatement add_to_database = con.prepareStatement("insert into user (timestamp, email, password, verified, email_code) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement add_to_database = con.prepareStatement("insert into user (timestamp, email, password, verified, verify_code) values (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 				add_to_database.setObject(1,timestamp);
 				add_to_database.setObject(2,email);
 				add_to_database.setObject(3,password_hash);
 				add_to_database.setObject(4,0);
 				add_to_database.setObject(5,code);
 				add_to_database.executeUpdate();
-				ResultSet get_user_id = add_to_database.getGeneratedKeys();
 				
-				if(! get_user_id.next())
-				{
-					
-					rs.close();
-					stmt.close();
-					out.write("insert_error");
-					return;
-				}
-				new GenEmail(email,  out,"Welcome to linuxconf", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code\""  + code + "&id=" + get_user_id.getInt(1) +  "> <img border=\"0\" alt=\"Verify\" src=\"https://linuxconf.feedthepenguin.org/hehe/img/verify_email.jpeg\" width=\"150\" height=\"150\"></A><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code"  + code + "&id=" + get_user_id.getInt(1) +  ">Register</A>"); 
+				new GenEmail(email,  out,"Welcome to linuxconf", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code\""  + code + "&email=" + email +  "> <img border=\"0\" alt=\"Verify\" src=\"https://linuxconf.feedthepenguin.org/hehe/img/verify_email.jpeg\" width=\"150\" height=\"150\"></A><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code"  + code + "&email=" + email +  ">Register</A>"); 
 						
 					
 				rs.close();
@@ -97,7 +88,6 @@ public class register extends HttpServlet {
 				out.print(json2);
 				return;
 			} else {
-				int user_id = rs.getInt("id");
 				if (rs.getByte("verified") == 1) {
 					session.setAttribute("flag", "already registered");
 					response.setContentType("application/json");
@@ -110,14 +100,15 @@ public class register extends HttpServlet {
 					
 				}
 				if (rs.getByte("verified") == 0) {
-					new GenEmail(email,  out, "linuxconf Registration", "Welcome to linuxconf, please verify your account on here: <A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code=" + code + "&id=" + user_id + "> <img border=\"0\" alt=\"Verify account\" src=\"https://linuxconf.feedthepenguin.org/hehe/img/verify_email.jpeg\" width=\"150\" height=\"150\"><br>Register link</a>");
+					new GenEmail(email,  out, "linuxconf Registration", "Welcome to linuxconf, please verify your account on here: <A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code=" + code + "&email="  + email + "> <img border=\"0\" alt=\"Verify account\" src=\"https://linuxconf.feedthepenguin.org/hehe/img/verify_email.jpeg\" width=\"150\" height=\"150\"><br>Register link</a>");
 
-					PreparedStatement insert_statement = con.prepareStatement("update user set password = ?, verified= ?, email_code = ?, timestamp = ? where id = ?");
+					PreparedStatement insert_statement = con.prepareStatement("update user set password = ?, verified= ?, verify_code = ?, timestamp = ? where email = ? ");
 					insert_statement.setObject(1, password_hash);
 					insert_statement.setObject(2, 0);
 					insert_statement.setObject(3, code);
 					insert_statement.setObject(4, timestamp);
-					insert_statement.setObject(5, user_id);
+					insert_statement.setObject(5, email);
+					
 					insert_statement.executeUpdate();
 					insert_statement.close();
 					con.close();

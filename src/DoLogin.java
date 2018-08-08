@@ -79,7 +79,7 @@ public class DoLogin extends HttpServlet {
 			
 			
 				PreparedStatement stmt3 = conn
-						.prepareStatement("SELECT email, verified, fbsession, password, fblogin FROM user where email = ?");
+						.prepareStatement("SELECT email, verified, password FROM user where email = ?");
 				stmt3.setString(1, email);
 				ResultSet rs3 = stmt3.executeQuery();
 				if (!rs3.next()) {

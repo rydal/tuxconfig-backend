@@ -52,7 +52,7 @@ public class verify extends HttpServlet {
 		try{  
   			Class.forName("com.mysql.jdbc.Driver");  
   			Connection con=DriverManager.getConnection(  
-  			"jdbc:mysql://localhost/mycode","arwen","imleaving");  
+  			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
   			PreparedStatement stmt=con.prepareStatement("select email, password from user where id = ? ");  
   			stmt.setObject(1, email);
   			ResultSet rs=stmt.executeQuery();  
@@ -60,16 +60,16 @@ public class verify extends HttpServlet {
   			if(! rs.next())  
   			{
   				session.setAttribute("flag", "User not found");
-					response.sendRedirect("https://mycode.feedthepenguin.org/mycard/resend_email.jsp");
+					response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/resend_email.jsp");
   			}
   			
-  				PreparedStatement stmt2=con.prepareStatement("select timestamp from user where email = ? and email_code = ?  ");  
+  				PreparedStatement stmt2=con.prepareStatement("select timestamp from user where email = ? and verify_code = ?  ");  
   	  			stmt2.setObject(1, email);
   	  			stmt2.setObject(2, code);
 	  			ResultSet rs2=stmt2.executeQuery();  
   				if(!rs2.next()) {
   					session.setAttribute("flag", "Incorrect code");
-  					response.sendRedirect("https://mycode.feedthepenguin.org/mycard/resend_email.jsp");
+  					response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/resend_email.jsp");
 
   				}
 	  			
@@ -81,7 +81,7 @@ public class verify extends HttpServlet {
   					stmt.close();
   					con.close();
   					session.setAttribute("flag", "Code has expired");
-  					response.sendRedirect("https://mycode.feedthepenguin.org/mycard/resend_email.jsp");
+  					response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/resend_email.jsp");
   					
   				}
   					
@@ -98,7 +98,7 @@ public class verify extends HttpServlet {
 					con.close();
 					
 				session.setAttribute("flag","Email address sucsessfully registered");
-  				response.sendRedirect("https://mycode.feedthepenguin.org/mycard/ChooseUserType.jsp");
+  				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/ChooseUserType.jsp");
   				
 			    	
   				con.close(); 

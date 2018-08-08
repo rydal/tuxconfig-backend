@@ -101,7 +101,7 @@ public class PasswordReset extends HttpServlet {
 
   			} else {
   				if(rs.getInt("verified") == 1) {
-  					PreparedStatement stmt2=con.prepareStatement("update user set password = ? where email = ? and email_code = ?");
+  					PreparedStatement stmt2=con.prepareStatement("update user set password = ? where email = ? and verify_code = ?");
   					stmt2.setObject(1, password_hash);
   					stmt2.setObject(2, email);
   					stmt2.setObject(3,  code);

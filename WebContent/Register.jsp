@@ -4,9 +4,8 @@
 <html>
 <head><meta charset="utf-8">
 <script src="./js/register.js"></script>
-<script>
-
-</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
