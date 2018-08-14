@@ -50,7 +50,6 @@ public class Login extends HttpServlet {
 		String email = null;
 		String password = null;
 		String hash = "";
-		String fbsession = "";
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -129,7 +128,7 @@ public class Login extends HttpServlet {
 				ChkPassword chkpassword = new ChkPassword();
 				if (hash.equals(rs3.getString("password")) || Password.verifyPassword(password, rs3.getString("password")) )	
 						 {
-					PreparedStatement stmt2 = conn.prepareStatement("SELECT email,verified FROM user where email = ? and verified = '1'");
+					PreparedStatement stmt2 = conn.prepareStatement("SELECT email, password, verified FROM user where email = ? and verified = '1'");
 					stmt2.setObject(1, email);
 					ResultSet rs2 = stmt2.executeQuery();
 					if (!rs2.next()) {
@@ -148,6 +147,33 @@ public class Login extends HttpServlet {
 						// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 						out.print(json2);
 						return;
+					}
+					
+					Cookie cookie3 = Servlets.getCookie(request, "password");
+
+					if (cookie3 != null) {
+						cookie3.setValue(rs3.getString("password"));
+						cookie3.setMaxAge(60 * 60 * 24 * 28);
+
+						response.addCookie(cookie3);
+					} else {
+						Cookie password_cookie = new Cookie("password", rs3.getString("password"));
+						password_cookie.setMaxAge(60 * 60 * 24 * 28);
+						response.addCookie(password_cookie);
+
+					}
+					Cookie cookie2 = Servlets.getCookie(request, "email");
+
+					if (cookie2 != null) {
+						cookie2.setValue(email);
+						cookie2.setMaxAge(60 * 60 * 24 * 28);
+
+						response.addCookie(cookie2);
+					} else {
+						Cookie email_cookie = new Cookie("email", rs3.getString("email"));
+						email_cookie.setMaxAge(60 * 60 * 24 * 28);
+						response.addCookie(email_cookie);
+
 					}
 					
 					rs2.close();

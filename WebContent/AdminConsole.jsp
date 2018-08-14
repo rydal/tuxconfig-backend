@@ -28,6 +28,8 @@
 				out.println("<hr>");
 			}
 			
+			out.print("<h2> Currenrly authroized users");
+			
 			PreparedStatement get_current_users = con.prepareStatement("select * from user where authorized = ? order by email");
 			get_waiting_users.setObject(1, "1");
 			ResultSet got_current_users = get_waiting_users.executeQuery();
