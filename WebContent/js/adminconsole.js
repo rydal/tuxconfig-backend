@@ -1,8 +1,8 @@
-  function send_post(clicked_id){
+  function send_post(clicked_id, action){
 	    $.ajax({
 	        type: "GET",
 	        url: "https://linuxconf.feedthepenguin.org/hehe/adminconsole",
-	        data: {"email" : clicked_id },
+	        data: {"email" : clicked_id, "action" , action },
 	        
 	        dataType: "json",
 	        success: function(data, textStatus) {
