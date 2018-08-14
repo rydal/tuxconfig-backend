@@ -46,16 +46,7 @@
 					}
 				}
 
-				if (succesRevCommit youngestCommit = null;    
-				List<Ref> branches = new Git(repository).branchList().setListMode(ListMode.ALL).call();
-				try(RevWalk walk = new RevWalk(git.getRepository())) {
-				    for(Ref branch : branches) {
-				        RevCommit commit = walk.parseCommit(branch.getObjectId());
-				        if(commit.getAuthorIdent().getWhen().compareTo(
-				           youngestCommit.getAuthorIdent().getWhen()) > 0)
-				           youngestCommit = commit;
-				    }
-				}s == false) {
+				
 					result += "For device number " + i + "\n\n";
 				}
 

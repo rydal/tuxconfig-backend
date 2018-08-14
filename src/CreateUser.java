@@ -146,8 +146,7 @@ public class CreateUser extends HttpServlet {
 				}
 				i++;
 			}
-			out.println(json_array);
-			
+			response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
 		    
 		}catch (Exception ex) { ex.printStackTrace(out);}
 		
@@ -170,6 +169,7 @@ public class CreateUser extends HttpServlet {
 			 
 			 String generatedString = RandomStringUtils.random( 20, true, true);
 				String escaped_url = url.replaceAll("/", "%2F");
+
 				 String cloned_directory;
 				 Path linuxconf_path ;
 				 int version = 0;
@@ -180,6 +180,8 @@ public class CreateUser extends HttpServlet {
 					     
 				 } while (Files.exists(linuxconf_path) );
 
+				  cloned_directory = "/tmp/linuxconf/" + escaped_url + ":" + git_id + ":" + generatedString;
+				 
 				 FileUtils.deleteDirectory(new File(cloned_directory));
 				    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwx---");
 				  

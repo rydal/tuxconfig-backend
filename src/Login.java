@@ -23,13 +23,13 @@ import org.json.JSONObject;
  * Servlet implementation class DoLogin
  */
 @WebServlet("/dologin")
-public class DoLogin extends HttpServlet {
+public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public DoLogin() {
+	public Login() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

@@ -53,7 +53,7 @@ public class verify extends HttpServlet {
   			Class.forName("com.mysql.jdbc.Driver");  
   			Connection con=DriverManager.getConnection(  
   			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
-  			PreparedStatement stmt=con.prepareStatement("select email, password from user where id = ? ");  
+  			PreparedStatement stmt=con.prepareStatement("select email, password from user where email = ? ");  
   			stmt.setObject(1, email);
   			ResultSet rs=stmt.executeQuery();  
 
@@ -98,7 +98,7 @@ public class verify extends HttpServlet {
 					con.close();
 					
 				session.setAttribute("flag","Email address sucsessfully registered");
-  				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/ChooseUserType.jsp");
+  				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/AdminConsole.jsp");
   				
 			    	
   				con.close(); 

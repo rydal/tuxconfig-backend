@@ -95,19 +95,13 @@ public class ForgotPassword extends HttpServlet {
 				
 			PreparedStatement insert_statement = con.prepareStatement("update user set  verify_code=? where email = ? ");
 				insert_statement.setObject(1, code);
-				insert_statement.setObject(2, rs.getInt("id"));
+				insert_statement.setObject(2,email);
 				insert_statement.executeUpdate();
 				insert_statement.close();
 				rs.close();
 				stmt.close();
 				con.close();
-				if (session.getAttribute("email_fb") != null) {
-
-					session.setAttribute("flag", "User password sent, check your email including spam");
-				}else {
-
 				session.setAttribute("flag", "Password Reset, check your email including spam");
-					}
 				response.setContentType("application/json");
 				// Get the printwriter object from response to write the required json object to the output stream      
 				 JSONObject json2 = new JSONObject();

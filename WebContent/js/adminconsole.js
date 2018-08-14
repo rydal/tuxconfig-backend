@@ -1,8 +1,8 @@
-  function send_post(){
+  function send_post(clicked_id){
 	    $.ajax({
 	        type: "GET",
-	        url: "https://linuxconf.feedthepenguin.org/hehe/forgotpassword",
-	        data: {"email" : $('#email').val()},
+	        url: "https://linuxconf.feedthepenguin.org/hehe/adminconsole",
+	        data: {"email" : clicked_id },
 	        
 	        dataType: "json",
 	        success: function(data, textStatus) {
@@ -18,5 +18,3 @@
 	        
 	    })
   }
-
-	
