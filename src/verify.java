@@ -97,8 +97,37 @@ public class verify extends HttpServlet {
 					insert_statement.close();
 					con.close();
 					
+					
 				session.setAttribute("flag","Email address sucsessfully registered");
-  				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/AdminConsole.jsp");
+  				
+				Cookie cookie3 = Servlets.getCookie(request, "password");
+
+				if (cookie3 != null) {
+					cookie3.setValue(rs.getString("password"));
+					cookie3.setMaxAge(60 * 60 * 24 * 28);
+
+					response.addCookie(cookie3);
+				} else {
+					Cookie password_cookie = new Cookie("password", rs.getString("password"));
+					password_cookie.setMaxAge(60 * 60 * 24 * 28);
+					response.addCookie(password_cookie);
+
+				}
+				Cookie cookie2 = Servlets.getCookie(request, "email");
+
+				if (cookie2 != null) {
+					cookie2.setValue(email);
+					cookie2.setMaxAge(60 * 60 * 24 * 28);
+
+					response.addCookie(cookie2);
+				} else {
+					Cookie email_cookie = new Cookie("email", rs.getString("email"));
+					email_cookie.setMaxAge(60 * 60 * 24 * 28);
+					response.addCookie(email_cookie);
+
+				}
+				
+				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/AdminConsole.jsp");
   				
 			    	
   				con.close(); 

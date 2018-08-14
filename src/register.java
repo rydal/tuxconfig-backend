@@ -73,7 +73,7 @@ public class register extends HttpServlet {
 				add_to_database.setObject(5,code);
 				add_to_database.executeUpdate();
 				
-				new GenEmail(email,  out,"Welcome to linuxconf", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code\""  + code + "&email=" + email +  "> <img border=\"0\" alt=\"Verify\" src=\"https://linuxconf.feedthepenguin.org/hehe/img/verify_email.jpeg\" width=\"150\" height=\"150\"></A><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code"  + code + "&email=" + email +  ">Register</A>"); 
+				new GenEmail(email,  out,"Welcome to linuxconf", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code\""  + code + "&email=" + email +  "> <img border=\"0\" alt=\"Verify\" src=\"https://linuxconf.feedthepenguin.org/hehe/img/verify_email.jpeg\" width=\"150\" height=\"150\"></A><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/verify?code="  + code + "&email=" + email +  ">Register</A>"); 
 						
 					
 				rs.close();

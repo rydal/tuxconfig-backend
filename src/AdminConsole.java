@@ -71,31 +71,42 @@ public class AdminConsole extends HttpServlet  {
 		try { 
 			Class.forName("com.mysql.jdbc.Driver");  
 			Connection con=DriverManager.getConnection(  
-			"jdbc:mysql://localhost/mycode","arwen","imleaving");  
+			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
 			if (action.equals("delete")) {
-				PreparedStatement delete_user = con.prepareStatement("delete form user where email = ?");
+				PreparedStatement delete_user = con.prepareStatement("delete from user where email = ?");
 				delete_user.setObject(1, email);
-				ResultSet rs =  delete_user.executeQuery();
-				if(! rs.next()) {
+				int rows_updated =  delete_user.executeUpdate();
+				if(rows_updated != 1 ) {
 					JSONObject json2 = new JSONObject();
 					 json2.put("form", "Email address could not be found to be deleted");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
 					return;
+				}	else {
+					JSONObject json2 = new JSONObject();
+					 json2.put("form", "Email address deleted");
+					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+					out.print(json2);
+					
 				}
 			}
 
-			if (action.equals("authroize")) {
-				PreparedStatement authroize_user = con.prepareStatement("update user set authroize = 1 where email = email");
+			if (action.equals("authrorize")) {
+				PreparedStatement authroize_user = con.prepareStatement("update user set authroize = 1 where email = ?");
 				authroize_user.setObject(1, email);
-				ResultSet rs =  authroize_user.executeQuery();
-				if(! rs.next()) {
+				int rows_updated =  authroize_user.executeUpdate();
+				if(rows_updated != 1) {
 					JSONObject json2 = new JSONObject();
 					 json2.put("form", "Email address could not be found to be authorized");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
 					return;
+				} else {
+					JSONObject json2 = new JSONObject();
+					 json2.put("form", "Email address authorized");
+					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+					out.print(json2);
 				}
 			}
 		     
