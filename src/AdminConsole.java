@@ -28,6 +28,7 @@ import org.json.JSONObject;
 @WebServlet("/adminconsole")
 public class AdminConsole extends HttpServlet  {
 	private static final long serialVersionUID = 1L;
+	final String SERVER_EMAIL_ADDRESS = "rb602@kent.ac.uk";
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -74,7 +75,7 @@ public class AdminConsole extends HttpServlet  {
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
 			if (action.equals("delete")) {
-				PreparedStatement delete_user = con.prepareStatement("delete from user where email = ?");
+				PreparedStatement delete_user = con.prepareStatement("update user set authorized = 2 where email = ?");
 				delete_user.setObject(1, email);
 				int rows_updated =  delete_user.executeUpdate();
 				if(rows_updated != 1 ) {
@@ -84,6 +85,8 @@ public class AdminConsole extends HttpServlet  {
 					out.print(json2);
 					return;
 				}	else {
+					new GenEmail(email,  out, "linuxconf Request refused", "Your request to vet configurations has been refused, if you think this is an error please email us at " + SERVER_EMAIL_ADDRESS);
+
 					JSONObject json2 = new JSONObject();
 					 json2.put("form", "Email address deleted");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
@@ -93,7 +96,7 @@ public class AdminConsole extends HttpServlet  {
 			}
 
 			if (action.equals("authorize")) {
-				PreparedStatement authroize_user = con.prepareStatement("update user set authroized = 1 where email = ?");
+				PreparedStatement authroize_user = con.prepareStatement("update user set authorized = 1 where email = ?");
 				authroize_user.setObject(1, email);
 				int rows_updated =  authroize_user.executeUpdate();
 				if(rows_updated != 1) {
@@ -114,6 +117,7 @@ public class AdminConsole extends HttpServlet  {
 			}
 		     
 			
+
 			
 			} catch (Exception ex) { ex.printStackTrace(out); }
 				

@@ -127,7 +127,7 @@ public class VetConfigurations extends HttpServlet  {
 				 	ResultSet rs2 = stmt.executeQuery();
 				
 				 	if (rs2.getInt("authorized") == 0) {
-						session.setAttribute("flag", "User not authroized, re-request authorization");
+						session.setAttribute("flag", "User not authorized, re-request authorization");
 				 		 JSONObject json2 = new JSONObject();
 						 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/RequestAuthorization.jsp");
 						// Assuming your json object is **jsonObject**, perform the following, it will return your json object  

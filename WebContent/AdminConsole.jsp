@@ -35,7 +35,8 @@ function send_post(email, command){
             }
             else {
                 // data.form contains the HTML for the replacement form
-			location.reload();	
+                $("#output").replaceWith(data.form);
+
             }
         }
         
@@ -46,7 +47,7 @@ function send_post(email, command){
 <body>
 <img src="./img/linuxconf.png" height="200" width="400"><br>
 
-
+<div id="output" > </div>
 
 	<%
 	// Get an array of Cookies associated with this domain
@@ -103,29 +104,40 @@ function send_post(email, command){
 			}
 		}
 		
-		PreparedStatement get_waiting_users = con.prepareStatement("select * from user where authorized = ? order by email");
-		get_waiting_users.setInt(1, 0);
+		PreparedStatement get_waiting_users = con.prepareStatement("select * from user where authorized = '0' order by email");
 		ResultSet got_waiting_users = get_waiting_users.executeQuery();
 		while (got_waiting_users.next()) {
 			out.println(got_waiting_users.getObject("email"));
-			out.println("<img src=\"./img/delete.png\" id=\"" +  got_waiting_users.getObject("email") + "\" onclick=\"send_post(this.id , 'delete')\">");
+			out.println("<img src=\"./img/delete.png\" id=\"" +  got_waiting_users.getObject("email") + "\" onclick=\"send_post(this.id , 'block')\">");
 			out.println("<img src=\"./img/authorize.png\" id=\"" +  got_waiting_users.getObject("email") + "\" onclick=\"send_post(this.id , 'authorize')\">");
 			out.println("<hr>");
 		}
 		
-		out.print("<h2> Currenrly authroized users");
+		out.print("<h2> Currently authorized users</h2><br>");
 
 			PreparedStatement get_current_users = con
-					.prepareStatement("select * from user where authorized = ? order by email");
-			get_waiting_users.setInt(1, 1);
-			ResultSet got_current_users = get_waiting_users.executeQuery();
+					.prepareStatement("select * from user where authorized = '1' order by email");
+			ResultSet got_current_users = get_current_users.executeQuery();
 			while (got_current_users.next()) {
 				out.println(got_current_users.getObject("email"));
-				out.println("<img src=\"./img./delete.png\" id=\"" + got_waiting_users.getObject("email")
-						+ "\" onclick=\"send_post(this.id,'delete')>");
+				out.println("<img src=\"./img./delete.png\" id=\"" + got_current_users.getObject("email")
+						+ "\" onclick=\"send_post(this.id,'block')>");
 
 				out.println("<hr>");
 			}
+			out.print("<h2> Currenrly blocked users</h2><br>");
+
+			PreparedStatement get_blocked_users = con
+					.prepareStatement("select * from user where authorized = '2' order by email");
+			ResultSet got_blocked_users = get_blocked_users.executeQuery();
+			while (got_blocked_users.next()) {
+				out.println(got_blocked_users.getObject("email"));
+				out.println("<img src=\"./img./delete.png\" id=\"" + got_blocked_users.getObject("email")
+						+ "\" onclick=\"send_post(this.id,'unblock')>");
+
+				out.println("<hr>");
+			}
+			
 		} catch (Exception ex) {
 			ex.printStackTrace(new PrintWriter(out));
 		}
