@@ -119,6 +119,8 @@ public class VetConfigurations extends HttpServlet  {
 					out.write("https://linuxconf.feedthepenguin.org/hehe/login.jsp");
 					return;
 						
+				} else if (hash.equals(rs.getString("password"))) {
+					
 				}
 						
 			

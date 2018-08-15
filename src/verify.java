@@ -91,11 +91,7 @@ public class verify extends HttpServlet {
   				
   				insert_statement.executeUpdate(); 
   				
-  				rs.close();
-					stmt.close();
-					con.close();
-					insert_statement.close();
-					con.close();
+  				
 					
 					
 				session.setAttribute("flag","Email address sucsessfully registered");
@@ -126,12 +122,14 @@ public class verify extends HttpServlet {
 					response.addCookie(email_cookie);
 
 				}
-				
+				rs.close();
+				stmt.close();
+				con.close();
+				insert_statement.close();
+				con.close();
 				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/AdminConsole.jsp");
   				
 			    	
-  				con.close(); 
-  			
   		} catch(java.sql.SQLIntegrityConstraintViolationException e) {}
   			catch(Exception e){ e.printStackTrace(out);}  
   			}  

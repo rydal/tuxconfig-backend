@@ -41,7 +41,7 @@ public class AdminConsole extends HttpServlet  {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			
 		HttpSession session = request.getSession();
 		PrintWriter out = response.getWriter();
@@ -92,7 +92,7 @@ public class AdminConsole extends HttpServlet  {
 				}
 			}
 
-			if (action.equals("authrorize")) {
+			if (action.equals("authorize")) {
 				PreparedStatement authroize_user = con.prepareStatement("update user set authroize = 1 where email = ?");
 				authroize_user.setObject(1, email);
 				int rows_updated =  authroize_user.executeUpdate();
@@ -120,8 +120,8 @@ public class AdminConsole extends HttpServlet  {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
 	}
 
 

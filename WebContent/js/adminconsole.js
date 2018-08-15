@@ -1,4 +1,10 @@
   function send_post(clicked_id, action){
+	  if (action === "delete") {
+		  var r = confirm("Really delete " + clicked_id + " ? ");
+		  if (r == false) {
+		      return;
+		  }  
+	  }
 	    $.ajax({
 	        type: "POST",
 	        url: "https://linuxconf.feedthepenguin.org/hehe/adminconsole",

@@ -14,8 +14,16 @@
  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 <script>
 function send_post(email, command){
+	
+	if (command === "delete") {
+		  var r = confirm("Really delete " + command + " ? ");
+		  if (r == false) {
+		      return;
+		  }  
+	  }
+	
     $.ajax({
-        type: "POST",
+        type: "GET",
         url: "https://linuxconf.feedthepenguin.org/hehe/adminconsole",
         data: {"email" : email, "action" : command },
         
@@ -27,7 +35,7 @@ function send_post(email, command){
             }
             else {
                 // data.form contains the HTML for the replacement form
-                
+                $("#server_response").replaceWith(data.form);
             }
         }
         
@@ -37,7 +45,6 @@ function send_post(email, command){
 </head>
 <body>
 <img src="./img/linuxconf.png" height="200" width="400"><br>
-<h2> Pending users to be Authorized:</h2>
 
 
 
@@ -46,39 +53,58 @@ function send_post(email, command){
 	Cookie cookie = null;
 		Cookie[] cookies = null;
 
-		String email = null; 
+		String myemail = null; 
 		String hash = null; 
 	
 			cookies = request.getCookies();
 			for (int i = 0; i < cookies.length; i++) {
 				cookie = cookies[i];
 				if (cookie.getName().equals("email")) {
-					email = cookie.getValue();
+					myemail = cookie.getValue();
 				}
 				if (cookie.getName().equals("password")) {
 					hash = cookie.getValue();
 			} 
 			}
 			
-			if (email == null ) {
+			if (myemail == null ) {
 				 out.write("Email address not received from cookie");
+				 out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/login.jsp'>Login?</A>");
+
 				// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 				return;
 			}
 			if (hash == null) {
 				 out.write("Password not received from cookie");
+				 out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/login.jsp'>Login?</A>");
 				 return;
 				// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 				}
+			
+			
 	
 		try {
-			out.write("<h2> Pending users to be Authorized:</h2>");
+			out.write("<div id='server_response'></div>");
+
+				out.write("<h2> Pending users to be Authorized:</h2>");
 
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost/linuxconf", "arwen", "imleaving");
 
+		PreparedStatement stmt = con.prepareStatement("SELECT email,password FROM user where email = ?");
+		stmt.setObject(1,myemail);
+		ResultSet rs2 = stmt.executeQuery();
+		if (!rs2.next()) {
+			out.write("email not found");
+		} else {
+			
+			if (! hash.equals(rs2.getString("password"))) {
+				out.write("invalid password");
+			}
+		}
+		
 		PreparedStatement get_waiting_users = con.prepareStatement("select * from user where authorized = ? order by email");
-		get_waiting_users.setObject(1, "0");
+		get_waiting_users.setInt(1, 0);
 		ResultSet got_waiting_users = get_waiting_users.executeQuery();
 		while (got_waiting_users.next()) {
 			out.println(got_waiting_users.getObject("email"));
@@ -91,7 +117,7 @@ function send_post(email, command){
 
 			PreparedStatement get_current_users = con
 					.prepareStatement("select * from user where authorized = ? order by email");
-			get_waiting_users.setObject(1, "1");
+			get_waiting_users.setInt(1, 1);
 			ResultSet got_current_users = get_waiting_users.executeQuery();
 			while (got_current_users.next()) {
 				out.println(got_current_users.getObject("email"));
