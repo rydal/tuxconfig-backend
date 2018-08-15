@@ -78,7 +78,8 @@ public class CreateUser extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
 		ArrayList<String> clone_urls = new ArrayList<String>();
-		
+	
+		 response.setContentType("text/plain"); 
 		try { 
 			Class.forName("com.mysql.jdbc.Driver");  
 			Connection con=DriverManager.getConnection(  
@@ -130,7 +131,7 @@ public class CreateUser extends HttpServlet {
 			    stmt.executeUpdate();
 			    
 				JSONObject json2 = new JSONObject();
-				json2.put("Success ",  url + " " + is_valid[2]);
+				json2.put("form",  url + " added with commit id " + is_valid[1]);
 				out.println(json2);
 				}
 			    

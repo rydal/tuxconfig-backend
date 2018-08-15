@@ -73,10 +73,8 @@
 			data : dataString,
 			dataType : "json",
 			success : function(data, textStatus) {
-				for (var i = 0; i < data.length; i++) {
-					document.getElementById("output").innerHTML += data[i];
+                $("#output").replaceWith(data.form);
 
-				}
 			}
 		});
 
@@ -173,12 +171,11 @@
 				}
 				i++;
 			}
-			out.write("<script> var i = " + i + ";</script>");
 			out.write("</table>");
+			out.write("<div id='output'></div>");
 			out.write(
 					"<input type='image' src='./img/submit.jpg' onclick='submit_repositries()' alt='Submit Form' />");
-			out.write("<div id='output'></div>");
-
+			
 		} catch (Exception ex) {
 			ex.printStackTrace(new java.io.PrintWriter(out));
 		}
