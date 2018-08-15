@@ -82,7 +82,6 @@ public class GitAuthCallback extends HttpServlet {
         final Response git_response = service.execute(git_request);
         
         String git_result = git_response.getBody();
-        out.write(git_result);
         JSONObject json = new JSONObject(git_result);
 		String repos_url = (String) json.get("repos_url").toString();
 		String git_id = (String) json.get("id").toString();
@@ -113,7 +112,7 @@ public class GitAuthCallback extends HttpServlet {
 		session.setAttribute("clone_urls", clone_urls);
 		session.setAttribute("git_id", git_id);
 		session.setAttribute("git_email", git_email);
-		//response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
+		response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
 		} catch (Exception ex) { ex.printStackTrace(); }
 
 	}

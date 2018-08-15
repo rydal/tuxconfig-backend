@@ -46,42 +46,41 @@
 					}
 				}
 
-				
-					result += "For device number " + i + "\n\n";
-				}
-
+				result += "For device number " + i + "\n\n";
 			}
-			if (document.getElementById("device_checkbox" + i).checked) {
 
-				dataString += "git_url" + i + "="
-						+ document.getElementById("git_url_hidden" + i).value;
-				dataString += "&device_id" + i + "="
-						+ document.getElementById("device_id" + i).value;
-				dataString += "&device_name" + i + "="
-						+ document.getElementById("device_name" + i).value;
-			}
-			i++;
+		
+		if (document.getElementById("device_checkbox" + i).checked) {
+
+			dataString += "git_url" + i + "="
+					+ document.getElementById("git_url_hidden" + i).value;
+			dataString += "&device_id" + i + "="
+					+ document.getElementById("device_id" + i).value;
+			dataString += "&device_name" + i + "="
+					+ document.getElementById("device_name" + i).value;
 		}
+		i++;
 
-		if (success == false) {
-			alert(result);
-			return false;
-		} else {
-			$.ajax({
-				type : "GET",
-				url : "https://linuxconf.feedthepenguin.org/hehe/createuser",
-				data : dataString,
-				dataType : "json",
-				success : function(data, textStatus) {
-					for (var i = 0; i < data.length; i++) {
-						document.getElementById("output").innerHTML += data[i];
-
-					}
-				}
-			});
-
-		}
 	}
+
+	if (success == false) {
+		alert(result);
+		return false;
+	} else {
+		$.ajax({
+			type : "GET",
+			url : "https://linuxconf.feedthepenguin.org/hehe/createuser",
+			data : dataString,
+			dataType : "json",
+			success : function(data, textStatus) {
+				for (var i = 0; i < data.length; i++) {
+					document.getElementById("output").innerHTML += data[i];
+
+				}
+			}
+		});
+
+	}}
 </script>
 </head>
 <body>
@@ -102,8 +101,7 @@
 
 			session.setAttribute("git_id", owner_git_id);
 			session.setAttribute("git_email", email);
-			
-			
+
 			PreparedStatement get_details = con
 					.prepareStatement("select * from contributor where owner_git_id = ?");
 			get_details.setObject(1, (String) session.getAttribute("git_id"));
@@ -127,7 +125,7 @@
 				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/GitAuth.html");
 				//add message.
 			}
-			
+
 			out.println("Your homepage / linkedin etc:");
 			out.println("<input type='text' name='url' id='url' required maxlength='255' value='" + url + "'>");
 			out.println("Your description:");

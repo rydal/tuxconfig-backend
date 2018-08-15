@@ -35,7 +35,7 @@ function send_post(email, command){
             }
             else {
                 // data.form contains the HTML for the replacement form
-                $("#server_response").replaceWith(data.form);
+			location.reload();	
             }
         }
         

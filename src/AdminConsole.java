@@ -93,7 +93,7 @@ public class AdminConsole extends HttpServlet  {
 			}
 
 			if (action.equals("authorize")) {
-				PreparedStatement authroize_user = con.prepareStatement("update user set authroize = 1 where email = ?");
+				PreparedStatement authroize_user = con.prepareStatement("update user set authroized = 1 where email = ?");
 				authroize_user.setObject(1, email);
 				int rows_updated =  authroize_user.executeUpdate();
 				if(rows_updated != 1) {
@@ -103,10 +103,13 @@ public class AdminConsole extends HttpServlet  {
 					out.print(json2);
 					return;
 				} else {
+					new GenEmail(email,  out, "linuxconf Authorization", "Welcome to linuxconf, you can now vet configurations at <A HREF='https://linuxconf.feedthepenguin.org/hehe/login.jsp'> here </A>");
+
 					JSONObject json2 = new JSONObject();
 					 json2.put("form", "Email address authorized");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
+
 				}
 			}
 		     

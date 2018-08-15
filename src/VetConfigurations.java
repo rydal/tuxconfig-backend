@@ -80,6 +80,27 @@ public class VetConfigurations extends HttpServlet  {
 			return;
 		}
 	
+		String device_id = null;
+		String command = null;
+		
+		device_id = request.getParameter("device_id");
+		if (device_id == null) {
+			 JSONObject json2 = new JSONObject();
+			 json2.put("form", "device id not received");
+			// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+			out.print(json2);
+			return;
+		}
+		
+		command  = request.getParameter("command");
+		if (command == null) {
+			 JSONObject json2 = new JSONObject();
+			 json2.put("form", "device id not received");
+			// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+			out.print(json2);
+			return;
+		}
+		
 		try { 
 			Class.forName("com.mysql.jdbc.Driver");  
 			Connection con=DriverManager.getConnection(  
@@ -108,7 +129,7 @@ public class VetConfigurations extends HttpServlet  {
 				 	if (rs2.getInt("authorized") == 0) {
 						session.setAttribute("flag", "User not authroized, re-request authorization");
 				 		 JSONObject json2 = new JSONObject();
-						 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/Request_authorization.jsp");
+						 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/RequestAuthorization.jsp");
 						// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 						out.print(json2);
 				 	}
@@ -120,8 +141,39 @@ public class VetConfigurations extends HttpServlet  {
 					return;
 						
 				} else if (hash.equals(rs.getString("password"))) {
-					
+					if (command.equals("authorize")) {
+						PreparedStatement authorize_device = con.prepareStatement("update devices set authorized = '1' where device_id = ? ");
+						authorize_device.setObject(1 ,device_id);
+						int rows_updated = authorize_device.executeUpdate();
+						if (rows_updated == 1) {
+							JSONObject json2 = new JSONObject();
+							 json2.put("form", "Device authorized");
+							// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+							out.print(json2);
+						} else {
+							JSONObject json2 = new JSONObject();
+							 json2.put("form", "Device not found");
+							// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+						}
+					}
+					if (command.equals("unauthorize")) {
+						PreparedStatement authorize_device = con.prepareStatement("update devices set authorized = '0' where device_id = ? ");
+						authorize_device.setObject(1 ,device_id);
+						int rows_updated = authorize_device.executeUpdate();
+						if (rows_updated == 1) {
+							JSONObject json2 = new JSONObject();
+							 json2.put("form", "Device unauthorized");
+							// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+							out.print(json2);
+						} else {
+							JSONObject json2 = new JSONObject();
+							 json2.put("form", "Device not found");
+							// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
+						}
+					}
+
 				}
+				
 						
 			
 			

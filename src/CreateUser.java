@@ -103,7 +103,6 @@ public class CreateUser extends HttpServlet {
 		    
 		    int i = 0;
 			JSONArray json_array = new JSONArray();
-
 			
 			
 			while( request.getParameter("git_url" + i) != null) {
@@ -120,20 +119,13 @@ public class CreateUser extends HttpServlet {
 					out.println(json2);
 					
 				} else if (is_valid[0].equals("Success")){
-				PreparedStatement check_commit = con.prepareStatement("select * from devices where device_id = ?  and owner_git_id = ? and commit_hash = ?");
-				check_commit.setObject(1, request.getParameter("device_id" + i));
-				check_commit.setObject(2, request.getParameter(git_id));
-				check_commit.setObject(3, is_valid[1]);
-				ResultSet checked_commit = check_commit.executeQuery();
-				if (! checked_commit.next()) {
-				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url, version, commit_hash) values (?,?,?,?,?,?,?)");
+				PreparedStatement stmt = con.prepareStatement("replace into devices (device_id,name,owner_git_id, contributor_email,git_url, commit_hash) values (?,?,?,?,?,?)");
 			    stmt.setObject(1, request.getParameter("device_id" + i));
 			    stmt.setObject(2, request.getParameter("device_name" + i));
 			    stmt.setObject(3, git_id);
 			    stmt.setObject(4, git_email);
 			    stmt.setObject(5, request.getParameter("git_url" + i));
 			    stmt.setObject(6, is_valid[1]);
-			    stmt.setObject(7, is_valid[2]);
 			    
 			    stmt.executeUpdate();
 			    
@@ -143,10 +135,9 @@ public class CreateUser extends HttpServlet {
 				}
 			    
 				
-				}
+				
 				i++;
 			}
-			response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
 		    
 		}catch (Exception ex) { ex.printStackTrace(out);}
 		
