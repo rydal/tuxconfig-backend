@@ -104,7 +104,7 @@ function send_post(email, command){
 			}
 		}
 		
-		PreparedStatement get_waiting_users = con.prepareStatement("select * from user where authorized = '0' order by email");
+		PreparedStatement get_waiting_users = con.prepareStatement("select * from user where authorised = '0' order by email");
 		ResultSet got_waiting_users = get_waiting_users.executeQuery();
 		while (got_waiting_users.next()) {
 			out.println(got_waiting_users.getObject("email"));
@@ -113,10 +113,10 @@ function send_post(email, command){
 			out.println("<hr>");
 		}
 		
-		out.print("<h2> Currently authorized users</h2><br>");
+		out.print("<h2> Currently authorised users</h2><br>");
 
 			PreparedStatement get_current_users = con
-					.prepareStatement("select * from user where authorized = '1' order by email");
+					.prepareStatement("select * from user where authorised = '1' order by email");
 			ResultSet got_current_users = get_current_users.executeQuery();
 			while (got_current_users.next()) {
 				out.println(got_current_users.getObject("email"));
@@ -128,7 +128,7 @@ function send_post(email, command){
 			out.print("<h2> Currenrly blocked users</h2><br>");
 
 			PreparedStatement get_blocked_users = con
-					.prepareStatement("select * from user where authorized = '2' order by email");
+					.prepareStatement("select * from user where authorised = '2' order by email");
 			ResultSet got_blocked_users = get_blocked_users.executeQuery();
 			while (got_blocked_users.next()) {
 				out.println(got_blocked_users.getObject("email"));

@@ -10,32 +10,42 @@
  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Linuxconf</title>
 </head>
 <body>
+<img src="./img/linuxconf.png" height="200" width="400"><br>
+
+<div id="output" > </div>
 	<%
 		Cookie cookie = null;
-		Cookie[] cookies = null;
+		Cookie cookies[] = null;
 
-		String email = "";
-		String password = "";
-		String id = "";
+		String email = null;
+		String password = null;
+		
 
 		// Get an array of Cookies associated with this.id domain
 		cookies = request.getCookies();
-		boolean gotcookies = false;
 		for (int i = 0; i < cookies.length; i++) {
 			cookie = cookies[i];
 			if (cookie.getName().equals("email")) {
 				email = cookie.getValue();
-				gotcookies = true;
 			}
 			if (cookie.getName().equals("password")) {
 				password = cookie.getValue();
-				gotcookies = true;
 			}
 
 		}
+		if (email == null) {
+			out.write("Email not retrieved from cookie");
+		}
+		
+		if (email == null) {
+			out.write("Password not retrieved from cookie");
+		}
+			
+		
+		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 
@@ -51,7 +61,7 @@
 			Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
 			String user_type = (String) session.getAttribute("user_type");
-			PreparedStatement stmt = conn.prepareStatement("SELECT email,password,authorized FROM user where email = ?");
+			PreparedStatement stmt = conn.prepareStatement("SELECT email,password,authorised FROM user where email = ?");
 			stmt.setObject(1, email);
 			ResultSet rs2 = stmt.executeQuery();
 			if (!rs2.next()) {
@@ -68,46 +78,115 @@
 			}
 			
 		//assume logged in.
-		if (rs2.getInt("authorized") == 0) {
-			out.write("not authorized to vet configurations");
+		if (rs2.getInt("authorised") == 0) {
+			out.write("not authorised to vet configurations");
 			out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/RequestAuthorization.jsp'> reapply for authorizaion </A> ");
 					
 		}
 		
 		
 		out.write("<h1> Review proposed configurations</h1>");
-		out.write("<input type='text' id='searchbox'  style='width:50px;'>"); 
-		out.write("<img src='./img/search-by-id.png' id='idsearch' onclick='send_post(this.id)");
-		out.write("<img src='./img/search-by-name.png' id='namesearch' onclick='send_post(this.id)");
-		out.write("<img src='./img/search-by-contributor-name.png' id='contributorsearch' onclick='send_post(this.id)");
+		out.write("<input type='text' id='searchbox'  style='width:250px;'>"); 
+		out.write("<img src='./img/search-by-id.png' id='idsearch' onclick='send_post(this.id)'>");
+		out.write("<img src='./img/search-by-name.png' id='namesearch' onclick='send_post(this.id)'>");
+		out.write("<img src='./img/search-by-contributor-name.png' id='contributorsearch' onclick='send_post(this.id)'>");
 		
-		PreparedStatement get_devices = conn.prepareStatement("select * from devices where authorized = 0 order by name");
+		
+		
+		out.write("<h2>Devices awaiting authorisation</h2>");
+		PreparedStatement get_devices = conn.prepareStatement("select * from devices where authorised = 0 order by name");
 		ResultSet got_devices = get_devices.executeQuery();
+		int index = 0;
 		while (got_devices.next()) {
 			
 			out.println(got_devices.getObject("device_id"));
 			out.println(got_devices.getObject("name"));
-			out.println("A HREF='" + got_devices.getObject("git_url") +"> " + got_devices.getObject("git_url")  + "</A>");
-			out.println("<img src=\"./img/accept.png\" id=\"" +  got_devices.getObject("device_id") + "\" onclick=\"send_post(this.id , 'accept')\">");
-			out.println("<img src=\"./img/decline.png\" id=\"" +  got_devices.getObject("device_id") + "\" onclick=\"send_post(this.id , 'decline')\">");
-			out.println("<hr>");
-		}
-		
-		PreparedStatement get_authorized_devices = conn.prepareStatement("select * from devices where authorized = 1 order by name");
-		ResultSet got_authorized_devices = get_authorized_devices.executeQuery();
-		while (got_authorized_devices.next()) {
 			
-			out.println(got_devices.getObject("device_id"));
-			out.println(got_devices.getObject("name"));
-			out.println("A HREF='" + got_devices.getObject("git_url") +"> " + got_devices.getObject("git_url")  + "</A>");
-			out.println("<img src=\"./img/decline.png\" id=\"" +  got_devices.getObject("device_id") + "\" onclick=\"send_post(this.id , 'decline')\">");
+			out.println("<A HREF='" + got_devices.getObject("git_url") +"'> " + got_devices.getObject("git_url")  + "</A>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("commit_hash") + "' id='" +  "hash" + index  +"'>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("git_url") + "' id='" +  "url" + index  +"'><br>");
+
+			out.println(got_devices.getObject("commit_hash"));
+		
+			out.println("<img src=\"./img/accept.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'authorise')\">");
+			out.println("<img src=\"./img/delete.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'delete')\">");
 			out.println("<hr>");
+			index++;
+		}
+
+		out.write("<h2>Devices authorised</h2>");
+		index = 0;
+		PreparedStatement get_authorised_devices = conn.prepareStatement("select * from devices where authorised = 1 order by name");
+		ResultSet got_authorised_devices = get_authorised_devices.executeQuery();
+		while (got_authorised_devices.next()) {
+			
+			out.println(got_authorised_devices.getObject("device_id"));
+			out.println(got_authorised_devices.getObject("name"));
+			out.println("<A HREF='" + got_authorised_devices.getObject("git_url") +"'> " + got_authorised_devices.getObject("git_url")  + "</A>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("commit_hash") + "' id='" +  "hash" + index  +"'>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("git_url") + "' id='" +  "url" + index  +"'><br>");
+
+			out.println(got_authorised_devices.getObject("commit_hash"));
+						
+			out.println("<img src=\"./img/decline.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'unauthorise')\">");
+			out.println("<img src=\"./img/delete.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'delete')\">");
+			
+			out.println("<hr>");
+			index++;
 		}
 		}
 		
 		catch (Exception ex) {
-			ex.printStackTrace(response.getWriter());
+			ex.printStackTrace(new PrintWriter(out));
 		}
 	%>
 </body>
+<script>
+function send_post(input, command){
+	
+	var i = input.replace("input","");
+
+	if (command === "delete") {
+		var delete_string  = document.getElementById("url" + i).value;
+		  var r = confirm("Really delete " + delete_string + " ? ");
+		  if (r == false) {
+		      return;
+		  }  
+	  }
+	
+	
+	var dataString = "";
+		
+	dataString += "owner_git_id=" + document.getElementById("owner_git_id" + i).value;
+	dataString += "&hash="	+ document.getElementById("hash" + i).value;
+	dataString += "&device_id="	+ document.getElementById("device_id" + i).value;
+	dataString += "&command=" + command;
+	
+    $.ajax({
+        type: "GET",
+        url: "https://linuxconf.feedthepenguin.org/hehe/vetconfigurations",
+        data: dataString,
+         
+        dataType: "json",
+        success: function(data, textStatus) {
+            if (data.redirect) {
+                // data.redirect contains the string URL to redirect to
+            	window.location.href = data.redirect;
+            }
+            else {
+                // data.form contains the HTML for the replacement form
+                alert(data.form);
+                location.reload();
+
+            }
+        }
+        
+    })
+}
+</script>
 </html>
+

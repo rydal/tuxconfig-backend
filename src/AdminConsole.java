@@ -75,7 +75,7 @@ public class AdminConsole extends HttpServlet  {
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
 			if (action.equals("delete")) {
-				PreparedStatement delete_user = con.prepareStatement("update user set authorized = 2 where email = ?");
+				PreparedStatement delete_user = con.prepareStatement("update user set authorised = 2 where email = ?");
 				delete_user.setObject(1, email);
 				int rows_updated =  delete_user.executeUpdate();
 				if(rows_updated != 1 ) {
@@ -96,12 +96,12 @@ public class AdminConsole extends HttpServlet  {
 			}
 
 			if (action.equals("authorize")) {
-				PreparedStatement authroize_user = con.prepareStatement("update user set authorized = 1 where email = ?");
+				PreparedStatement authroize_user = con.prepareStatement("update user set authorised = 1 where email = ?");
 				authroize_user.setObject(1, email);
 				int rows_updated =  authroize_user.executeUpdate();
 				if(rows_updated != 1) {
 					JSONObject json2 = new JSONObject();
-					 json2.put("form", "Email address could not be found to be authorized");
+					 json2.put("form", "Email address could not be found to be authorised");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
 					return;
@@ -109,7 +109,7 @@ public class AdminConsole extends HttpServlet  {
 					new GenEmail(email,  out, "linuxconf Authorization", "Welcome to linuxconf, you can now vet configurations at <A HREF='https://linuxconf.feedthepenguin.org/hehe/login.jsp'> here </A>");
 
 					JSONObject json2 = new JSONObject();
-					 json2.put("form", "Email address authorized");
+					 json2.put("form", "Email address authorised");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
 

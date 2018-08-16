@@ -186,7 +186,7 @@ public class Login extends HttpServlet {
 					response.setContentType("application/json");
 					// Get the printwriter object from response to write the required json object to the output stream      
 					 JSONObject json2 = new JSONObject();
-					 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/AdminConsole.jsp");
+					 json2.put("redirect", "https://linuxconf.feedthepenguin.org/hehe/VetCopnfigurations.jsp");
 					// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 					out.print(json2);
 					return;

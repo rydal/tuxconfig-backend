@@ -52,13 +52,13 @@
 		
 		if (document.getElementById("device_checkbox" + i).checked) {
 
-			dataString += "git_url" + i + "="
-					+ document.getElementById("git_url_hidden" + i).value;
-			dataString += "&device_id" + i + "="
-					+ document.getElementById("device_id" + i).value;
-			dataString += "&device_name" + i + "="
-					+ document.getElementById("device_name" + i).value;
-		}
+				dataString += "git_url" + i + "="
+						+ document.getElementById("git_url_hidden" + i).value;
+				dataString += "&device_id" + i + "="
+						+ document.getElementById("device_id" + i).value;
+				dataString += "&device_name" + i + "="
+						+ document.getElementById("device_name" + i).value;
+			}
 		i++;
 
 	}
