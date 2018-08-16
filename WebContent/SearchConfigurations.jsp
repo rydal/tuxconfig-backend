@@ -50,9 +50,7 @@
 				}
 			
 			
-
-			
-		
+	
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -88,20 +86,46 @@
 		//assume logged in.
 		if (rs2.getInt("authorised") == 0) {
 			out.write("not authorised to vet configurations");
-			out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/RequestAuthorization.jsp'> reapply for authorizaion </A> ");
+			out.write("Email rb602@kent.ac.uk to re request authorization ");
 					
 		}
 		
+		String search_type = request.getParameter("command");
+		String search_key = request.getParameter("pattern");
 		
-		out.write("<h1> Review proposed configurations</h1>");
-		out.write("<input type='text' id='searchbox'  style='width:250px;'>"); 
-		out.write("<img src='./img/search-by-id.png' id='idsearch' onclick='search(this.id)'>");
-		out.write("<img src='./img/search-by-name.png' id='namesearch' onclick='search(this.id)'>");
-		out.write("<img src='./img/search-by-contributor-name.png' id='contributorsearch' onclick='search(this.id)'>");
+		if (search_key == null) {
+			out.write("did not recieve search key");
+			return;
+		}
+		if (search_type == null) {
+			out.write("did not recieve search type");
+			return;
+		}
+		PreparedStatement get_devices = null;
+			
+		switch (search_key) {
+		case "idsearch": {
+			get_devices = conn.prepareStatement("select * from devices where device_id = ? and  order by name");
+			get_devices.setObject(1, search_key);
+			break;
+		}
+		case "namesearch": {
+			get_devices = conn.prepareStatement("select * from devices where name = ? and  order by name");
+			get_devices.setObject(1, search_key);
+			break;
+		}
+		case "contributorsearch": {
+			get_devices = conn.prepareStatement("select * from devices where contributor_email = ? and  order by name");
+			get_devices.setObject(1, search_key);
+			break;
+		}
+		default: {
+			out.write("Cannot find search type");
+			return;
+			
+		}
+		}
 		
-		
-		out.write("<h2>Devices awaiting authorisation</h2>");
-		PreparedStatement get_devices = conn.prepareStatement("select * from devices where authorised = 0 order by name");
 		ResultSet got_devices = get_devices.executeQuery();
 		int index = 0;
 		while (got_devices.next()) {
@@ -123,28 +147,7 @@
 			index++;
 		}
 
-		out.write("<h2>Devices authorised</h2>");
-		index = 0;
-		PreparedStatement get_authorised_devices = conn.prepareStatement("select * from devices where authorised = 1 order by name");
-		ResultSet got_authorised_devices = get_authorised_devices.executeQuery();
-		while (got_authorised_devices.next()) {
-			
-			out.println(got_authorised_devices.getObject("device_id"));
-			out.println(got_authorised_devices.getObject("name"));
-			out.println("<A HREF='" + got_authorised_devices.getObject("git_url") +"'> " + got_authorised_devices.getObject("git_url")  + "</A>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("commit_hash") + "' id='" +  "hash" + index  +"'>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("git_url") + "' id='" +  "url" + index  +"'><br>");
 
-			out.println(got_authorised_devices.getObject("commit_hash"));
-						
-			out.println("<img src=\"./img/decline.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'unauthorise')\">");
-			out.println("<img src=\"./img/delete.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'delete')\">");
-			
-			out.println("<hr>");
-			index++;
-		}
 		}
 		
 		catch (Exception ex) {
@@ -175,7 +178,7 @@ function send_post(input, command){
 	
     $.ajax({
         type: "GET",
-        url: "https://linuxconf.feedthepenguin.org/hehe/vetconfigurations",
+        url: "https://linuxconf.feedthepenguin.org/hehe/SearchConfigurations.jsp",
         data: dataString,
          
         dataType: "json",
@@ -194,7 +197,6 @@ function send_post(input, command){
         
     })
 }
-
 
 function search(command){
 	
