@@ -146,19 +146,19 @@ function send_post(input, command){
 		}
 		PreparedStatement get_devices = null;
 			
-		switch (search_key) {
+		switch (search_type) {
 		case "idsearch": {
-			get_devices = conn.prepareStatement("select * from devices where device_id = ? and  order by name");
+			get_devices = conn.prepareStatement("select * from devices where device_id = ? order by name");
 			get_devices.setObject(1, search_key);
 			break;
 		}
 		case "namesearch": {
-			get_devices = conn.prepareStatement("select * from devices where name = ? and  order by name");
+			get_devices = conn.prepareStatement("select * from devices where name = ? order by name");
 			get_devices.setObject(1, search_key);
 			break;
 		}
 		case "contributorsearch": {
-			get_devices = conn.prepareStatement("select * from devices where contributor_email = ? and  order by name");
+			get_devices = conn.prepareStatement("select * from devices where contributor_email = ? order by name");
 			get_devices.setObject(1, search_key);
 			break;
 		}

@@ -83,6 +83,7 @@
 </head>
 <body>
 	<img src="./img/linuxconf.png" height="200" width="400">
+	<br>
 	<%
 		try {
 
@@ -132,7 +133,7 @@
 
 			out.write("<table><tr>");
 			out.write(
-					"<th style='width:50%'>Git Repositry</th><th style='width:1%'>Device ID</th><th style='width:25%'>Device Name</th></tr>");
+					"<th style='width:50%'>Git Repositry</th><th style='width:25%'>Device ID</th><th style='width:25%'>Device Name</th></tr>");
 			int i = 0;
 			while (i < clone_urls.size()) {
 
@@ -143,12 +144,12 @@
 				get_device_by_id.setObject(1, clone_urls.get(i));
 				ResultSet got_device_by_id = get_device_by_id.executeQuery();
 				if (got_device_by_id.next()) {
-					out.write("<td style='width:50%'>" + i + ": <A HREF='" + clone_urls.get(i) + "'>"
+					out.write("<td style='width:49%'>" + i + ": <A HREF='" + clone_urls.get(i) + "'>"
 							+ clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i
 							+ "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
-					out.write("<td>" + "<input type='hidden' name='git_url_hidden" + i + "' value='"
+					out.write("<td style='width:1%'>" + "<input type='hidden' name='git_url_hidden" + i + "' value='"
 							+ clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>");
-					out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i
+					out.write("<td style='width:25%'><input type='text' name='device_id" + i + "' id='device_id" + i
 							+ "' value=" + got_device_by_id.getString("device_id") + " > </td>");
 					out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name"
 							+ i + "' value=" + got_device_by_id.getString("name") + "> </td>");
@@ -159,9 +160,9 @@
 					out.write("<td style='width:50%'>" + i + ": <A HREF='" + clone_urls.get(i) + "'>"
 							+ clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i
 							+ "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
-					out.write("<td>" + "<input type='hidden' name='git_url_hidden" + i + "' value='"
+					out.write("<td style='width:1%'>" + "<input type='hidden' name='git_url_hidden" + i + "' value='"
 							+ clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>");
-					out.write("<td style='width:20%'><input type='text' name='device_id" + i + "' id='device_id" + i
+					out.write("<td style='width:25%'><input type='text' name='device_id" + i + "' id='device_id" + i
 							+ "' > </td>");
 					out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name"
 							+ i + "' > </td>");
@@ -172,10 +173,10 @@
 				i++;
 			}
 			out.write("</table>");
-			out.write("<div id='output'></div>");
+			
 			out.write(
 					"<input type='image' src='./img/submit.jpg' onclick='submit_repositries()' alt='Submit Form' />");
-			
+			out.write("<div id='output'></div>");
 		} catch (Exception ex) {
 			ex.printStackTrace(new java.io.PrintWriter(out));
 		}
