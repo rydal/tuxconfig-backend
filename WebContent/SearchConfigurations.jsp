@@ -11,6 +11,49 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Linuxconf</title>
+<script>
+function send_post(input, command){
+	
+	var i = input.replace("input","");
+
+	if (command === "delete") {
+		var delete_string  = document.getElementById("url" + i).value;
+		  var r = confirm("Really delete " + delete_string + " ? ");
+		  if (r == false) {
+		      return;
+		  }  
+	  }
+	
+	
+	var dataString = "";
+		
+	dataString += "owner_git_id=" + document.getElementById("owner_git_id" + i).value;
+	dataString += "&hash="	+ document.getElementById("hash" + i).value;
+	dataString += "&device_id="	+ document.getElementById("device_id" + i).value;
+	dataString += "&command=" + command;
+	
+    $.ajax({
+        type: "GET",
+        url: "https://linuxconf.feedthepenguin.org/hehe/vetconfigurations",
+        data: dataString,
+         
+        dataType: "json",
+        success: function(data, textStatus) {
+            if (data.redirect) {
+                // data.redirect contains the string URL to redirect to
+            	window.location.href = data.redirect;
+            }
+            else {
+                // data.form contains the HTML for the replacement form
+                alert(data.form);
+                location.reload();
+
+            }
+        }
+        
+    })
+}
+</script>
 </head>
 <body>
 <img src="./img/linuxconf.png" height="200" width="400"><br>
@@ -134,14 +177,20 @@
 			out.println(got_devices.getObject("name"));
 			
 			out.println("<A HREF='" + got_devices.getObject("git_url") +"'> " + got_devices.getObject("git_url")  + "</A>");
+			out.println("Git ID: '" + got_devices.getObject("device_id") +"' <br>" );
+			out.println("Git Owner ID: '" + got_devices.getObject("owner_git_id") +"' <br>" );
+			out.println("Commit hash: '" + got_devices.getObject("commit_hash") +"' <br>" );
+			out.println("Git Owner email: '" + got_devices.getObject("commit_hash") +"' <br>" );
+			
 			out.println("<input type='hidden'  value='" + got_devices.getObject("commit_hash") + "' id='" +  "hash" + index  +"'>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("git_url") + "' id='" +  "url" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("git_url") + "' id='" +  "url" + index  +"'>");
 
 			out.println(got_devices.getObject("commit_hash"));
 		
 			out.println("<img src=\"./img/accept.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'authorise')\">");
+			out.println("<img src=\"./img/decline.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'unauthorise')\">");
 			out.println("<img src=\"./img/delete.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'delete')\">");
 			out.println("<hr>");
 			index++;
