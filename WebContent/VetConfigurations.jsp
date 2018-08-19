@@ -14,7 +14,6 @@
 </head>
 <body>
 <img src="./img/linuxconf.png" height="200" width="400"><br>
-
 <div id="output" > </div>
 	<%
 	// Get an array of Cookies associated with this domain
@@ -86,7 +85,7 @@
 			}
 			
 		//assume logged in.
-		if (rs2.getInt("authorised") == 0) {
+		if (rs2.getInt("authorised") != 1) {
 			out.write("not authorised to vet configurations");
 			out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/RequestAuthorization.jsp'> reapply for authorizaion </A> ");
 					
@@ -101,21 +100,24 @@
 		
 		
 		out.write("<h2>Devices awaiting authorisation</h2>");
-		PreparedStatement get_devices = conn.prepareStatement("select * from devices where authorised = 0 order by name");
+		String query_url = "SELECT * from contributor inner join devices on devices.owner_git_id = contributor.owner_git_id where devices.authorised = 0 order by devices.name";
+		PreparedStatement get_devices = conn.prepareStatement(query_url);
 		ResultSet got_devices = get_devices.executeQuery();
 		int index = 0;
 		while (got_devices.next()) {
 			
-			out.println(got_devices.getObject("device_id"));
-			out.println(got_devices.getObject("name"));
+			out.println("Device id: " + got_devices.getObject("devices.device_id"));
+			out.println("Device name: " + got_devices.getObject("devices.name"));
 			
-			out.println("<A HREF='" + got_devices.getObject("git_url") +"'> " + got_devices.getObject("git_url")  + "</A>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("commit_hash") + "' id='" +  "hash" + index  +"'>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("git_url") + "' id='" +  "url" + index  +"'><br>");
+			out.println("<A HREF='" + got_devices.getObject("devices.git_url") +"'> " + got_devices.getObject("git_url")  + "</A>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.commit_hash") + "' id='" +  "hash" + index  +"'>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.device_id") + "' id='" +  "device_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.git_url") + "' id='" +  "url" + index  +"'><br>");
 
-			out.println(got_devices.getObject("commit_hash"));
+			out.println("Commit id " + got_devices.getObject("commit_hash") + "<br>");
+			out.println("User email address " + got_devices.getObject("contributor.email"));
+			
 		
 			out.println("<img src=\"./img/accept.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'authorise')\">");
 			out.println("<img src=\"./img/delete.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'delete')\">");
@@ -125,20 +127,23 @@
 
 		out.write("<h2>Devices authorised</h2>");
 		index = 0;
-		PreparedStatement get_authorised_devices = conn.prepareStatement("select * from devices where authorised = 1 order by name");
+		query_url = "SELECT  * from contributor inner join devices on devices.owner_git_id = contributor.owner_git_id where devices.authorised = 1 order by devices.name";
+		PreparedStatement get_authorised_devices = conn.prepareStatement(query_url);
 		ResultSet got_authorised_devices = get_authorised_devices.executeQuery();
 		while (got_authorised_devices.next()) {
 			
-			out.println(got_authorised_devices.getObject("device_id"));
-			out.println(got_authorised_devices.getObject("name"));
-			out.println("<A HREF='" + got_authorised_devices.getObject("git_url") +"'> " + got_authorised_devices.getObject("git_url")  + "</A>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("commit_hash") + "' id='" +  "hash" + index  +"'>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("device_id") + "' id='" +  "device_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("git_url") + "' id='" +  "url" + index  +"'><br>");
+			out.println("Device id: " + got_authorised_devices.getObject("devices.device_id"));
+			out.println("Device name: " + got_authorised_devices.getObject("devices.name"));
+			
+			out.println("<A HREF='" + got_authorised_devices.getObject("devices.git_url") +"'> " + got_authorised_devices.getObject("git_url")  + "</A>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.commit_hash") + "' id='" +  "hash" + index  +"'>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.device_id") + "' id='" +  "device_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.git_url") + "' id='" +  "url" + index  +"'><br>");
 
-			out.println(got_authorised_devices.getObject("commit_hash"));
-						
+			out.println("Commit id " + got_authorised_devices.getObject("commit_hash") + "<br>");
+			out.println("User email address " + got_authorised_devices.getObject("contributor.email"));
+					
 			out.println("<img src=\"./img/decline.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'unauthorise')\">");
 			out.println("<img src=\"./img/delete.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'delete')\">");
 			

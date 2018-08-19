@@ -135,10 +135,12 @@ public class CreateUser extends HttpServlet {
 				out.println(json2);
 				}
 			    
-				
+			
 				
 				i++;
 			}
+		
+		
 		    
 		}catch (Exception ex) { ex.printStackTrace(out);}
 		
