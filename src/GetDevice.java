@@ -69,7 +69,7 @@ public class GetDevice extends HttpServlet {
 			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
 			
 			
-			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and triaged = 'approved' order by (upvotes - downvotes) limit ?");
+			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and authorised = 'approved' order by (upvotes - downvotes) limit ?");
 			get_device_request.setObject(1, device_id);
 			get_device_request.setInt(2, Integer.parseInt(attempt_number));
 						
@@ -96,7 +96,7 @@ public class GetDevice extends HttpServlet {
 				json2.put("url", got_device_request.getString("git_url"));
 				json2.put("commit", got_device_request.getString("commit_hash"));
 				json2.put("success_code", randomString);
-				
+				json2.put("owner_git_id", got_device_request.getString("owner_git_id"));
 				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object
