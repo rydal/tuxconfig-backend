@@ -92,8 +92,10 @@ public class GetDevice extends HttpServlet {
 				
 				JSONObject json2 = new JSONObject();
 				json2.put("success_code", randomString);
-				json2.put("git_url", randomString);
-				json2.put("commit_hash", randomString);
+				json2.put("git_url", db_device.getGit_url());
+				json2.put("commit_hash", db_device.getCommit_hash());
+				float vote_difference = db_device.getUpvotes() - db_device.getDownvotes();
+				json2.put("vote_difference", Float.toString(vote_difference));
 				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object

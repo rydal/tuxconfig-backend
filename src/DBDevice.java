@@ -42,4 +42,18 @@ private String commit_hash;
 private int authorised;
 float min_kernel_verison;
 float max_kernel_version;
+float upvotes;
+public float getUpvotes() {
+	return upvotes;
+}
+public void setUpvotes(float upvotes) {
+	this.upvotes = upvotes;
+}
+public float getDownvotes() {
+	return downvotes;
+}
+public void setDownvotes(float downvotes) {
+	this.downvotes = downvotes;
+}
+float downvotes;
 }
