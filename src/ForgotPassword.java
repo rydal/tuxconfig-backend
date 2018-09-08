@@ -91,7 +91,7 @@ public class ForgotPassword extends HttpServlet {
 				return;
 			} else if (rs.getByte("verified") == 1) {
 				
-				new GenEmail(email,  out,"Reset Password", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code="  + code +  "&email=" + email + "\"><BR><img src=\"https://linuxconf.feedthepenguin.org/hehe/img/reset.jpg\" ></A><BR><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code=" + code + "&email=" + email +   "\">Reset Password</A>\""); 
+				new GenEmail(email,  out,"Reset Password", "<A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code="  + code +  "&email=" + email + "\"><BR><img src=\"https://linuxconf.feedthepenguin.org/hehe/img/reset.jpg\" ></A><BR><A HREF=\"https://linuxconf.feedthepenguin.org/hehe/PasswordReset.jsp?code=" + code + "&email=" + email +   "\">Reset Password</A>"); 
 				
 			PreparedStatement insert_statement = con.prepareStatement("update user set  verify_code=? where email = ? ");
 				insert_statement.setObject(1, code);

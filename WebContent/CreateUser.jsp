@@ -74,6 +74,12 @@
 			dataType : "json",
 			success : function(data, textStatus) {
                 $("#output").replaceWith(data.form);
+                if(data.Error) {
+                $("#output").replaceWith(data.Error);
+                $("#output").elem.style.color = "Red";
+
+                    	
+                }
 
 			}
 		});

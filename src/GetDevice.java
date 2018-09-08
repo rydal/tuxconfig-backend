@@ -21,7 +21,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.jgit.api.Git;
@@ -46,61 +50,60 @@ public class GetDevice extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		DataSource dataSource = CustomDataSource.getInstance();
+		QueryRunner run = new QueryRunner(dataSource);
+      ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
+      ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
+      ResultSetHandler<DBSuccess> success_results = new BeanHandler<DBSuccess>(DBSuccess.class);
+
 		String device_id = request.getParameter("deviceid");
 		String attempt_number  = request.getParameter("attempt");
+		float kernel_version = Float.parseFloat(request.getParameter("kernel_version"));
+		
 		PrintWriter out = response.getWriter();
 		
 		if(device_id == null ) {
 			JSONObject json2 = new JSONObject();
-			json2.put("Error", "deviceid not found");
+			json2.put("Error", "deviceid not sent");
 			out.println(json2);
 			return;
 		}
 		if(attempt_number == null ) {
 			JSONObject json2 = new JSONObject();
-			json2.put("Error", "attempt number not found");
+			json2.put("Error", "attempt number not sent");
 			out.println(json2);
 			return;
 		}
 		
 		try { 
-			Class.forName("com.mysql.jdbc.Driver");  
-			Connection con=DriverManager.getConnection(  
-			"jdbc:mysql://localhost/linuxconf","arwen","imleaving");  
-			
-			
-			PreparedStatement get_device_request = con.prepareStatement("select * from devices where device_id = ? and authorised = 'approved' order by (upvotes - downvotes) limit ?");
-			get_device_request.setObject(1, device_id);
-			get_device_request.setInt(2, Integer.parseInt(attempt_number));
-						
-			ResultSet got_device_request = get_device_request.executeQuery();
-			if (!got_device_request.last()) {
+			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) dsc where git_url.min_kernel_version < ? and git_url.max_kernel_version > ? limit ?",device_results,device_id,kernel_version,kernel_version,Integer.parseInt(attempt_number));
+				
+			if (db_device == null) {
 				JSONObject json2 = new JSONObject();
-				json2.put("form", "Device not found");
+				json2.put("Error", "Device not found");
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object
 				out.print(json2);
 			}  else {
 				String randomString = randomString(64);
-				PreparedStatement insert_success_code = con.prepareStatement("insert into success_code ( success_code, devices_device_id, devices_owner_git_id, timestamp ) values ( ?,?,?,?)");
-				insert_success_code.setObject(1, randomString); 
-				insert_success_code.setObject(2, device_id);
-				insert_success_code.setObject(3, got_device_request.getInt("owner_git_id"));
-				java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
-				insert_success_code.setObject(4, date);
-				insert_success_code.executeUpdate();
+				int insert_success_code = run.update("insert into success_code ( success_code, device_id, git_url, timestamp ) values ( ?,?,?,?)",randomString, device_id,db_device.getGit_url(),new java.sql.Timestamp(new java.util.Date().getTime()));
+				
+				if (insert_success_code == 1) {
+				
 				JSONObject json2 = new JSONObject();
-				
-
-				
-				json2.put("url", got_device_request.getString("git_url"));
-				json2.put("commit", got_device_request.getString("commit_hash"));
 				json2.put("success_code", randomString);
-				json2.put("owner_git_id", got_device_request.getString("owner_git_id"));
+				json2.put("git_url", randomString);
+				json2.put("commit_hash", randomString);
 				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object
 				out.print(json2);
+				} else {
+					JSONObject json2 = new JSONObject();
+					json2.put("Error", "could not insert into success table");
+					out.println(json2);
+					return;
+				}
 			}
 
 			
