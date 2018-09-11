@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,6 +68,7 @@ import org.json.JSONObject;
 @WebServlet("/createuser")
 public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private HashSet<String> h;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -88,34 +90,40 @@ public class CreateUser extends HttpServlet {
       
 		
 		PrintWriter out = response.getWriter();
+		HttpSession session = request.getSession();
 		
 		response.setContentType("application/json");
 		try {
 		float min_kernel_version = 0;
 		float max_kernel_version = 0;
+		float min_distribution_version  = 0;
+		float max_distribution_version  = 0;
 		
-			String git_id = request.getParameter("git_id");
-			String git_email =  request.getParameter("git_email");
+			String git_id = (String) session.getAttribute("git_id");
+			String git_email = (String) session.getAttribute("git_email");
+			String description = (String) session.getAttribute("description");
+			
 			String webpage = request.getParameter("url");
-			String description = request.getParameter("desctiption");
 			String git_token = request.getParameter("git_token");
+			String distribution = request.getParameter("distribution");
+			
 			min_kernel_version = Float.parseFloat(request.getParameter("min_kernel_version"));
 			max_kernel_version = Float.parseFloat(request.getParameter("max_kernel_version"));
+			min_kernel_version = Float.parseFloat(request.getParameter("min_distribution_version"));
+			max_kernel_version = Float.parseFloat(request.getParameter("max_distribution_version"));
 
-			String device_id = request.getParameter("device_id");
+			
 			String git_url = request.getParameter("git_url");
 			String commit_hash = request.getParameter("commit_hash");
 			
+			String error_message = null;
+			if(git_id == null ) error_message = "git id not entered";
+			if(git_id == null ) error_message = "git id not entered";
 			
 
-			if (git_id == null || git_email == null || webpage == null || description == null || git_token == null || 
-					min_kernel_version == 0 || max_kernel_version == 0 || device_id == null || git_url == null || commit_hash == null) {
-				JSONObject json2 = new JSONObject();
-				json2.put("Error", "Values not recieved");
-				// Assuming your json object is **jsonObject**, perform the following, it will
-				// return your json object
-				out.print(json2);
-			}
+			
+			
+			
 			run.update("replace into contributor (url,description,owner_git_id, email,git_token) values (?,?,?,?)",webpage,description,git_id,git_email,git_token);
 					java.util.Date dt = new java.util.Date();
 
@@ -124,7 +132,7 @@ public class CreateUser extends HttpServlet {
 
 			String currentTime = sdf.format(dt);
 					
-			run.update("replace into devices (device_id,git_url) values (?,?,?)",device_id,git_url);
+			run.update("replace into devices (device_id,git_url) values (?,?,?)",git_url);
 			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,min_kernel_version,max_kernel_version)"
 					+ " values (?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,min_kernel_version, max_kernel_version);
 			JSONObject json2 = new JSONObject();
@@ -144,10 +152,8 @@ public class CreateUser extends HttpServlet {
 		doGet(request, response);
 	}
 
-	public String[] getCommits(String url, String git_id, String name, String device_id, PrintWriter out) {
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost/linuxconf", "arwen", "imleaving");
-
-		) {
+	public String getCommits(String url, String git_id) {
+		try  {
 
 			String generatedString = RandomStringUtils.random(20, true, true);
 			String escaped_url = url.replaceAll("/", "%2F");
@@ -181,9 +187,10 @@ public class CreateUser extends HttpServlet {
 			ObjectId id = repo.resolve(Constants.HEAD);
 			commit_hash = id.getName();
 
-			File config_file = new File(cloned_directory + "/penguin.sh");
+			String message;
+			File config_file = new File(cloned_directory + "/tuxconfig");
 			if (!config_file.isFile()) {
-				return new String[] { "Error", "penguin.sh not included in git repository" };
+				 message = "Error:  tuxconfig not included in git repository" ;
 			}
 
 			Set<String> remote_names = repo.getRemoteNames();
@@ -193,100 +200,94 @@ public class CreateUser extends HttpServlet {
 
 			// get commit message
 
-			try (BufferedReader br = new BufferedReader(new FileReader(config_file));) {
+			BufferedReader br = new BufferedReader(new FileReader(config_file));
 				String line;
-				String tuxconfig_device_id = null;
-				String owner_git_id = null;
-				String tuxconfig_device_name = null;
-				String distribution = null;
-				String tuxconfig_reboot = null;
-				String tuxconfig_test_packages = null;
-				String tuxconfig_test_command = null;
-				String tuxconfig_test_message = null;
+				String tuxconfig_device_ids = null;
+				String tuxconfig_module = null;
+				String tuxconfig_depenedencies = null;
+				String test_program = null;
+				String test_message = null;
 				
 				
 
 				while ((line = br.readLine()) != null) {
 					if (line.contains("device_id")) {
 						line = line.replace("device_id", "").trim();
-						tuxconfig_device_id = line.toLowerCase();
-					} else if (line.contains("owner_git_id")) {
-						line = line.replace("owner_git_id", "").trim();
-						owner_git_id = line;
-					} else if (line.contains("tuxconfig_name")) {
-						line = line.replace("tuxconfig_name", "").trim();
-						tuxconfig_device_name = line;
+						tuxconfig_device_ids = line.toLowerCase();
+					} else if (line.contains("tuxconfig_module")) {
+						line = line.replace("tuxconfig_module", "").trim();
+						tuxconfig_module = line.toLowerCase();
 					}
-					else if (line.contains("tuxconfig_reboot")) {
-						line = line.replace("tuxconfig_reboot", "").trim();
-						tuxconfig_reboot = line;
+					else if (line.contains("tuxconfig_depenedencies")) {
+						line = line.replace("tuxconfig_depenedencies", "").trim();
+						tuxconfig_depenedencies = line.toLowerCase();
 					}
-					else if (line.contains("tuxconfig_test_packages")) {
-						line = line.replace("tuxconfig_test_packages", "").trim();
-						tuxconfig_test_packages = line;
+					else if (line.contains("test_program")) {
+						line = line.replace("test_program", "").trim();
+						test_program = line.toLowerCase();
 					}
-					else if (line.contains("tuxconfig_test_command")) {
-						line = line.replace("tuxconfig_test_command", "").trim();
-						tuxconfig_test_command = line;
-					}
-					else if (line.contains("tuxconfig_test_message")) {
-						line = line.replace("tuxconfig_test_message", "").trim();
-						tuxconfig_test_message = line;
+					else if (line.contains("test_message")) {
+						line = line.replace("test_message", "").trim();
+						test_message = line.toLowerCase();
 					}
 				}
-
-				if (tuxconfig_device_id == null) {
-					return new String[] { "Error", "device_id not set in configuration file penguin.sh" };
-
-				}
-				if (owner_git_id == null) {
-					return new String[] { "Error", "owner_git_id not set in configuration file penguin.sh" };
+					
+					
+				if (tuxconfig_device_ids == null) {
+					message = "tuxconfig_device_ids not set in configuration file";
 
 				}
-				if (tuxconfig_device_name == null) {
-					return new String[] { "Error", "tuxconfig_name not set in configuration file penguin.sh" };
+				if (tuxconfig_module == null) {
+					message = "tuxconfig_module not set in configuration file";
 
 				}
-				if (tuxconfig_reboot == null) {
-					return new String[] { "Error", "tuxconfig_reboot not set in configuration file penguin.sh" };
+				if (tuxconfig_depenedencies == null) {
+					message = "tuxconfig_dependencies not set in configuration file";
 
 				}
-								
-				
-				if (tuxconfig_test_packages == null) {
-					return new String[] { "Error", "tuxconfig_test_packages not set in configuration file penguin.sh" };
-
+				if (test_program == null) {
+					message = "test_program not set in configuration file";
 				}
-				if (tuxconfig_test_command== null) {
-					return new String[] { "Error", "tuxconfig_test_command not set in configuration file penguin.sh" };
+				if (test_message == null) {
+					message = "test_message not set in configuration file";
 
-				}
-				if (tuxconfig_test_message == null) {
-					return new String[] { "Error", "tuxconfig_test_message not set in configuration file penguin.sh" };
-
-				}
-								
-
-				if (!tuxconfig_device_id.equalsIgnoreCase(device_id.toLowerCase())) {
-					return new String[] { "Error", "Submitted device id does not equal device id on penguin.sh file" };
 				}
 				
-				if (!name.equalsIgnoreCase(tuxconfig_device_name)) {
-					return new String[] { "Error", "Submitted name does not equal name on penguin.sh file" };
-				}
+				String[] devices_array = tuxconfig_device_ids.split(" ");
+		        HashSet<String> h = new HashSet<String>(); 
 
-				return new String[] { "Success", commit_hash, "Repository names: " + String.join(" ", remote_names) };
+		        boolean correct = true;
+				for(int i = 0; i < devices_array.length; i++) {
+					  String[]  each_side = devices_array[i].split(":");
+					  if (each_side.length != 2) {
+						correct = false;
+						
+						break;
+					  }
+					  if (each_side[0].length() < 4) {
+						  each_side[0] = "0" + each_side[0];
+					  }
+					  if (each_side[1].length() < 4) {
+						  each_side[1] = each_side[0] + "0";
+					  }
+					  h.add(each_side[0] + ":" + each_side[1]);
+					  
+					
+				
+				
 			}
 
 			// Assume failed
 
 		} catch (RefNotFoundException ex) {
-			return new String[] { "Error", "Cannot find commit" };
+			ex.printStackTrace();
+			return  "Error cannot find commit" ;
 		} catch (Exception ex) {
-			ex.printStackTrace(out);
-			return new String[] { "Error", "unspecified error" };
+			ex.printStackTrace();
+			return "Error unspecified error" ;
 		}
-
+		return null;
 	}
-
 }
+
+

@@ -62,7 +62,7 @@ public class ReportBack extends HttpServlet {
 						int increment_upvote = run.update("update devices set upvotes = upvotes + 1 where devices_id = ? and owner_git_url = ? ",device_id,git_url);
 						if (increment_upvote != 1) {
 							JSONObject json2 = new JSONObject();
-							json2.put("Error", "Can't update upvotes" );
+							json2.put("Success", "Votes Updated" );
 							out.println(json2);
 							return;	
 						}
@@ -81,7 +81,7 @@ public class ReportBack extends HttpServlet {
 						int increment_upvote = run.update("update devices set downvotes = downvotes + 1 where devices_id = ? and owner_git_url = ? ",device_id,git_url);
 						if (increment_upvote != 1) {
 							JSONObject json2 = new JSONObject();
-							json2.put("Error", "Can't update downvotes" );
+							json2.put("Success", "Votes Updated" );
 							out.println(json2);
 							return;	
 						}

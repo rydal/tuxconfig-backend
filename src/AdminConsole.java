@@ -90,6 +90,7 @@ public class AdminConsole extends HttpServlet  {
 					out.print(json2);
 					return;
 				}	else {
+					
 					new GenEmail(email,  out, "linuxconf Request refused", "Your request to vet configurations has been refused, if you think this is an error please email us at " + SERVER_EMAIL_ADDRESS);
 
 					JSONObject json2 = new JSONObject();

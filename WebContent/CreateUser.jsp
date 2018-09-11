@@ -23,7 +23,6 @@
 				+ document.getElementById("description").value + "&git_email="
 				+ document.getElementById("email").value + "&";
 
-		while (document.getElementById("device_checkbox" + i) != undefined) {
 			if (document.getElementById("device_checkbox" + i).checked) {
 				if (document.getElementById("device_id" + i).value === "") {
 					success = false;

@@ -4,8 +4,21 @@
   <artifactId>linuxconf-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  <repositories>
+  <repository>
+    <id>sonatype-oss-public</id>
+    <url>https://oss.sonatype.org/content/groups/public/</url>
+    <releases>
+        <enabled>true</enabled>
+    </releases>
+</repository>
+  </repositories>
   <dependencies>
-
+<dependency>
+  <groupId>org.brickred</groupId>
+  <artifactId>socialauth</artifactId>
+  <version>4.2</version>
+</dependency>
 <!-- https://mvnrepository.com/artifact/com.github.scribejava/scribejava-apis -->
 <dependency>
     <groupId>com.github.scribejava</groupId>
@@ -167,5 +180,6 @@
 </plugin>
      
     </plugins>
+    
   </build>
 </project>
