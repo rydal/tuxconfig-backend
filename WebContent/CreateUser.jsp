@@ -1,9 +1,15 @@
+<%@page import="org.eclipse.jgit.api.DeleteBranchCommand"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
+
+<%@ page import="org.apache.commons.dbutils.QueryRunner" %>
+<%@ page import="org.apache.commons.dbutils.ResultSetHandler" %>
+<%@ page import="org.apache.commons.dbutils.handlers.BeanHandler" %>
+    <%@ page import="javax.sql.DataSource" %>
 
 <html>
 <head>
@@ -90,6 +96,11 @@
 	<img src="./img/linuxconf.png" height="200" width="400">
 	<br>
 	<%
+	DataSource dataSource = CustomDataSource.getInstance();
+	QueryRunner run = new QueryRunner(dataSource);
+  ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
+  ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
+  
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
@@ -101,80 +112,45 @@
 			String url = "";
 			String description = "";
 			String owner_git_id = (String) session.getAttribute("git_id");
-			String email = (String) session.getAttribute("git_email");
 
-			session.setAttribute("git_id", owner_git_id);
-			session.setAttribute("git_email", email);
-
-			PreparedStatement get_details = con
-					.prepareStatement("select * from contributor where owner_git_id = ?");
-			get_details.setObject(1, (String) session.getAttribute("git_id"));
-			ResultSet details = get_details.executeQuery();
-			if (details.next()) {
-				url = details.getString("url");
-				description = details.getString("description");
-			}
+			DBcontributor details = run.query("select * from contributor where owner_git_id = ?",contributor_results,owner_git_id);
+			if (details == null) 
+				{
+					out.write("Error");
+					return;
+				}
 
 			ArrayList<String> clone_urls = null;
-			if (session.getAttribute("clone_urls") instanceof ArrayList) {
-				clone_urls = (ArrayList<String>) session.getAttribute("clone_urls");
+			if (session.getAttribute("repo_names") instanceof ArrayList) {
+				clone_urls = (ArrayList<String>) session.getAttribute("repo_names");
 			} else {
 				out.println("Error retrieving projects form git");
+				return;
 			}
-			out.println("Your Email:" + email + "<br>");
-			out.println("<input type='hidden' name='git_email' id='email' value='" + email + "'>");
+			out.println("Your Email:" + details.getEmail() + "<br>");
 			out.println("Your Git Id:" + owner_git_id + "<br>");
+			out.println("Your Description:" + details.getDescription() + "<br>");
+			out.println("Your Location:" + details.getLocation() + "<br>");
+			out.println("Your Name:" + details.getName() + "<br>");
+			
 
-			if (email == null) {
-				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/GitAuth.html");
-				//add message.
-			}
-
+			
 			out.println("Your homepage / linkedin etc:");
 			out.println("<input type='text' name='url' id='url' required maxlength='255' value='" + url + "'>");
-			out.println("Your description:");
-			out.println("<input type='text' name='description' id='description' required maxlength='768' value="
-					+ description + ">");
-
+			
 			out.write("<table><tr>");
 			out.write(
 					"<th style='width:50%'>Git Repositry</th><th style='width:25%'>Device ID</th><th style='width:25%'>Device Name</th></tr>");
 			int i = 0;
+			
+
 			while (i < clone_urls.size()) {
 
 				out.write("<tr>");
+				out.write("Submit repository: " + clone_urls.get(i) + " ");
+				out.write("<input type='checkbox' name='git_url" + i + "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'>");
+				out.write("</tr>");
 
-				PreparedStatement get_device_by_id = con
-						.prepareStatement("select device_id,name from devices where git_url = ?");
-				get_device_by_id.setObject(1, clone_urls.get(i));
-				ResultSet got_device_by_id = get_device_by_id.executeQuery();
-				if (got_device_by_id.next()) {
-					out.write("<td style='width:49%'>" + i + ": <A HREF='" + clone_urls.get(i) + "'>"
-							+ clone_urls.get(i) + "</a> : <input type='checkbox' name='git_url" + i
-							+ "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
-					out.write("<td style='width:1%'>" + "<input type='hidden' name='git_url_hidden" + i + "' value='"
-							+ clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>");
-					out.write("<td style='width:25%'><input type='text' name='device_id" + i + "' id='device_id" + i
-							+ "' value=" + got_device_by_id.getString("device_id") + " > </td>");
-					out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name"
-							+ i + "' value=" + got_device_by_id.getString("name") + "> </td>");
-					out.write("</tr><br>");
-					out.flush();
-				} else {
-
-					out.write("<td style='width:50%'>" + i + ": <A HREF='" + clone_urls.get(i) + "'>"
-							+ clone_urls.get(i) + "</A> : <input type='checkbox' name='git_url" + i
-							+ "' id='device_checkbox" + i + "' value='" + clone_urls.get(i) + "'></td> ");
-					out.write("<td style='width:1%'>" + "<input type='hidden' name='git_url_hidden" + i + "' value='"
-							+ clone_urls.get(i) + "' id='git_url_hidden" + i + "' ></td>");
-					out.write("<td style='width:25%'><input type='text' name='device_id" + i + "' id='device_id" + i
-							+ "' > </td>");
-					out.write("<td style='width:25%'><input type='text' name='device_name" + i + "' id='device_name"
-							+ i + "' > </td>");
-
-					out.write("</tr><br>");
-					out.flush();
-				}
 				i++;
 			}
 			out.write("</table>");

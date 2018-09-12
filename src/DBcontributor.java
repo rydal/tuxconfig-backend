@@ -42,5 +42,18 @@ private String description;
 private String owner_git_id;
 private String cookie;
 private String  git_token;
-
+private String location;
+private String name;
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public String getLocation() {
+	return location;
+}
+public void setLocation(String location) {
+	this.location = location;
+}
 }

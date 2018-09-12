@@ -44,10 +44,12 @@ public class GitAuth extends HttpServlet {
 	        final String clientSecret = "37260e1b85ec32a26530486562879071765c5b24";
 	        final OAuth20Service service = new ServiceBuilder(clientId)
 	                .apiSecret(clientSecret)
+	                .scope("repo")
 	                .callback("https://linuxconf.feedthepenguin.org/hehe/gitauthcallback")
 	                .build(GitHubApi.instance());
 	        
-
+	        String website = request.getParameter("website");
+	        session.setAttribute("website", website);
 	        // Obtain the Authorization URL
 	        final String authorizationUrl = service.getAuthorizationUrl();
 	        session.setAttribute("auth_manager", service);
