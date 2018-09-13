@@ -109,8 +109,8 @@ public class CreateUser extends HttpServlet {
 			
 			min_kernel_version = Float.parseFloat(request.getParameter("min_kernel_version"));
 			max_kernel_version = Float.parseFloat(request.getParameter("max_kernel_version"));
-			min_kernel_version = Float.parseFloat(request.getParameter("min_distribution_version"));
-			max_kernel_version = Float.parseFloat(request.getParameter("max_distribution_version"));
+			min_distribution_version = Float.parseFloat(request.getParameter("min_distribution_version"));
+			max_distribution_version = Float.parseFloat(request.getParameter("max_distribution_version"));
 
 			
 			String git_url = request.getParameter("git_url");
@@ -149,7 +149,7 @@ public class CreateUser extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		doPost(request, response);
 	}
 
 	public String getCommits(String url, String git_id) {

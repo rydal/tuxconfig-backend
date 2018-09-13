@@ -1,3 +1,4 @@
+package jsplink;
 
 public class DBcontributor {
 private String  email;
@@ -44,13 +45,6 @@ private String cookie;
 private String  git_token;
 private String location;
 private String name;
-private String bio;
-public String getBio() {
-	return bio;
-}
-public void setBio(String bio) {
-	this.bio = bio;
-}
 public String getName() {
 	return name;
 }

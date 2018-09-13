@@ -36,6 +36,7 @@ import org.brickred.socialauth.AuthProvider;
 import org.brickred.socialauth.Profile;
 import org.brickred.socialauth.SocialAuthManager;
 import org.brickred.socialauth.util.SocialAuthUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -95,7 +96,7 @@ public class GitAuthCallback extends HttpServlet {
 		QueryRunner run = new QueryRunner(dataSource);
 
 		
-		out.write(repos_url);
+		out.write(data);
 		 //get access token
         HttpClient httpclient = HttpClients.createDefault();
         HttpGet httppost = new HttpGet(repos_url + "?access_token=" + accessToken.getAccessToken());
@@ -113,20 +114,19 @@ public class GitAuthCallback extends HttpServlet {
      		instream.close();
 		ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
       ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
-      int contributor_result = run.update("replace into contributor (email, website, name,location,git_id,git_token ) values (?,?,?,?,?,?)",email,website,git_name, location,git_id,accessToken.getAccessToken());
-      if (contributor_result != 1) {
-    	  out.write("Error");
-    	  return;
-      }
-      JSONObject repos_obj = new JSONObject(theString);
-      JsonArray jsonObject = new JsonParser()
-    	        .parse(repos_url)
-    	        .getAsJsonArray();
+      int contributor_result = run.update("replace into contributor (email, website, name,location,git_id,git_token,bio ) values (?,?,?,?,?,?,?)",email,website,git_name, location,git_id,accessToken.getAccessToken(),bio);
+      session.setAttribute("git_id", git_id);
+  	List<String> names = new ArrayList<>();
 
-    	List<String> names = new ArrayList<>();
-    	for (JsonElement jsonElement : jsonObject) {
-    	    names.add(jsonElement.getAsJsonObject().get("html_url").getAsString());
-    	}
+      JSONArray repos_array = new JSONArray(theString);
+      for  (int i = 0; i < repos_array.length() ; i++) {
+    	  String git_url = repos_array.getJSONObject(i).getString("html_url");
+    	  out.write(git_url);
+    	  names.add(git_url);
+    	  
+      }
+    	
+    	
     	session.setAttribute("repo_names", names);
     	response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/CreateUser.jsp");
     	  
