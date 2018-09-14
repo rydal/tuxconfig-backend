@@ -59,6 +59,8 @@ public class GetDevice extends HttpServlet {
 		String device_id = request.getParameter("deviceid");
 		String attempt_number  = request.getParameter("attempt");
 		float kernel_version = Float.parseFloat(request.getParameter("kernel_version"));
+		float distribution_version = Float.parseFloat(request.getParameter("distribution_version"));
+		String distribution = request.getParameter("distribution");
 		
 		PrintWriter out = response.getWriter();
 		
@@ -74,9 +76,27 @@ public class GetDevice extends HttpServlet {
 			out.println(json2);
 			return;
 		}
-		
+		if(distribution == null ) {
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "distribution not sent");
+			out.println(json2);
+			return;
+		}
+		if(distribution_version == 0 ) {
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "distribution version not sent");
+			out.println(json2);
+			return;
+		}
+		if(kernel_version == 0 ) {
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "kernel version not sent");out.println(json2);
+			return;
+
+		}
 		try { 
-			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) dsc where git_url.min_kernel_version < ? and git_url.max_kernel_version > ? limit ?",device_results,device_id,kernel_version,kernel_version,Integer.parseInt(attempt_number));
+			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and  ? between git_url.min_kernel_version and git_url.max_kernel_version  and ? between git_url.min_distribution_version and git_url.max_distribution_version  and git_url.authorised = '1' and git_url.distribution = ? order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,kernel_version,distribution_version,distribution,Integer.parseInt(attempt_number));
+			out.write("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = " + device_id + " and  " + kernel_version + " between git_url.min_kernel_version and git_url.max_kernel_version  and " + distribution_version +" between git_url.min_distribution_version and git_url.max_distribution_version  and git_url.authorised = '1' and git_url.distribution = " +  distribution  + " order by (git_url.upvotes - git_url.downvotes) desc  limit " + attempt_number);
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();
@@ -86,9 +106,8 @@ public class GetDevice extends HttpServlet {
 				out.print(json2);
 			}  else {
 				String randomString = randomString(64);
-				int insert_success_code = run.update("insert into success_code ( success_code, device_id, git_url, timestamp ) values ( ?,?,?,?)",randomString, device_id,db_device.getGit_url(),new java.sql.Timestamp(new java.util.Date().getTime()));
+				run.update("insert into success_code ( success_code, device_id, git_url, timestamp ) values ( ?,?,?,?)",randomString, device_id,db_device.getGit_url(),new java.sql.Timestamp(new java.util.Date().getTime()));
 				
-				if (insert_success_code == 1) {
 				
 				JSONObject json2 = new JSONObject();
 				json2.put("success_code", randomString);
@@ -100,12 +119,7 @@ public class GetDevice extends HttpServlet {
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object
 				out.print(json2);
-				} else {
-					JSONObject json2 = new JSONObject();
-					json2.put("Error", "could not insert into success table");
-					out.println(json2);
-					return;
-				}
+				
 			}
 
 			

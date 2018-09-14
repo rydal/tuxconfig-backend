@@ -227,7 +227,7 @@ public class CreateUser extends HttpServlet {
 			ObjectId id = repo.resolve(Constants.HEAD);
 			String message = null;
 
-			message = id.getName();
+			String commit_hash = id.getName();
 
 			File config_file = new File(cloned_directory + "/tuxconfig");
 			if (!config_file.isFile()) {
@@ -255,9 +255,14 @@ public class CreateUser extends HttpServlet {
 					if (line.contains("device_id")) {
 						line = line.replace("device_ids=", "").trim();
 						tuxconfig_device_ids = line.toLowerCase();
+						tuxconfig_device_ids = tuxconfig_device_ids.replaceAll("\"", "");
+						
+						
 					} else if (line.contains("tuxconfig_module")) {
 						line = line.replace("tuxconfig_module\\s*=", "").trim();
 						tuxconfig_module = line.toLowerCase();
+						tuxconfig_module = tuxconfig_module.replaceAll("\"", "");
+
 					}
 					else if (line.contains("tuxconfig_depenedencies")) {
 						line = line.replace("tuxconfig_depenedencies\\s=", "").trim();
@@ -293,12 +298,19 @@ public class CreateUser extends HttpServlet {
 
 					message += "Error: test_message not set in configuration file\n";
 				}
+				
+				out.write(tuxconfig_device_ids);
 				HashSet<String> myHashSet = new HashSet();  // Or a more realistic size
 
-				StringTokenizer st = new StringTokenizer(tuxconfig_device_ids, ",");
-				while(st.hasMoreTokens())
+				StringTokenizer st = new StringTokenizer(tuxconfig_device_ids, " ");
+				if (st.hasMoreTokens() == false) {
+					myHashSet.add(tuxconfig_device_ids);
+				} else {
+					while(st.hasMoreTokens())
 				   myHashSet.add(st.nextToken());
 				
+					
+				}
 
 				Iterator<String> it = myHashSet.iterator();
 			     while(it.hasNext()){
@@ -313,12 +325,17 @@ public class CreateUser extends HttpServlet {
 					  if (each_side[1].length() < 4) {
 						  each_side[1] = each_side[0] + "0";
 					  }
-						run.update("replace into devices (device_id,git_url,module) values (?,?)",each_side[0] + ":" + each_side[1],url,tuxconfig_module);
+						run.update("replace into devices (device_id,git_url) values (?,?)",each_side[0] + ":" + each_side[1],url);
+						run.update("update git_url set module = ? where git_url = ?", tuxconfig_module, url);
 								  }
 		br.close();
 		
+		if (message.startsWith("Error")) {
 			return message;
-
+		} else {
+			return commit_hash;
+		}
+			
 			// Assume failed
 
 		} catch (RefNotFoundException ex) {
