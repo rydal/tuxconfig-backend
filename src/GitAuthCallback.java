@@ -44,9 +44,7 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+
 
 /**
  * Servlet implementation class GitAuthCallback
@@ -115,7 +113,8 @@ public class GitAuthCallback extends HttpServlet {
 		ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
       ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
       int contributor_result = run.update("replace into contributor (email, website, name,location,git_id,git_token,bio ) values (?,?,?,?,?,?,?)",email,website,git_name, location,git_id,accessToken.getAccessToken(),bio);
-      session.setAttribute("git_id", git_id);
+      session.setAttribute("git_id", Integer.toString(git_id));
+      session.setAttribute("git_token", accessToken.getAccessToken());
   	List<String> names = new ArrayList<>();
 
       JSONArray repos_array = new JSONArray(theString);

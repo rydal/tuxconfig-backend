@@ -14,13 +14,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.jar.Attributes.Name;
 
 import javax.servlet.ServletException;
@@ -68,7 +71,8 @@ import org.json.JSONObject;
 @WebServlet("/createuser")
 public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private HashSet<String> h;
+    private HashSet<String> devices_hashset = new HashSet<String>(); 
+
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -99,47 +103,82 @@ public class CreateUser extends HttpServlet {
 		float min_distribution_version  = 0;
 		float max_distribution_version  = 0;
 		
-			String git_id = (String) session.getAttribute("git_id");
-			String git_email = (String) session.getAttribute("git_email");
-			String description = (String) session.getAttribute("description");
+			String  git_id = (String) session.getAttribute("git_id");
 			
-			String webpage = request.getParameter("url");
-			String git_token = request.getParameter("git_token");
-			String distribution = request.getParameter("distribution");
 			
+			String website = request.getParameter("website");
+
+			String  git_token = (String) session.getAttribute("git_token");
+			
+			String git_url = request.getParameter("git_url");
+
 			min_kernel_version = Float.parseFloat(request.getParameter("min_kernel_version"));
 			max_kernel_version = Float.parseFloat(request.getParameter("max_kernel_version"));
 			min_distribution_version = Float.parseFloat(request.getParameter("min_distribution_version"));
 			max_distribution_version = Float.parseFloat(request.getParameter("max_distribution_version"));
+			String distribution = request.getParameter("distribution");
+						
+			JSONObject json3 = new JSONObject();
+			
+			if (git_id == null) json3.put("Error", "Git owner id not stored in session");
+			
+			
+			
+			if (website == null) json3.put("Error", "Webpage not stored correctly");
+			if (git_token == null) json3.put("Error", "Git Token not stored correctly");
+			
+			if (distribution == null) json3.put("Error", "Distribution not stored correctly");
+			if (git_url == null) json3.put("Error", "Git urlnot stored correctly");
+			if (min_kernel_version == 0) json3.put("Error", "min kernel version not stored correctly");
+			if (max_kernel_version == 0) json3.put("Error", "max kernel version not stored correctly");
+			if (min_distribution_version == 0) json3.put("Error", "min distribution version not stored correctly");
+			if (max_distribution_version == 0) json3.put("Error", "max distribution version not stored correctly");
+			if (distribution == null) json3.put("Error", "git token not stored correctly");
+			
+			if (json3.length() != 0) {
+				out.print(json3);
+				return;
+			}
 
 			
-			String git_url = request.getParameter("git_url");
-			String commit_hash = request.getParameter("commit_hash");
-			
-			String error_message = null;
-			if(git_id == null ) error_message = "git id not entered";
-			if(git_id == null ) error_message = "git id not entered";
-			
-
+			run.update("update contributor set website = ? where git_id = ?",website,git_id);
 			
 			
+			String message = getCommits(git_url, git_id,out);
+			if (message.startsWith("Error")) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "Could not import " + git_url  + " message:\n " + message);
+				// Assuming your json object is **jsonObject**, perform the following, it will
+				// return your json object
+				out.print(json2);
+				return;
+			} else {
 			
-			run.update("replace into contributor (url,description,owner_git_id, email,git_token) values (?,?,?,?)",webpage,description,git_id,git_email,git_token);
 					java.util.Date dt = new java.util.Date();
 
 			java.text.SimpleDateFormat sdf = 
 			     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+			
 			String currentTime = sdf.format(dt);
-					
-			run.update("replace into devices (device_id,git_url) values (?,?,?)",git_url);
-			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,min_kernel_version,max_kernel_version)"
-					+ " values (?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,min_kernel_version, max_kernel_version);
+
+			
+
+		
+			String commit_hash = message;
+		
+			
+			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,min_kernel_version,max_kernel_version,min_distribution_version,max_distribution_version,distribution)"
+					+ " values (?,?,?,?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,min_kernel_version, max_kernel_version,min_distribution_version,max_distribution_version,distribution);
+			}
 			JSONObject json2 = new JSONObject();
-			json2.put("Form", "Data accepted");
-			// Assuming your json object is **jsonObject**, perform the following, it will
+			json2.put("Form", "Data Accepted");
+				// Assuming your json object is **jsonObject**, perform the following, it will
 			// return your json object
 			out.print(json2);
+			return;
+		
+			
 		} catch (Exception ex) { ex.printStackTrace(out); }
 	}
 
@@ -152,7 +191,9 @@ public class CreateUser extends HttpServlet {
 		doPost(request, response);
 	}
 
-	public String getCommits(String url, String git_id) {
+	public String getCommits(String url, String git_id,PrintWriter out) {
+		DataSource dataSource = CustomDataSource.getInstance();
+		QueryRunner run = new QueryRunner(dataSource);
 		try  {
 
 			String generatedString = RandomStringUtils.random(20, true, true);
@@ -180,17 +221,17 @@ public class CreateUser extends HttpServlet {
 			new File(cloned_directory).mkdir();
 			Git cloned_git = Git.cloneRepository().setURI(url).setDirectory(directory).call();
 
-			String commit_hash = null;
-
+			
 			Repository repo = cloned_git.getRepository();
 
 			ObjectId id = repo.resolve(Constants.HEAD);
-			commit_hash = id.getName();
+			String message = null;
 
-			String message;
+			message = id.getName();
+
 			File config_file = new File(cloned_directory + "/tuxconfig");
 			if (!config_file.isFile()) {
-				 message = "Error:  tuxconfig not included in git repository" ;
+				 message += "Error:  tuxconfig not included in git repository\n" ;
 			}
 
 			Set<String> remote_names = repo.getRemoteNames();
@@ -200,19 +241,19 @@ public class CreateUser extends HttpServlet {
 
 			// get commit message
 
-			BufferedReader br = new BufferedReader(new FileReader(config_file));
 				String line;
 				String tuxconfig_device_ids = null;
 				String tuxconfig_module = null;
 				String tuxconfig_depenedencies = null;
 				String test_program = null;
 				String test_message = null;
-				
+				BufferedReader br = new BufferedReader(new FileReader(config_file));
+
 				
 
 				while ((line = br.readLine()) != null) {
 					if (line.contains("device_id")) {
-						line = line.replace("device_id", "").trim();
+						line = line.replace("device_ids", "").trim();
 						tuxconfig_device_ids = line.toLowerCase();
 					} else if (line.contains("tuxconfig_module")) {
 						line = line.replace("tuxconfig_module", "").trim();
@@ -234,34 +275,36 @@ public class CreateUser extends HttpServlet {
 					
 					
 				if (tuxconfig_device_ids == null) {
-					message = "tuxconfig_device_ids not set in configuration file";
+					message += "Error: tuxconfig_device_ids not set in configuration file\n";
 
 				}
 				if (tuxconfig_module == null) {
-					message = "tuxconfig_module not set in configuration file";
+					message += "Error: tuxconfig_module not set in configuration file\n";
 
 				}
 				if (tuxconfig_depenedencies == null) {
-					message = "tuxconfig_dependencies not set in configuration file";
+					message += "Error: tuxconfig_dependencies not set in configuration file\n";
 
 				}
 				if (test_program == null) {
-					message = "test_program not set in configuration file";
+					message += "Error: test_program not set in configuration file\n";
 				}
 				if (test_message == null) {
-					message = "test_message not set in configuration file";
 
+					message += "Error: test_message not set in configuration file\n";
 				}
-				
-				String[] devices_array = tuxconfig_device_ids.split(" ");
-		        HashSet<String> h = new HashSet<String>(); 
+				HashSet<String> myHashSet = new HashSet();  // Or a more realistic size
 
-		        boolean correct = true;
-				for(int i = 0; i < devices_array.length; i++) {
-					  String[]  each_side = devices_array[i].split(":");
+				StringTokenizer st = new StringTokenizer(tuxconfig_device_ids, ",");
+				while(st.hasMoreTokens())
+				   myHashSet.add(st.nextToken());
+				
+
+				Iterator<String> it = myHashSet.iterator();
+			     while(it.hasNext()){
+			        String[]  each_side = it.next().split(":");
 					  if (each_side.length != 2) {
-						correct = false;
-						
+						  message += "Error parsing device id: " + it.toString() + "\n";
 						break;
 					  }
 					  if (each_side[0].length() < 4) {
@@ -270,23 +313,21 @@ public class CreateUser extends HttpServlet {
 					  if (each_side[1].length() < 4) {
 						  each_side[1] = each_side[0] + "0";
 					  }
-					  h.add(each_side[0] + ":" + each_side[1]);
-					  
-					
-				
-				
-			}
+						run.update("replace into devices (device_id,git_url) values (?,?)",each_side[0] + ":" + each_side[1],url);
+								  }
+		br.close();
+		
+			return message;
 
 			// Assume failed
 
 		} catch (RefNotFoundException ex) {
-			ex.printStackTrace();
-			return  "Error cannot find commit" ;
+			ex.printStackTrace(out);
+			return  "Error: cannot find commit" ;
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			return "Error unspecified error" ;
+			ex.printStackTrace(out);
+			return "Error: unspecified error" ;
 		}
-		return null;
 	}
 }
 
