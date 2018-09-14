@@ -24,10 +24,12 @@ DROP TABLE IF EXISTS `contributor`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contributor` (
   `email` varchar(127) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  `description` varchar(768) DEFAULT NULL,
-  `owner_git_id` int(11) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `bio` varchar(786) DEFAULT NULL,
+  `git_id` int(11) DEFAULT NULL,
   `git_token` varchar(255) DEFAULT NULL,
+  `location` varchar(30) DEFAULT NULL,
+  `name` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -42,6 +44,7 @@ DROP TABLE IF EXISTS `devices`;
 CREATE TABLE `devices` (
   `device_id` varchar(9) NOT NULL,
   `git_url` varchar(189) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`device_id`,`git_url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -61,8 +64,12 @@ CREATE TABLE `git_url` (
   `commit_hash` varchar(128) NOT NULL,
   `authorised` tinyint(4) DEFAULT '0',
   `commit_date` datetime DEFAULT NULL,
-  `min_kernel_verison` decimal(10,0) DEFAULT NULL,
-  `max_kernel_verison` decimal(10,0) DEFAULT NULL,
+  `min_kernel_version` decimal(2,1) DEFAULT NULL,
+  `max_kernel_version` decimal(2,1) DEFAULT NULL,
+  `min_distribution_version` decimal(4,2) DEFAULT NULL,
+  `max_distribution_version` decimal(4,2) DEFAULT NULL,
+  `distribution` varchar(30) DEFAULT NULL,
+  `module` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`git_url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -110,4 +117,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-08 14:53:57
+-- Dump completed on 2018-09-14 16:51:20

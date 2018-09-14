@@ -253,22 +253,22 @@ public class CreateUser extends HttpServlet {
 
 				while ((line = br.readLine()) != null) {
 					if (line.contains("device_id")) {
-						line = line.replace("device_ids", "").trim();
+						line = line.replace("device_ids=", "").trim();
 						tuxconfig_device_ids = line.toLowerCase();
 					} else if (line.contains("tuxconfig_module")) {
-						line = line.replace("tuxconfig_module", "").trim();
+						line = line.replace("tuxconfig_module\\s*=", "").trim();
 						tuxconfig_module = line.toLowerCase();
 					}
 					else if (line.contains("tuxconfig_depenedencies")) {
-						line = line.replace("tuxconfig_depenedencies", "").trim();
+						line = line.replace("tuxconfig_depenedencies\\s=", "").trim();
 						tuxconfig_depenedencies = line.toLowerCase();
 					}
 					else if (line.contains("test_program")) {
-						line = line.replace("test_program", "").trim();
+						line = line.replace("test_program\\s=", "").trim();
 						test_program = line.toLowerCase();
 					}
 					else if (line.contains("test_message")) {
-						line = line.replace("test_message", "").trim();
+						line = line.replace("test_message\\s=", "").trim();
 						test_message = line.toLowerCase();
 					}
 				}
@@ -313,7 +313,7 @@ public class CreateUser extends HttpServlet {
 					  if (each_side[1].length() < 4) {
 						  each_side[1] = each_side[0] + "0";
 					  }
-						run.update("replace into devices (device_id,git_url) values (?,?)",each_side[0] + ":" + each_side[1],url);
+						run.update("replace into devices (device_id,git_url,module) values (?,?)",each_side[0] + ":" + each_side[1],url,tuxconfig_module);
 								  }
 		br.close();
 		
