@@ -20,8 +20,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -69,17 +73,23 @@ public class GetErrorLog extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		DataSource dataSource = CustomDataSource.getInstance();
+		QueryRunner run = new QueryRunner(dataSource);
+      ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
+      ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
+      ResultSetHandler<DBSuccess> success_results = new BeanHandler<DBSuccess>(DBSuccess .class);
+
+      
+		
 		PrintWriter out = response.getWriter();
 		String git_url = null;
 		String device_id = null;
-		String owner_git_id = null;
-		String status_token = null;
+		String code = null;
 		
 		try {
 
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/linuxconf", "arwen", "imleaving");
-
+			
 			// Create a factory for disk-based file items
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 
@@ -120,18 +130,7 @@ public class GetErrorLog extends HttpServlet {
 				if (temp.contains("device_id")) {
 					temp = temp.replace("device_id", "").trim();
 					device_id = temp;
-				} else if (temp.contains("owner_git_id")) {
-					temp = temp.replace("owner_git_id", "").trim();
-					owner_git_id = temp;
-				}	else if (temp.contains("status_token")) {
-					temp = temp.replace("status_token", "").trim();
-					status_token = temp;
-						
-					
-				} else {
-					output += temp;
-
-				}
+				} 
 			}
 			if (device_id == null ) {
 				JSONObject json2 = new JSONObject();
@@ -140,53 +139,27 @@ public class GetErrorLog extends HttpServlet {
 				return;
 			}
 
-			if (owner_git_id == null ) {
-				JSONObject json2 = new JSONObject();
-				json2.put("Error", "owner_git_id not found");
-				out.println(json2);
-				return;
-			}
 			
 			//Check status 
-			PreparedStatement get_status_token = con.prepareStatement("select success_code from success_code where success_code = ? ");
-			get_status_token.setObject(1, status_token);
-			ResultSet got_status_token = get_status_token.executeQuery();
-			if (! got_status_token.next()) {
+			DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ?",success_results,code,device_id,git_url);
+			if ( log_success == null) {
 				JSONObject json2 = new JSONObject();
 				json2.put("Error", "success_token not found");
 				out.println(json2);
 				return;
 			}
-
+ 
 			
-			String git_token = null;
-			
-			PreparedStatement get_owner_cookie = con.prepareStatement("select git_token from contributor where owner_git_id = ? ");
-			get_owner_cookie.setObject(1, owner_git_id);
-			ResultSet got_owner_cookie = get_owner_cookie.executeQuery();
-			if (! got_owner_cookie.next()) {
+			DBcontributor get_git_token = run.query("select a.git_token  from contributor a, git_url b, success_code c where a.git_id = b.owner_git_id  and b.git_url = c.git_url and c.git_url = ?",contributor_results,git_url);
+			if (get_git_token == null) {
 				JSONObject json2 = new JSONObject();
-				json2.put("Error", "Can't find owner token");
+				json2.put("Error", "Git oauth token not found");
 				out.println(json2);
 				return;
-			} else {
-				git_token = got_owner_cookie.getString("git_token");
 			}
-
-			PreparedStatement get_git_url = con
-					.prepareStatement("select git_url  from devices where device_id = ? and owner_git_id = ? ");
-			get_git_url.setObject(1, device_id);
-			get_git_url.setObject(2, owner_git_id);
-
-			ResultSet get_url = get_git_url.executeQuery();
-			if (!get_url.next()) {
-				JSONObject json2 = new JSONObject();
-				json2.put("Error", "device not available");
-				out.println(json2);
-				return;
-			} else {
-				git_url = (String) get_url.getObject("git_url");
-			}
+			String git_token = get_git_token.getGit_token();
+			
+			
 			git_url = git_url.replaceAll("\\.git", "");
 			git_url = git_url.replaceAll("https://", "https://api.");
 			git_url = git_url.replaceAll("github.com", "github.com/repos");

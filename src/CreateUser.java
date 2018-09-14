@@ -139,7 +139,7 @@ public class CreateUser extends HttpServlet {
 				out.print(json3);
 				return;
 			}
-
+			distribution = distribution.toLowerCase();
 			
 			run.update("update contributor set website = ? where git_id = ?",website,git_id);
 			

@@ -48,48 +48,63 @@ public class ReportBack extends HttpServlet {
 		String code = request.getParameter("code");
 		String git_url = request.getParameter("git_url");
 		String device_id = request.getParameter("device_id");
+		
+		JSONObject json3 = new JSONObject();
+		
+		if (git_url == null) json3.put("Error", "Git url not recieved correctly");
+		if (success == null) json3.put("Error", "Success status not recieved correctly");
+		if (device_id == null) json3.put("Error", "Device id not received correctly");
+		if (code  == null) json3.put("Error", "Code not recieved correctly");
+		
+		if (json3.length() != 0) {
+			out.print(json3);
+			return;
+		}
+		
+		
 		try { 
 				
 				
 				if (success.equals("true")) {
-					DBSuccess log_success = run.query("select * from success_code where success_code = ? ",success_results,code);
+					DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ?",success_results,code,device_id,git_url);
 					if (log_success == null) {
 						JSONObject json2 = new JSONObject();
 						json2.put("Error", "code not found" );
 						out.println(json2);
 						return;
 					} else {
-						int increment_upvote = run.update("update devices set upvotes = upvotes + 1 where devices_id = ? and owner_git_url = ? ",device_id,git_url);
-						if (increment_upvote != 1) {
+						int increment_upvote = run.update("update git_url set upvotes = upvotes + 1 where git_url = ? ",git_url);
 							JSONObject json2 = new JSONObject();
 							json2.put("Success", "Votes Updated" );
 							out.println(json2);
 							return;	
-						}
+						
 					}
 					
 				}
 				
-				if (success.equals("false")) {
-					DBSuccess log_success = run.query("select * from success_code where success_code = ? ",success_results,code);
+				else if (success.equals("false")) {
+					DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ?",success_results,code,device_id,git_url);
 					if (log_success == null) {
 						JSONObject json2 = new JSONObject();
 						json2.put("Error", "Code not found" );
 						out.println(json2);
 						return;
 					} else {
-						int increment_upvote = run.update("update devices set downvotes = downvotes + 1 where devices_id = ? and owner_git_url = ? ",device_id,git_url);
-						if (increment_upvote != 1) {
+						int increment_upvote = run.update("update git_url set downvotes = downvotes + 1 where  git_url = ? ",git_url);
 							JSONObject json2 = new JSONObject();
 							json2.put("Success", "Votes Updated" );
 							out.println(json2);
 							return;	
-						}
+						
 					}
 					
+				}else {
+				
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "Could not determine success type");
+				out.println(json2);
 				}
-				
-				
 			} catch (Exception ex) { ex.printStackTrace(out); } 		
 		
 	}
