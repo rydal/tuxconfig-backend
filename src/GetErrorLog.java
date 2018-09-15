@@ -180,41 +180,42 @@ public class GetErrorLog extends HttpServlet {
 
 				byte[] body = uploaded_log.get();
 				String body_string = new String(body);
-				body_string = body_string.replace("\n", "\r\n");
+				body_string = body_string.replace("\n", "\\n");
 
 				CloseableHttpClient send_issue_client = HttpClients.createDefault();
-				HttpPost httpPost = new HttpPost(
-						(issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret));
+				HttpPost httpPost = new HttpPost(issue_url);
 				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
-				httpPost.setHeader("Authorization", "token " + git_token);
-
-				 StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Tuxconfig " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
-				//StringEntity json_parameters = new StringEntity("{ \"title\" : \"Configure me " + md5hash + " \""
+				httpPost.setHeader("Authorization", "token " + git_token );
+				 
+				 //StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Tuxconfig " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
+				//StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + md5hash + " \""
 					//	+ " , \"body\" : \"" + body_string.trim() + "\" }");
-
+				  
+				StringEntity json_parameters = new StringEntity("{  \"title\": \"Tuxconfig " + uploaded_log.hashCode() + " \", \"body\": \"" +  body_string + " \" }");
+				out.write("{  \"title\": \"Tuxconfig " + uploaded_log.hashCode() + " \", \"body\": \"" +  body_string + " \" }");
 				httpPost.setEntity(json_parameters);
-				CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
-				
-				
-				if (post_response.getStatusLine().getStatusCode() >= 400) {
-					out.println(post_response.getStatusLine());
-					JSONObject json2 = new JSONObject();
-					json2.put("Error ", "Error sending issue");
-					out.println(json2);
-					return;
-				} else {
-					JSONObject json2 = new JSONObject();
-					json2.put("Ok", "Posted issue successfully");
-					out.println(json2);
-					return;
-				}
+				    
+				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
+				    out.println(post_response.getStatusLine());
+				    
+					if (post_response.getStatusLine().getStatusCode() >=  400 ) {
+				    	JSONObject json2 = new JSONObject();
+						json2.put("Error ", "Error uploading  issue");
+						out.println(json2);
+						return;
+				    } else {
+				    	JSONObject json2 = new JSONObject();
+						json2.put("Ok", "Posted issue successfully");
+						out.println(json2);
+						return;
+				    }
 
 			} else {
 				JSONObject json2 = new JSONObject();
 				json2.put("Ok", "Issue already posted");
 				out.println(json2);
 				return;
-			}
+			} 
 
 		} catch (Exception ex) {
 			ex.printStackTrace(out);
