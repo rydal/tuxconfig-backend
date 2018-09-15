@@ -73,23 +73,31 @@ public class GetErrorLog extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		DataSource dataSource = CustomDataSource.getInstance();
 		QueryRunner run = new QueryRunner(dataSource);
-      ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
-      ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
-      ResultSetHandler<DBSuccess> success_results = new BeanHandler<DBSuccess>(DBSuccess .class);
+		ResultSetHandler<DBcontributor> contributor_results = new BeanHandler<DBcontributor>(DBcontributor.class);
+		ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
+		ResultSetHandler<DBSuccess> success_results = new BeanHandler<DBSuccess>(DBSuccess.class);
 
-      
-		
 		PrintWriter out = response.getWriter();
-		String git_url = null;
-		String device_id = null;
-		String code = null;
+		String git_url = request.getParameter("git_url");
+		String device_id = request.getParameter("device_id");
+		String code  = request.getParameter("code");
 		
+		JSONObject json3 = new JSONObject();
+
+		if (git_url == null) json3.put("Error", "Git url not sent correctly");
+		if (device_id == null) json3.put("Error", "Device id not sent correctly");
+		
+		if (code  == null) json3.put("Error", "Success code not sent correctly");
+		
+		if (json3.length() != 0) {
+			out.print(json3);
+			return;
+		}
 		try {
 
-			
 			// Create a factory for disk-based file items
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 
@@ -114,43 +122,21 @@ public class GetErrorLog extends HttpServlet {
 			String issue_url;
 			String clientId = "af9623acb5be449d2aa7";
 			String clientSecret = "37260e1b85ec32a26530486562879071765c5b24";
-			// The fluent API relieves the user from having to deal with manual deallocation
-			// of system
-			// resources at the cost of having to buffer response content in memory in some
-			// cases.
-			String output = "";
-			InputStream is = null;
-			BufferedReader bfReader = null;
 
-			is = uploaded_log.getInputStream();
-			bfReader = new BufferedReader(new InputStreamReader(is));
-			String temp = null;
-			
-			while ((temp = bfReader.readLine()) != null) {
-				if (temp.contains("device_id")) {
-					temp = temp.replace("device_id", "").trim();
-					device_id = temp;
-				} 
-			}
-			if (device_id == null ) {
-				JSONObject json2 = new JSONObject();
-				json2.put("Error", "device_id not found");
-				out.println(json2);
-				return;
-			}
 
-			
-			//Check status 
-			DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ?",success_results,code,device_id,git_url);
-			if ( log_success == null) {
+						// Check status
+			DBSuccess log_success = run.query(
+					"select * from success_code where success_code = ? and device_id = ? and git_url = ?",
+					success_results, code, device_id, git_url);
+			if (log_success == null) {
 				JSONObject json2 = new JSONObject();
 				json2.put("Error", "success_token not found");
 				out.println(json2);
 				return;
 			}
- 
-			
-			DBcontributor get_git_token = run.query("select a.git_token  from contributor a, git_url b, success_code c where a.git_id = b.owner_git_id  and b.git_url = c.git_url and c.git_url = ?",contributor_results,git_url);
+			DBcontributor get_git_token = run.query(
+					"select a.git_token  from contributor a, git_url b, success_code c where a.git_id = b.owner_git_id  and b.git_url = c.git_url and c.git_url = ?",
+					contributor_results, git_url);
 			if (get_git_token == null) {
 				JSONObject json2 = new JSONObject();
 				json2.put("Error", "Git oauth token not found");
@@ -158,82 +144,77 @@ public class GetErrorLog extends HttpServlet {
 				return;
 			}
 			String git_token = get_git_token.getGit_token();
-			
-			
 			git_url = git_url.replaceAll("\\.git", "");
 			git_url = git_url.replaceAll("https://", "https://api.");
 			git_url = git_url.replaceAll("github.com", "github.com/repos");
-			
+
 			issue_url = git_url + "/issues";
-			
+
 			CloseableHttpClient httpclient = HttpClients.createDefault();
 			HttpGet httpGet = new HttpGet(issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret);
 			httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 			CloseableHttpResponse response1 = httpclient.execute(httpGet);
-			
-			
-			if (response1.getStatusLine().getStatusCode() > 200 &&  response1.getStatusLine().getStatusCode()  < 227) {
+
+			if ( response1.getStatusLine().getStatusCode() >= 400) {
 				JSONObject json2 = new JSONObject();
 				json2.put("Error", "Error pulling issues");
 				out.println(json2);
 				return;
-				
 
 			}
-				
-			   String inputLine ;
+
+			String inputLine;
 			BufferedReader br = new BufferedReader(new InputStreamReader(response1.getEntity().getContent()));
 			byte[] file_in_bytes = uploaded_log.get();
-			
+
 			String md5hash = DigestUtils.md5Hex(file_in_bytes);
-			
+
 			boolean seen = false;
 			while ((inputLine = br.readLine()) != null) {
-				if( inputLine.contains("Configure me " + md5hash)) {
-	            	  seen  = true;
-	            	  
-	              }
-	       }
+				if (inputLine.contains("Configure me " + md5hash)) {
+					seen = true;
+
+				}
+			}
 			if (!seen) {
-				
+
 				byte[] body = uploaded_log.get();
 				String body_string = new String(body);
 				body_string = body_string.replace("\n", "\r\n");
-				
-				
-				
+
 				CloseableHttpClient send_issue_client = HttpClients.createDefault();
-				HttpPost httpPost = new HttpPost((issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret));
+				HttpPost httpPost = new HttpPost(
+						(issue_url + "?client_id=" + clientId + "&client_secret=" + clientSecret));
 				httpPost.setHeader("Accept", "application/vnd.github.v3+json");
-				httpPost.setHeader("Authorization", "token " + git_token );
-				 
-				 //StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
-				StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + md5hash + " \""
-						+ " , \"body\" : \"" + body_string.trim() + "\" }");
-				    
-				    httpPost.setEntity(json_parameters);
-				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
-					if (post_response.getStatusLine().getStatusCode() > 200 &&  response1.getStatusLine().getStatusCode()  < 227) {
-				    	JSONObject json2 = new JSONObject();
-						json2.put("Error ", "Error pulling issues");
-						out.println(json2);
-						return;
-				    } else {
-				    	JSONObject json2 = new JSONObject();
-						json2.put("Ok", "Posted issue successfully");
-						out.println(json2);
-						return;
-				    }
-				    
-			
+				httpPost.setHeader("Authorization", "token " + git_token);
+
+				 StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Tuxconfig " + uploaded_log.hashCode() + " \" , \"body\" : \"" + body_string + "\" }");
+				//StringEntity json_parameters = new StringEntity("{ \"title\" : \"Configure me " + md5hash + " \""
+					//	+ " , \"body\" : \"" + body_string.trim() + "\" }");
+
+				httpPost.setEntity(json_parameters);
+				CloseableHttpResponse post_response = send_issue_client.execute(httpPost);
+				
+				
+				if (post_response.getStatusLine().getStatusCode() >= 400) {
+					out.println(post_response.getStatusLine());
+					JSONObject json2 = new JSONObject();
+					json2.put("Error ", "Error sending issue");
+					out.println(json2);
+					return;
+				} else {
+					JSONObject json2 = new JSONObject();
+					json2.put("Ok", "Posted issue successfully");
+					out.println(json2);
+					return;
+				}
+
 			} else {
 				JSONObject json2 = new JSONObject();
 				json2.put("Ok", "Issue already posted");
 				out.println(json2);
 				return;
 			}
-		
-			
 
 		} catch (Exception ex) {
 			ex.printStackTrace(out);

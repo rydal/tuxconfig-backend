@@ -124,16 +124,16 @@ public class CreateUser extends HttpServlet {
 			
 			
 			
-			if (website == null) json3.put("Error", "Webpage not stored correctly");
-			if (git_token == null) json3.put("Error", "Git Token not stored correctly");
+			if (website == null) json3.put("Error", "Webpage not sent correctly");
+			if (git_token == null) json3.put("Error", "Git Token not sent correctly");
 			
-			if (distribution == null) json3.put("Error", "Distribution not stored correctly");
-			if (git_url == null) json3.put("Error", "Git urlnot stored correctly");
-			if (min_kernel_version == 0) json3.put("Error", "min kernel version not stored correctly");
-			if (max_kernel_version == 0) json3.put("Error", "max kernel version not stored correctly");
-			if (min_distribution_version == 0) json3.put("Error", "min distribution version not stored correctly");
-			if (max_distribution_version == 0) json3.put("Error", "max distribution version not stored correctly");
-			if (distribution == null) json3.put("Error", "git token not stored correctly");
+			if (distribution == null) json3.put("Error", "Distribution not sent correctly");
+			if (git_url == null) json3.put("Error", "Git urlnot sent correctly");
+			if (min_kernel_version == 0) json3.put("Error", "min kernel version not sent correctly");
+			if (max_kernel_version == 0) json3.put("Error", "max kernel version not sent correctly");
+			if (min_distribution_version == 0) json3.put("Error", "min distribution version not sent correctly");
+			if (max_distribution_version == 0) json3.put("Error", "max distribution version not sent correctly");
+			if (distribution == null) json3.put("Error", "git token not sent correctly");
 			
 			if (json3.length() != 0) {
 				out.print(json3);

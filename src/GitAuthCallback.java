@@ -94,7 +94,6 @@ public class GitAuthCallback extends HttpServlet {
 		QueryRunner run = new QueryRunner(dataSource);
 
 		
-		out.write(data);
 		 //get access token
         HttpClient httpclient = HttpClients.createDefault();
         HttpGet httppost = new HttpGet(repos_url + "?access_token=" + accessToken.getAccessToken());
@@ -120,7 +119,6 @@ public class GitAuthCallback extends HttpServlet {
       JSONArray repos_array = new JSONArray(theString);
       for  (int i = 0; i < repos_array.length() ; i++) {
     	  String git_url = repos_array.getJSONObject(i).getString("html_url");
-    	  out.write(git_url);
     	  names.add(git_url);
     	  
       }
