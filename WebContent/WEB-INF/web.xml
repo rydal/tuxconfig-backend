@@ -19,12 +19,13 @@
   </filter>
   <filter-mapping>
     <filter-name>RemoteIpFilter</filter-name>
-    <url-pattern>/AdminConsole.jsp</url-pattern>
+    <url-pattern>/VetConfigurations.jsp</url-pattern>
     <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
   <filter-mapping>
     <filter-name>RemoteIpFilter</filter-name>
-    <url-pattern>/adminconsole</url-pattern>
+    <url-pattern>/vetconfigurations</url-pattern>
     <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
+  
 </web-app>
