@@ -3,6 +3,14 @@
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
+    <%@ page import="jsplink.*" %>
+    <%@ page import="javax.sql.DataSource" %>
+
+<%@ page import="org.apache.commons.dbutils.QueryRunner" %>
+<%@ page import="org.apache.commons.dbutils.ResultSetHandler" %>
+<%@ page import="org.apache.commons.dbutils.handlers.BeanHandler" %>
+<%@ page import="org.apache.commons.dbutils.handlers.BeanListHandler" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,81 +24,11 @@
 <img src="./img/linuxconf.png" height="200" width="400"><br>
 <div id="output" > </div>
 	<%
-	// Get an array of Cookies associated with this domain
-	Cookie cookie = null;
-		Cookie[] cookies = null;
-
-		String myemail = null; 
-		String hash = null; 
-	
-			cookies = request.getCookies();
-			for (int i = 0; i < cookies.length; i++) {
-				cookie = cookies[i];
-				if (cookie.getName().equals("email")) {
-					myemail = cookie.getValue();
-				}
-				if (cookie.getName().equals("password")) {
-					hash = cookie.getValue();
-			} 
-			}
-			
-			if (myemail == null ) {
-				 out.write("Email address not received from cookie");
-				 out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/login.jsp'>Login?</A>");
-
-				// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
-				return;
-			}
-			if (hash == null) {
-				 out.write("Password not received from cookie");
-				 out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/login.jsp'>Login?</A>");
-				 return;
-				// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
-				}
-			
-			
-
-			
-		
-		
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-
-			final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-			final String DB_URL = "jdbc:mysql://localhost/linuxconf";
-
-			//  Database credentials
-			final String USER = "arwen";
-			final String PASS = "imleaving";
-
-			// Register JDBC driver
-			// Open a connection
-			Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-			String user_type = (String) session.getAttribute("user_type");
-			PreparedStatement stmt = conn.prepareStatement("SELECT email,password,authorised FROM user where email = ?");
-			stmt.setObject(1, myemail);
-			ResultSet rs2 = stmt.executeQuery();
-			if (!rs2.next()) {
-				session.setAttribute("flag", "Can't find email address");
-				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/Register.jsp");
-				return;
-
-			} else {
-				if (!hash.equals(rs2.getString("password"))) {
-					session.setAttribute("flag", "not logged in");
-					response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/login.jsp");
-					return;
-				}
-			}
-			
-		//assume logged in.
-		if (rs2.getInt("authorised") != 1) {
-			out.write("not authorised to vet configurations");
-			out.write("<A HREF='https://linuxconf.feedthepenguin.org/hehe/RequestAuthorization.jsp'> reapply for authorizaion </A> ");
-					
-		}
-		
+	try {
+	DataSource dataSource = CustomDataSource.getInstance();
+	QueryRunner run = new QueryRunner(dataSource);
+  ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
+  ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
 		
 		out.write("<h1> Review proposed configurations</h1>");
 		out.write("<input type='text' id='searchbox'  style='width:250px;'>"); 
@@ -100,23 +38,33 @@
 		
 		
 		out.write("<h2>Devices awaiting authorisation</h2>");
-		String query_url = "SELECT * from contributor inner join devices on devices.owner_git_id = contributor.owner_git_id where devices.authorised = 0 order by devices.name";
-		PreparedStatement get_devices = conn.prepareStatement(query_url);
-		ResultSet got_devices = get_devices.executeQuery();
-		int index = 0;
-		while (got_devices.next()) {
-			
-			out.println("Device id: " + got_devices.getObject("devices.device_id"));
-			out.println("Device name: " + got_devices.getObject("devices.name"));
-			
-			out.println("<A HREF='" + got_devices.getObject("devices.git_url") +"'> " + got_devices.getObject("git_url")  + "</A>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.commit_hash") + "' id='" +  "hash" + index  +"'>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.device_id") + "' id='" +  "device_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_devices.getObject("devices.git_url") + "' id='" +  "url" + index  +"'><br>");
+		
+		
+		String query_url = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id inner join devices d on d.git_url = g.git_url where g.authorised = 0 order by d.device_id";
+		
+		ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
+		List<DBDevice> rows = run.query(query_url, rsh);
 
-			out.println("Commit id " + got_devices.getObject("commit_hash") + "<br>");
-			out.println("User email address " + got_devices.getObject("contributor.email"));
+		Iterator<DBDevice> it = rows.iterator();
+	
+		
+		
+		int index = 0;
+		while (it.hasNext()) {
+			DBDevice bean = it.next();
+			out.println("Device id: " + bean.getDevice_id());
+			out.println("Device name: " + bean.getName());
+			
+			out.println("<A HREF='" + bean.getGit_url() +"'> " + bean.getGit_url()  + "</A>");
+			out.println("<input type='hidden'  value='" + bean.getCommit_hash() + "' id='" +  "hash" + index  +"'>");
+			out.println("<input type='hidden'  value='" + bean.getGit_url() + "' id='" +  "git_url" + index  +"'><br>");
+			out.println("<input type='hidden'  value=device_id,'" + bean.getDevice_id()+ "' id='" +  "device_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + bean.getGit_url() + "' id='" +  "url" + index  +"'><br>");
+
+			out.println("Commit id " + bean.getCommit_hash() + "<br>");
+			out.println("User email address " + bean.getEmail() + "<br>");
+			out.println("Distribution " + bean.getDistribution() + "<br>");
+			out.println("<input type='hidden'  value='" + bean.getDistribution() + "' id='" +  "distribution" + index  +"'><br>");
 			
 		
 			out.println("<img src=\"./img/accept.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'authorise')\">");
@@ -127,22 +75,30 @@
 
 		out.write("<h2>Devices authorised</h2>");
 		index = 0;
-		query_url = "SELECT  * from contributor inner join devices on devices.owner_git_id = contributor.owner_git_id where devices.authorised = 1 order by devices.name";
-		PreparedStatement get_authorised_devices = conn.prepareStatement(query_url);
-		ResultSet got_authorised_devices = get_authorised_devices.executeQuery();
-		while (got_authorised_devices.next()) {
-			
-			out.println("Device id: " + got_authorised_devices.getObject("devices.device_id"));
-			out.println("Device name: " + got_authorised_devices.getObject("devices.name"));
-			
-			out.println("<A HREF='" + got_authorised_devices.getObject("devices.git_url") +"'> " + got_authorised_devices.getObject("git_url")  + "</A>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.commit_hash") + "' id='" +  "hash" + index  +"'>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.owner_git_id") + "' id='" +  "owner_git_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.device_id") + "' id='" +  "device_id" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + got_authorised_devices.getObject("devices.git_url") + "' id='" +  "url" + index  +"'><br>");
+		String query_url2 = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id inner join devices d on d.git_url = g.git_url where g.authorised = 1 order by d.device_id";
+		
+		ResultSetHandler<List<DBDevice>> rsh2 = new BeanListHandler<DBDevice>(DBDevice.class);
+		List<DBDevice> rows2 = run.query(query_url2, rsh2);
 
-			out.println("Commit id " + got_authorised_devices.getObject("commit_hash") + "<br>");
-			out.println("User email address " + got_authorised_devices.getObject("contributor.email"));
+		Iterator<DBDevice> it2 = rows2.iterator();
+		while (it2.hasNext()) {
+			DBDevice bean2 = it2.next();
+
+			
+			out.println("Device id: " + bean2.getDevice_id());
+			out.println("Device name: " + bean2.getName());
+			
+			out.println("<A HREF='" + bean2.getGit_url() +"'> " + bean2.getGit_url()  + "</A>");
+			out.println("<input type='hidden'  value='" + bean2.getCommit_hash() + "' id='" +  "hash" + index  +"'>");
+			out.println("<input type='hidden'  value='" + bean2.getGit_url() + "' id='" +  "git_url" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + bean2.getDevice_id()+ "' id='" +  "device_id" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + bean2.getGit_url() + "' id='" +  "url" + index  +"'><br>");
+			out.println("<input type='hidden'  value='" + bean2.getDistribution() + "' id='" +  "distribution" + index  +"'><br>");
+
+			out.println("Commit id " + bean2.getCommit_hash() + "<br>");
+			out.println("User email address " + bean2.getEmail() + "<br>");
+			out.println("Distribution " + bean2.getDistribution() + "<br>");
+			
 					
 			out.println("<img src=\"./img/decline.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'unauthorise')\">");
 			out.println("<img src=\"./img/delete.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'delete')\">");
@@ -173,14 +129,14 @@ function send_post(input, command){
 	
 	var dataString = "";
 		
-	dataString += "owner_git_id=" + document.getElementById("owner_git_id" + i).value;
+	dataString += "git_url=" + document.getElementById("git_url" + i).value;
 	dataString += "&hash="	+ document.getElementById("hash" + i).value;
-	dataString += "&device_id="	+ document.getElementById("device_id" + i).value;
 	dataString += "&command=" + command;
+	dataString += "&distribution=" + document.getElementById("distribution" + i).value;;
 	
     $.ajax({
         type: "GET",
-        url: "https://linuxconf.feedthepenguin.org/hehe/vetconfigurations",
+        url: "http://localhost:8080/hehe/vetconfigurations",
         data: dataString,
          
         dataType: "json",

@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.dbutils.DbUtils"%>
 <%@page import="org.eclipse.jgit.api.DeleteBranchCommand"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -11,6 +12,7 @@
 <%@ page import="org.apache.commons.dbutils.QueryRunner"%>
 <%@ page import="org.apache.commons.dbutils.ResultSetHandler"%>
 <%@ page import="org.apache.commons.dbutils.handlers.BeanHandler"%>
+<%@ page import="org.apache.commons.dbutils.handlers.BeanListHandler"%>
 <%@ page import="javax.sql.DataSource"%>
 
 <html>
@@ -31,6 +33,10 @@ function set_repository(name) {
 
 
 function send_post(myid) {
+		if (url === null || url === "") {
+			alert("Repository not selected.")
+			return;
+		}
 		var dataString = "myrepo=";
 		dataString += document.getElementById(myid).value;
 
@@ -95,6 +101,20 @@ function send_post(myid) {
 			out.println("Your homepage / linkedin etc:<br>");
 		    out.println("<input type='text' name='website' id='website' required maxlength='255' ><br>");
 
+		    
+		    out.println("<BR>");
+			ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
+			List<DBDevice> rows = run.query("select * from git_url where owner_git_id = ? ", rsh, owner_git_id);
+
+			Iterator<DBDevice> it = rows.iterator();
+			if (rows.size() > 0) {
+			while (it.hasNext()) {
+				DBDevice bean = it.next();
+				
+			    out.println("<b> Submitted repository details: </b>");
+				out.println("Repository:\t" + bean.getGit_url() + "\t" + "Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()));
+			}
+			}
 			int i = 0;
 			while (i < clone_urls.size()) {
 

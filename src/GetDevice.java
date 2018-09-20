@@ -96,7 +96,6 @@ public class GetDevice extends HttpServlet {
 		}
 		try { 
 			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and  ? between git_url.min_kernel_version and git_url.max_kernel_version  and ? between git_url.min_distribution_version and git_url.max_distribution_version  and git_url.authorised = '1' and git_url.distribution = ? order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,kernel_version,distribution_version,distribution,Integer.parseInt(attempt_number));
-			out.write("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = " + device_id + " and  " + kernel_version + " between git_url.min_kernel_version and git_url.max_kernel_version  and " + distribution_version +" between git_url.min_distribution_version and git_url.max_distribution_version  and git_url.authorised = '1' and git_url.distribution = " +  distribution  + " order by (git_url.upvotes - git_url.downvotes) desc  limit " + attempt_number);
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();
@@ -113,8 +112,8 @@ public class GetDevice extends HttpServlet {
 				json2.put("success_code", randomString);
 				json2.put("git_url", db_device.getGit_url());
 				json2.put("commit_hash", db_device.getCommit_hash());
-				float vote_difference = db_device.getUpvotes() - db_device.getDownvotes();
-				json2.put("vote_difference", Float.toString(vote_difference));
+				int vote_difference = db_device.getUpvotes() - db_device.getDownvotes();
+				json2.put("vote_difference", Integer.toString(vote_difference));
 				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object

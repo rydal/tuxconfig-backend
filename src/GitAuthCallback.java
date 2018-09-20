@@ -121,7 +121,8 @@ public class GitAuthCallback extends HttpServlet {
     	  String git_url = repos_array.getJSONObject(i).getString("html_url");
     	  names.add(git_url);
     	  
-      }
+      }	
+      
     	
     	
     	session.setAttribute("repo_names", names);

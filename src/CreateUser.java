@@ -299,7 +299,6 @@ public class CreateUser extends HttpServlet {
 					message += "Error: test_message not set in configuration file\n";
 				}
 				
-				out.write(tuxconfig_device_ids);
 				HashSet<String> myHashSet = new HashSet();  // Or a more realistic size
 
 				StringTokenizer st = new StringTokenizer(tuxconfig_device_ids, " ");

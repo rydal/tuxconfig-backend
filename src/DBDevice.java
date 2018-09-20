@@ -42,26 +42,48 @@ private String commit_hash;
 private int authorised;
 private float min_kernel_verison;
 private float max_kernel_version;
-private float upvotes;
-private String owner_git_id;
+private int upvotes;
 
+
+private String owner_git_id;
+private String name;
+private String email;
+private String distribution;
+public String getDistribution() {
+	return distribution;
+}
+public void setDistribution(String distribution) {
+	this.distribution = distribution;
+}
+public String getEmail() {
+	return email;
+}
+public void setEmail(String email) {
+	this.email = email;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
 public String getOwner_git_id() {
 	return owner_git_id;
 }
 public void setOwner_git_id(String owner_git_id) {
 	this.owner_git_id = owner_git_id;
 }
-public float getUpvotes() {
+public int getUpvotes() {
 	return upvotes;
 }
-public void setUpvotes(float upvotes) {
+public void setUpvotes(int upvotes) {
 	this.upvotes = upvotes;
 }
-public float getDownvotes() {
+public int getDownvotes() {
 	return downvotes;
 }
-public void setDownvotes(float downvotes) {
+public void setDownvotes(int downvotes) {
 	this.downvotes = downvotes;
 }
-float downvotes;
+int downvotes;
 }

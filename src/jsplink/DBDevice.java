@@ -41,9 +41,37 @@ public void setMax_kernel_version(float max_kernel_version) {
 private String git_url;
 private String commit_hash;
 private int authorised;
-float min_kernel_verison;
-float max_kernel_version;
-float upvotes;
+private float min_kernel_verison;
+private float max_kernel_version;
+private float upvotes;
+private String owner_git_id;
+private String name;
+private String email;
+private String distribution;
+public String getDistribution() {
+	return distribution;
+}
+public void setDistribution(String distribution) {
+	this.distribution = distribution;
+}
+public String getEmail() {
+	return email;
+}
+public void setEmail(String email) {
+	this.email = email;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public String getOwner_git_id() {
+	return owner_git_id;
+}
+public void setOwner_git_id(String owner_git_id) {
+	this.owner_git_id = owner_git_id;
+}
 public float getUpvotes() {
 	return upvotes;
 }
