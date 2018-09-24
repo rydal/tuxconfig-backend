@@ -112,10 +112,6 @@ public class CreateUser extends HttpServlet {
 			
 			String git_url = request.getParameter("git_url");
 
-			min_kernel_version = Float.parseFloat(request.getParameter("min_kernel_version"));
-			max_kernel_version = Float.parseFloat(request.getParameter("max_kernel_version"));
-			min_distribution_version = Float.parseFloat(request.getParameter("min_distribution_version"));
-			max_distribution_version = Float.parseFloat(request.getParameter("max_distribution_version"));
 			String distribution = request.getParameter("distribution");
 						
 			JSONObject json3 = new JSONObject();
@@ -129,10 +125,6 @@ public class CreateUser extends HttpServlet {
 			
 			if (distribution == null) json3.put("Error", "Distribution not sent correctly");
 			if (git_url == null) json3.put("Error", "Git urlnot sent correctly");
-			if (min_kernel_version == 0) json3.put("Error", "min kernel version not sent correctly");
-			if (max_kernel_version == 0) json3.put("Error", "max kernel version not sent correctly");
-			if (min_distribution_version == 0) json3.put("Error", "min distribution version not sent correctly");
-			if (max_distribution_version == 0) json3.put("Error", "max distribution version not sent correctly");
 			if (distribution == null) json3.put("Error", "git token not sent correctly");
 			
 			if (json3.length() != 0) {
@@ -168,8 +160,8 @@ public class CreateUser extends HttpServlet {
 			String commit_hash = message;
 		
 			
-			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,min_kernel_version,max_kernel_version,min_distribution_version,max_distribution_version,distribution)"
-					+ " values (?,?,?,?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,min_kernel_version, max_kernel_version,min_distribution_version,max_distribution_version,distribution);
+			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,distribution)"
+					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,distribution);
 			}
 			JSONObject json2 = new JSONObject();
 			json2.put("Form", "Data Accepted");
@@ -247,6 +239,7 @@ public class CreateUser extends HttpServlet {
 				String tuxconfig_depenedencies = null;
 				String test_program = null;
 				String test_message = null;
+				String restart_needed = null;
 				BufferedReader br = new BufferedReader(new FileReader(config_file));
 
 				
@@ -276,8 +269,11 @@ public class CreateUser extends HttpServlet {
 						line = line.replace("test_message\\s=", "").trim();
 						test_message = line.toLowerCase();
 					}
+					else if (line.contains("restart_needed")) {
+						line = line.replace("restart_needed\\s=", "").trim();
+						test_message = line.toLowerCase();
 				}
-					
+				}
 					
 				if (tuxconfig_device_ids == null) {
 					message += "Error: tuxconfig_device_ids not set in configuration file\n";
@@ -298,6 +294,12 @@ public class CreateUser extends HttpServlet {
 
 					message += "Error: test_message not set in configuration file\n";
 				}
+
+				if (restart_needed == null) {
+
+					message += "Error: restart_needed not set in configuration file\n";
+				}
+
 				
 				HashSet<String> myHashSet = new HashSet();  // Or a more realistic size
 
@@ -318,11 +320,12 @@ public class CreateUser extends HttpServlet {
 						  message += "Error parsing device id: " + it.toString() + "\n";
 						break;
 					  }
-					  if (each_side[0].length() < 4) {
-						  each_side[0] = "0" + each_side[0];
+					  while (each_side[0].length() < 4) {
+					 	  each_side[0] = "0" + each_side[0];
 					  }
-					  if (each_side[1].length() < 4) {
-						  each_side[1] = each_side[0] + "0";
+					  
+					  while (each_side[1].length() < 4) {
+					 	  each_side[1] = each_side[1] + "0";
 					  }
 						run.update("replace into devices (device_id,git_url) values (?,?)",each_side[0] + ":" + each_side[1],url);
 						run.update("update git_url set module = ? where git_url = ?", tuxconfig_module, url);

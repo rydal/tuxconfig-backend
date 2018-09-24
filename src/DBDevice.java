@@ -44,7 +44,13 @@ private float min_kernel_verison;
 private float max_kernel_version;
 private int upvotes;
 
-
+private String restart_needed;
+public String getRestart_needed() {
+	return restart_needed;
+}
+public void setRestart_needed(String restart_needed) {
+	this.restart_needed = restart_needed;
+}
 private String owner_git_id;
 private String name;
 private String email;

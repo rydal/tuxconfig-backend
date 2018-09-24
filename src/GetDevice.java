@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
@@ -58,8 +59,6 @@ public class GetDevice extends HttpServlet {
 
 		String device_id = request.getParameter("deviceid");
 		String attempt_number  = request.getParameter("attempt");
-		float kernel_version = Float.parseFloat(request.getParameter("kernel_version"));
-		float distribution_version = Float.parseFloat(request.getParameter("distribution_version"));
 		String distribution = request.getParameter("distribution");
 		
 		PrintWriter out = response.getWriter();
@@ -82,20 +81,23 @@ public class GetDevice extends HttpServlet {
 			out.println(json2);
 			return;
 		}
-		if(distribution_version == 0 ) {
-			JSONObject json2 = new JSONObject();
-			json2.put("Error", "distribution version not sent");
-			out.println(json2);
-			return;
-		}
-		if(kernel_version == 0 ) {
-			JSONObject json2 = new JSONObject();
-			json2.put("Error", "kernel version not sent");out.println(json2);
-			return;
-
-		}
+		   String[]  each_side = device_id.split(":");
+			  if (each_side.length != 2) {
+					JSONObject json2 = new JSONObject();
+					json2.put("Error", "Device id not of correct format");
+					out.println(json2);
+					return;
+			  }
+			  while (each_side[0].length() < 4) {
+			 	  each_side[0] = "0" + each_side[0];
+			  }
+			  
+			  while (each_side[1].length() < 4) {
+			 	  each_side[1] = each_side[1] + "0";
+			  }
+		device_id = each_side[0] + ":" + each_side[1];
 		try { 
-			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and  ? between git_url.min_kernel_version and git_url.max_kernel_version  and ? between git_url.min_distribution_version and git_url.max_distribution_version  and git_url.authorised = '1' and git_url.distribution = ? order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,kernel_version,distribution_version,distribution,Integer.parseInt(attempt_number));
+			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ?and git_url.authorised = '1' and git_url.distribution = ? order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,distribution,Integer.parseInt(attempt_number));
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();
@@ -114,6 +116,9 @@ public class GetDevice extends HttpServlet {
 				json2.put("commit_hash", db_device.getCommit_hash());
 				int vote_difference = db_device.getUpvotes() - db_device.getDownvotes();
 				json2.put("vote_difference", Integer.toString(vote_difference));
+				json2.put("owner_git_id", db_device.getOwner_git_id());
+				
+				
 				
 				// Assuming your json object is **jsonObject**, perform the following, it will
 				// return your json object

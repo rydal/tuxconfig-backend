@@ -30,32 +30,6 @@ function set_repository(name) {
 	document.getElementById("git_url").value = url;
 
 }
-
-
-function send_post(myid) {
-		if (url === null || url === "") {
-			alert("Repository not selected.")
-			return;
-		}
-		var dataString = "myrepo=";
-		dataString += document.getElementById(myid).value;
-
-		$.ajax({
-			type : "POST",
-			url : "https://linuxconf.feedthepenguin.org/hehe/createuser",
-			data : dataString,
-			dataType : "json",
-			success : function(data, textStatus) {
-				$("#output").replaceWith(data.form);
-				if (data.Error) {
-					$("#output").replaceWith(data.Error);
-					$("#output").elem.style.color = "Red";
-
-				}
-
-			}
-		});
-	}
 </script>
 </head>
 <body>
@@ -97,7 +71,7 @@ function send_post(myid) {
 			out.println("Your Location:" + details.getLocation() + "<br>");
 			out.println("Your Name:" + details.getName() + "<br>");
 
-			out.println("<form action='https://linuxconf.feedthepenguin.org/hehe/createuser' method='get'>");
+			out.println("<form action='https://linuxconf.feedthepenguin.org/hehe/createuser' method='get' id='create'  >");
 			out.println("Your homepage / linkedin etc:<br>");
 		    out.println("<input type='text' name='website' id='website' required maxlength='255' ><br>");
 
@@ -112,7 +86,7 @@ function send_post(myid) {
 				DBDevice bean = it.next();
 				
 			    out.println("<b> Submitted repository details: </b>");
-				out.println("Repository:\t" + bean.getGit_url() + "\t" + "Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()));
+				out.println("Repository:\t" + bean.getGit_url() + "\t" + "Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()) + "<br>");
 			}
 			}
 			int i = 0;
@@ -131,15 +105,7 @@ function send_post(myid) {
 		    out.println("<div id=\"content\"> </div>");
 			out.println("Distribution name");
 		    out.println("<input type='text' name='distribution' id='distribution' required maxlength='255' ><br>");
-		    out.println("Minimum kernel version");
-		    out.println("<input type='text' name='min_kernel_version' id='min_kernel_version' required maxlength='255' required><br>");
-		    out.println("Maximum kernel version");
-		    out.println("<input type='text' name='max_kernel_version' id='max_kernel_version' required maxlength='255' required><br>");
-		    out.println("Minimum distribution version");
-		    out.println("<input type='text' name='min_distribution_version' id='min_distribution_version' required maxlength='255' required><br>");
-		      out.println("Maximum distribution version");
-		    out.println("<input type='text' name='max_distribution_version' id='max_distribution_version' required maxlength='255' required ><br>");
-			out.println("<input type='submit' value='submit repository'>");
+		   out.println("<input type='submit' value='submit repository' >");
 
 			out.println("</form>");
 			out.write("<div id='output'></div>");
@@ -148,4 +114,24 @@ function send_post(myid) {
 		}
 	%>
 </body>
+<script>
+
+$('#create').submit(function() { // catch the form's submit event
+    $.ajax({ // create an AJAX call...
+        data: $(this).serialize(), // get the form data
+        type: $(this).attr('method'), // GET or POST
+        url: $(this).attr('action'), // the file to call
+        success: function(response) { // on success..
+            if (response.Form) {
+            	$('#output').text(response.Form); // update the DIV	
+            } else {
+				$("#output").elem.style.color = "Red";
+            	$('#output').text(response.Error); // update the DIV
+            }
+        	
+        }
+    });
+    return false; // cancel original event to prevent form submitting
+});
+</script>
 </html>
