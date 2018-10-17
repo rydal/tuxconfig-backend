@@ -7,11 +7,11 @@ public String getEmail() {
 public void setEmail(String email) {
 	this.email = email;
 }
-public String getUrl() {
-	return url;
+public String getWebsite() {
+	return website;
 }
-public void setUrl(String url) {
-	this.url = url;
+public void setWebsite(String url) {
+	this.website = url;
 }
 public String getDescription() {
 	return description;
@@ -37,7 +37,7 @@ public String getGit_token() {
 public void setGit_token(String git_token) {
 	this.git_token = git_token;
 }
-private String  url;
+private String  website;
 private String description;
 private String owner_git_id;
 private String cookie;

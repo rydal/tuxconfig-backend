@@ -60,7 +60,7 @@ public class GetContributorDetails extends HttpServlet {
 				out.print(json2);
 		}  else {
 			JSONObject json2 = new JSONObject();
-			json2.put("website", db_contrib.getUrl());
+			json2.put("website", db_contrib.getWebsite());
 			json2.put("bio", db_contrib.getBio());
 			json2.put("name", db_contrib.getName());
 			json2.put("email", db_contrib.getEmail());
