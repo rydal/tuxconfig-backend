@@ -89,8 +89,9 @@ public class GitAuthCallback extends HttpServlet {
         String location = obj.getString("location");
         String email = obj.getString("email");
         String bio = obj.getString("bio");
+        String avatar = obj.getString("avatar_url");
         String website = (String) session.getAttribute("website");
-    	DataSource dataSource = CustomDataSource.getInstance();
+        DataSource dataSource = CustomDataSource.getInstance();
 		QueryRunner run = new QueryRunner(dataSource);
 
 		
@@ -111,7 +112,7 @@ public class GitAuthCallback extends HttpServlet {
      		instream.close();
 		ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
       ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
-      int contributor_result = run.update("replace into contributor (email, website, name,location,git_id,git_token,bio ) values (?,?,?,?,?,?,?)",email,website,git_name, location,git_id,accessToken.getAccessToken(),bio);
+      int contributor_result = run.update("replace into contributor (email, website, name,location,git_id,git_token,bio,avatar_url ) values (?,?,?,?,?,?,?,?)",email,website,git_name, location,git_id,accessToken.getAccessToken(),bio,avatar);
       session.setAttribute("git_id", Integer.toString(git_id));
       session.setAttribute("git_token", accessToken.getAccessToken());
   	List<String> names = new ArrayList<>();
@@ -121,8 +122,7 @@ public class GitAuthCallback extends HttpServlet {
     	  String git_url = repos_array.getJSONObject(i).getString("html_url");
     	  names.add(git_url);
     	  
-      }	
-      
+      }
     	
     	
     	session.setAttribute("repo_names", names);

@@ -46,7 +46,7 @@ public class GetContributorDetails extends HttpServlet {
 		
 		if(owner_git_id == null ) {
 			JSONObject json2 = new JSONObject();
-			json2.put("Error", "deviceid not sent");
+			json2.put("Error", "owner git id not sent");
 			out.println(json2);
 			return;
 		}
@@ -64,6 +64,7 @@ public class GetContributorDetails extends HttpServlet {
 			json2.put("bio", db_contrib.getBio());
 			json2.put("name", db_contrib.getName());
 			json2.put("email", db_contrib.getEmail());
+			json2.put("avatar_url", db_contrib.getAvatar_url());
 			out.print(json2);
 		} 
 		}catch (Exception ex) { ex.printStackTrace(out);}

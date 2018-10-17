@@ -72,7 +72,7 @@ import org.json.JSONObject;
 public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private HashSet<String> devices_hashset = new HashSet<String>(); 
-
+    private String tuxconfig_module;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -137,7 +137,7 @@ public class CreateUser extends HttpServlet {
 			
 			
 			String message = getCommits(git_url, git_id,out);
-			if (message.startsWith("Error")) {
+			if (message.contains("Error")) {
 				JSONObject json2 = new JSONObject();
 				json2.put("Error", "Could not import " + git_url  + " message:\n " + message);
 				// Assuming your json object is **jsonObject**, perform the following, it will
@@ -153,15 +153,11 @@ public class CreateUser extends HttpServlet {
 
 			
 			String currentTime = sdf.format(dt);
-
-			
-
-		
 			String commit_hash = message;
 		
 			
-			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,distribution)"
-					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,distribution);
+			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,distribution,module)"
+					+ " values (?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,distribution,tuxconfig_module);
 			}
 			JSONObject json2 = new JSONObject();
 			json2.put("Form", "Data Accepted");
@@ -183,6 +179,7 @@ public class CreateUser extends HttpServlet {
 		doPost(request, response);
 	}
 
+	@SuppressWarnings("unused")
 	public String getCommits(String url, String git_id,PrintWriter out) {
 		DataSource dataSource = CustomDataSource.getInstance();
 		QueryRunner run = new QueryRunner(dataSource);
@@ -217,7 +214,7 @@ public class CreateUser extends HttpServlet {
 			Repository repo = cloned_git.getRepository();
 
 			ObjectId id = repo.resolve(Constants.HEAD);
-			String message = null;
+			String message = "";
 
 			String commit_hash = id.getName();
 
@@ -235,7 +232,6 @@ public class CreateUser extends HttpServlet {
 
 				String line;
 				String tuxconfig_device_ids = null;
-				String tuxconfig_module = null;
 				String tuxconfig_depenedencies = null;
 				String test_program = null;
 				String test_message = null;
@@ -252,52 +248,59 @@ public class CreateUser extends HttpServlet {
 						
 						
 					} else if (line.contains("tuxconfig_module")) {
-						line = line.replace("tuxconfig_module\\s*=", "").trim();
+						line = line.replace("tuxconfig_module=", "").trim();
 						tuxconfig_module = line.toLowerCase();
 						tuxconfig_module = tuxconfig_module.replaceAll("\"", "");
 
 					}
-					else if (line.contains("tuxconfig_depenedencies")) {
-						line = line.replace("tuxconfig_depenedencies\\s=", "").trim();
+					else if (line.contains("dependencies")) {
+						line = line.replace("dependencies=", "").trim();
 						tuxconfig_depenedencies = line.toLowerCase();
+						tuxconfig_depenedencies = tuxconfig_depenedencies.replaceAll("\"", "");
 					}
 					else if (line.contains("test_program")) {
-						line = line.replace("test_program\\s=", "").trim();
+						line = line.replace("test_program=", "").trim();
 						test_program = line.toLowerCase();
+						test_program = test_program.replaceAll("\"", "");
 					}
 					else if (line.contains("test_message")) {
-						line = line.replace("test_message\\s=", "").trim();
+						line = line.replace("test_message=", "").trim();
 						test_message = line.toLowerCase();
+						test_message = test_message.replaceAll("\"", "");
 					}
 					else if (line.contains("restart_needed")) {
-						line = line.replace("restart_needed\\s=", "").trim();
-						test_message = line.toLowerCase();
+						line = line.replace("restart_needed=", "").trim();
+						restart_needed = line.toLowerCase();
+						restart_needed = restart_needed.replaceAll("\"", "");
 				}
 				}
 					
 				if (tuxconfig_device_ids == null) {
-					message += "Error: tuxconfig_device_ids not set in configuration file\n";
+					message += "Error. tuxconfig_device_ids not set in configuration file \n";
 
 				}
 				if (tuxconfig_module == null) {
-					message += "Error: tuxconfig_module not set in configuration file\n";
+					message += "Error. tuxconfig_module not set in configuration file \n";
 
 				}
 				if (tuxconfig_depenedencies == null) {
-					message += "Error: tuxconfig_dependencies not set in configuration file\n";
+					message += "Error. dependencies not set in configuration file \n";
 
 				}
 				if (test_program == null) {
-					message += "Error: test_program not set in configuration file\n";
+					message += "Error. test_program not set in configuration file \n";
 				}
 				if (test_message == null) {
 
-					message += "Error: test_message not set in configuration file\n";
+					message += "Error. test_message not set in configuration file \n";
 				}
 
 				if (restart_needed == null) {
 
-					message += "Error: restart_needed not set in configuration file\n";
+					message += "Error. restart_needed not set in configuration file \n";
+				} else if (! ( restart_needed.equals("yes") ||   restart_needed.equals("no"))) {
+						message +="Error. restart_needed must be 'yes' or 'no'";
+					
 				}
 
 				
@@ -328,11 +331,10 @@ public class CreateUser extends HttpServlet {
 					 	  each_side[1] = each_side[1] + "0";
 					  }
 						run.update("replace into devices (device_id,git_url) values (?,?)",each_side[0] + ":" + each_side[1],url);
-						run.update("update git_url set module = ? where git_url = ?", tuxconfig_module, url);
 								  }
 		br.close();
 		
-		if (message.startsWith("Error")) {
+		if (message.contains("Error")) {
 			return message;
 		} else {
 			return commit_hash;

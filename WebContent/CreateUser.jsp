@@ -23,11 +23,13 @@
 	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	crossorigin="anonymous"></script>
 <script>
+var chosen_repository = false;
 function set_repository(name) {
 	var url = document.getElementById(name).value;
 
 	document.getElementById("content").innerHTML = url;
 	document.getElementById("git_url").value = url;
+	chosen_repository = true;
 
 }
 </script>
@@ -117,6 +119,10 @@ function set_repository(name) {
 <script>
 
 $('#create').submit(function() { // catch the form's submit event
+	if (chosen_repository == false ) {
+		alert("Must choose one repository");
+		return false;
+	}
     $.ajax({ // create an AJAX call...
         data: $(this).serialize(), // get the form data
         type: $(this).attr('method'), // GET or POST
@@ -124,8 +130,9 @@ $('#create').submit(function() { // catch the form's submit event
         success: function(response) { // on success..
             if (response.Form) {
             	$('#output').text(response.Form); // update the DIV	
-            } else {
-				$("#output").elem.style.color = "Red";
+            } 
+        	if (response.Error){
+                $("#output").css('color', 'red');                  
             	$('#output').text(response.Error); // update the DIV
             }
         	

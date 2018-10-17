@@ -31,11 +31,7 @@
   ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
 		
 		out.write("<h1> Review proposed configurations</h1>");
-		out.write("<input type='text' id='searchbox'  style='width:250px;'>"); 
-		out.write("<img src='./img/search-by-id.png' id='idsearch' onclick='search(this.id)'>");
-		out.write("<img src='./img/search-by-name.png' id='namesearch' onclick='search(this.id)'>");
-		out.write("<img src='./img/search-by-contributor-name.png' id='contributorsearch' onclick='search(this.id)'>");
-		
+	
 		
 		out.write("<h2>Devices awaiting authorisation</h2>");
 		
@@ -163,7 +159,7 @@ function search(command){
 	dataString += "pattern=" + document.getElementById("searchbox").value;
 	dataString += "&command=" + command;
 
-	window.location.replace("https://linuxconf.feedthepenguin.org/hehe/SearchConfigurations.jsp?" + dataString);
+	window.location.replace("http://localhost:8080/hehe/SearchConfigurations.jsp?" + dataString);
 }
 
 
