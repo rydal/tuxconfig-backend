@@ -57,7 +57,6 @@ public class VetConfigurations extends HttpServlet {
 		String git_url = null;
 		String command = null;
 		String commit_hash = null;
-		String distribution = null;
 		
 		
 
@@ -71,15 +70,6 @@ public class VetConfigurations extends HttpServlet {
 			return;
 		}
 
-		distribution= request.getParameter("distribution");
-		if (git_url == null) {
-			JSONObject json2 = new JSONObject();
-			json2.put("form", "distribution not received");
-			// Assuming your json object is **jsonObject**, perform the following, it will
-			// return your json object
-			out.print(json2);
-			return;
-		}
 		
 
 		command = request.getParameter("command");
@@ -107,7 +97,7 @@ public class VetConfigurations extends HttpServlet {
 			
 			
 				if (command.equals("authorise")) {
-					int rows_updated  = run.update("update git_url set authorised = '1' where git_url = ? and commit_hash = ? and distribution = ? ",git_url,commit_hash,distribution);
+					int rows_updated  = run.update("update git_url set authorised = '1' where git_url = ? and commit_hash = ?",git_url,commit_hash);
 					
 					if (rows_updated != 0) {
 						JSONObject json2 = new JSONObject();
@@ -123,7 +113,7 @@ public class VetConfigurations extends HttpServlet {
 					}
 				}
 				else if (command.equals("unauthorise")) {
-					int rows_updated  = run.update("update git_url set authorised = '0' where git_url = ? and commit_hash = ? and distribution = ? ",git_url,commit_hash,distribution);
+					int rows_updated  = run.update("update git_url set authorised = '0' where git_url = ? and commit_hash = ? ",git_url,commit_hash);
 					if (rows_updated != 0) {
 						JSONObject json2 = new JSONObject();
 						json2.put("form", "Device unauthorised");
@@ -139,7 +129,7 @@ public class VetConfigurations extends HttpServlet {
 				}
 
 				else if (command.equals("delete")) {
-					int rows_updated  = run.update("delete from git_url where git_url = ?  and commit_hash = ? and distribution = ? ",git_url,commit_hash,distribution);
+					int rows_updated  = run.update("delete from git_url where git_url = ?  and commit_hash = ? ",git_url,commit_hash);
 					if (rows_updated != 0) {
 						JSONObject json2 = new JSONObject();
 						json2.put("form", "Device unauthorised");

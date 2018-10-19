@@ -75,12 +75,7 @@ public class GetDevice extends HttpServlet {
 			out.println(json2);
 			return;
 		}
-		if(distribution == null ) {
-			JSONObject json2 = new JSONObject();
-			json2.put("Error", "distribution not sent");
-			out.println(json2);
-			return;
-		}
+
 		   String[]  each_side = device_id.split(":");
 			  if (each_side.length != 2) {
 					JSONObject json2 = new JSONObject();
@@ -97,7 +92,7 @@ public class GetDevice extends HttpServlet {
 			  }
 		device_id = each_side[0] + ":" + each_side[1];
 		try { 
-			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ?and git_url.authorised = '1' and git_url.distribution = ? order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,distribution,Integer.parseInt(attempt_number));
+			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();

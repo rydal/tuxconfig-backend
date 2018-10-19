@@ -59,8 +59,7 @@
 
 			out.println("Commit id " + bean.getCommit_hash() + "<br>");
 			out.println("User email address " + bean.getEmail() + "<br>");
-			out.println("Distribution " + bean.getDistribution() + "<br>");
-			out.println("<input type='hidden'  value='" + bean.getDistribution() + "' id='" +  "distribution" + index  +"'><br>");
+			
 			
 		
 			out.println("<img src=\"./img/accept.png\" id=\""  +  "input" + index +  "\" onclick=\"send_post(this.id , 'authorise')\">");
@@ -89,11 +88,9 @@
 			out.println("<input type='hidden'  value='" + bean2.getGit_url() + "' id='" +  "git_url" + index  +"'><br>");
 			out.println("<input type='hidden'  value='" + bean2.getDevice_id()+ "' id='" +  "device_id" + index  +"'><br>");
 			out.println("<input type='hidden'  value='" + bean2.getGit_url() + "' id='" +  "url" + index  +"'><br>");
-			out.println("<input type='hidden'  value='" + bean2.getDistribution() + "' id='" +  "distribution" + index  +"'><br>");
 
 			out.println("Commit id " + bean2.getCommit_hash() + "<br>");
 			out.println("User email address " + bean2.getEmail() + "<br>");
-			out.println("Distribution " + bean2.getDistribution() + "<br>");
 			
 					
 			out.println("<img src=\"./img/decline.png\" id=\"" +  "input" + index + "\" onclick=\"send_post(this.id , 'unauthorise')\">");
@@ -128,7 +125,6 @@ function send_post(input, command){
 	dataString += "git_url=" + document.getElementById("git_url" + i).value;
 	dataString += "&hash="	+ document.getElementById("hash" + i).value;
 	dataString += "&command=" + command;
-	dataString += "&distribution=" + document.getElementById("distribution" + i).value;;
 	
     $.ajax({
         type: "GET",
