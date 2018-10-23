@@ -156,8 +156,8 @@ public class CreateUser extends HttpServlet {
 			String commit_hash = message;
 		
 			
-			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,distribution,module)"
-					+ " values (?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,distribution,tuxconfig_module);
+			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,module)"
+					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,tuxconfig_module);
 			}
 			JSONObject json2 = new JSONObject();
 			json2.put("Form", "Data Accepted");

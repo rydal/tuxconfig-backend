@@ -60,7 +60,21 @@ public class ReportBack extends HttpServlet {
 			out.print(json3);
 			return;
 		}
-		
+		 String[]  each_side = device_id.split(":");
+		  if (each_side.length != 2) {
+				JSONObject json2 = new JSONObject();
+				json2.put("Error", "Device id not of correct format");
+				out.println(json2);
+				return;
+		  }
+		  while (each_side[0].length() < 4) {
+		 	  each_side[0] = "0" + each_side[0];
+		  }
+		  
+		  while (each_side[1].length() < 4) {
+		 	  each_side[1] = each_side[1] + "0";
+		  }
+	device_id = each_side[0] + ":" + each_side[1];
 		
 		try { 
 				
