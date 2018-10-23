@@ -76,21 +76,21 @@ public class GetDevice extends HttpServlet {
 			return;
 		}
 
-		   String[]  each_side = device_id.split(":");
-			  if (each_side.length != 2) {
-					JSONObject json2 = new JSONObject();
-					json2.put("Error", "Device id not of correct format");
-					out.println(json2);
-					return;
-			  }
-			  while (each_side[0].length() < 4) {
-			 	  each_side[0] = "0" + each_side[0];
-			  }
-			  
-			  while (each_side[1].length() < 4) {
-			 	  each_side[1] = each_side[1] + "0";
-			  }
-		device_id = each_side[0] + ":" + each_side[1];
+			   String[]  each_side = device_id.split(":");
+				  if (each_side.length != 2) {
+						JSONObject json2 = new JSONObject();
+						json2.put("Error", "Device id not of correct format");
+						out.println(json2);
+						return;
+				  }
+				  while (each_side[0].length() < 4) {
+				 	  each_side[0] = "0" + each_side[0];
+				  }
+				  
+				  while (each_side[1].length() < 4) {
+				 	  each_side[1] = each_side[1] + "0";
+				  }
+			device_id = each_side[0] + ":" + each_side[1];
 		try { 
 			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
 				
