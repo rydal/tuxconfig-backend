@@ -184,11 +184,11 @@ public class GetErrorLog extends HttpServlet {
 			BufferedReader br = new BufferedReader(new InputStreamReader(response1.getEntity().getContent()));
 			byte[] file_in_bytes = uploaded_log.get();
 
-			String md5hash = DigestUtils.md5Hex(file_in_bytes);
+			int file_size = file_in_bytes.length;
 
 			boolean seen = false;
 			while ((inputLine = br.readLine()) != null) {
-				if (inputLine.contains("Configure me " + md5hash)) {
+				if (inputLine.contains("Tuxconfig " + file_size)) {
 					seen = true;
 
 				}
@@ -209,7 +209,7 @@ public class GetErrorLog extends HttpServlet {
 					//	+ " , \"body\" : \"" + body_string.trim() + "\" }");
 				  
 				StringEntity json_parameters = new StringEntity("{  \"title\": \"Tuxconfig " + uploaded_log.hashCode() + " \", \"body\": \"" +  body_string + " \" }");
-				out.write("{  \"title\": \"Tuxconfig " + uploaded_log.hashCode() + " \", \"body\": \"" +  body_string + " \" }");
+				out.write("{  \"title\": \"Tuxconfig " + file_size + " \", \"body\": \"" +  body_string + " \" }");
 				httpPost.setEntity(json_parameters);
 				    
 				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);

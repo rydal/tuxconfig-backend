@@ -103,6 +103,10 @@ public class CreateUser extends HttpServlet {
 		float min_distribution_version  = 0;
 		float max_distribution_version  = 0;
 		
+			if (session.getAttribute("git_id") == null) {
+			response.sendRedirect("https://linuxconf.feedthepenguin.org/heh/GitAuth.html");
+			}
+		
 			String  git_id = (String) session.getAttribute("git_id");
 			
 			
