@@ -88,7 +88,23 @@ function set_repository(name) {
 				DBDevice bean = it.next();
 				
 			    out.println("<b> Submitted repository details: </b>");
-				out.println("Repository:\t" + bean.getGit_url() + "\t" + "Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()) + "<br>");
+			    int vote_difference = bean.getUpvotes()  - bean.getDownvotes();
+			    if (vote_difference < 0) {
+			    	out.println("<font color='red'>");
+			    }
+			    if (vote_difference < 0) {
+			    	out.println("<font color='green'>");
+			    }
+				out.print("Repository:\t" + bean.getGit_url() + "\t" + "Vote difference:\t");
+						if (vote_difference < 0) {
+					    	out.println("<font color='red'>");
+					    }
+					    if (vote_difference < 0) {
+					    	out.println("<font color='green'>");
+					    }
+						
+						out.print( vote_difference + "</font><br>");
+				
 			}
 			}
 			int i = 0;
