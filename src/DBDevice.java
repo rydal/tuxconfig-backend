@@ -92,4 +92,13 @@ public void setDownvotes(int downvotes) {
 	this.downvotes = downvotes;
 }
 int downvotes;
+
+String module;
+public String getModule() {
+	return module;
+}
+public void setModule(String module) {
+	this.module = module;
+}
+
 }

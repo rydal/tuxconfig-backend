@@ -4,7 +4,7 @@
 <html>
 <head><meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Mycode</title>
+<<title>getMyDetails.info</title> </title>
 </head>
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

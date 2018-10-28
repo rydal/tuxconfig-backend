@@ -112,6 +112,7 @@ public class GetDevice extends HttpServlet {
 				int vote_difference = db_device.getUpvotes() - db_device.getDownvotes();
 				json2.put("vote_difference", Integer.toString(vote_difference));
 				json2.put("owner_git_id", db_device.getOwner_git_id());
+				json2.put("module", db_device.getModule());
 				
 				
 				
