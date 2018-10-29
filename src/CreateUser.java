@@ -208,7 +208,7 @@ public class CreateUser extends HttpServlet {
 			Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwx---");
 
 			FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions.asFileAttribute(permissions);
-			Files.createDirectory(linuxconf_path, fileAttributes);
+			Files.createDirectory(linuxconf_path, fileAttributes);	
 			File directory = new File(cloned_directory);
 
 			new File(cloned_directory).mkdir();
@@ -347,8 +347,10 @@ public class CreateUser extends HttpServlet {
 			// Assume failed
 
 		} catch (RefNotFoundException ex) {
-			ex.printStackTrace(out);
 			return  "Error: cannot find commit" ;
+		} catch (java.io.FileNotFoundException ex) {
+			return  "Error: Can't find tuxconfig file" ;
+			
 		} catch (Exception ex) {
 			ex.printStackTrace(out);
 			return "Error: unspecified error" ;

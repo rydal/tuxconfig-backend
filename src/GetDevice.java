@@ -59,8 +59,7 @@ public class GetDevice extends HttpServlet {
 
 		String device_id = request.getParameter("deviceid");
 		String attempt_number  = request.getParameter("attempt");
-		String distribution = request.getParameter("distribution");
-		
+		String description = request.getParameter("description");
 		PrintWriter out = response.getWriter();
 		
 		if(device_id == null ) {
@@ -92,6 +91,8 @@ public class GetDevice extends HttpServlet {
 				  }
 			device_id = each_side[0] + ":" + each_side[1];
 		try { 
+				run.update("update devices set description = ? where device_id = ? ",description,device_id);
+			
 			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
 				
 			if (db_device == null) {
