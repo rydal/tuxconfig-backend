@@ -51,6 +51,10 @@ function set_repository(name) {
 			String url = "";
 			String description = "";
 			String git_id_string = (String) session.getAttribute("git_id");
+			if (git_id_string == null) {
+				response.sendRedirect("https://linuxconf.feedthepenguin.org/hehe/GitAuth.html");
+				return;
+			}
 			int owner_git_id = Integer.parseInt(git_id_string);
 			
 			DBcontributor details = run.query("select * from contributor where git_id = ?", contributor_results,
@@ -84,9 +88,11 @@ function set_repository(name) {
 
 			Iterator<DBDevice> it = rows.iterator();
 			if (rows.size() > 0) {
-			while (it.hasNext()) {
+				out.println("<h3> Submitted repository details: </h3><br>");
+				while (it.hasNext()) {
 				DBDevice bean = it.next();
 				
+<<<<<<< HEAD
 			    out.println("<b> Submitted repository details: </b>");
 			    int vote_difference = bean.getUpvotes()  - bean.getDownvotes();
 			    if (vote_difference < 0) {
@@ -105,6 +111,9 @@ function set_repository(name) {
 						
 						out.print( vote_difference + "</font><br>");
 				
+=======
+			    out.println("<b>Repository:\t</b>" + bean.getGit_url() + "<br>Commit hash:" + bean.getCommit_hash() + "<br>Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()) + "<br>");
+>>>>>>> removed distribution form servlet. added catch in createuser.jsp
 			}
 			}
 			int i = 0;
@@ -147,9 +156,9 @@ $('#create').submit(function() { // catch the form's submit event
             if (response.Form) {
             	$('#output').text(response.Form); // update the DIV	
             } 
-        	if (response.Error){
+            else  {
                 $("#output").css('color', 'red');                  
-            	$('#output').text(response.Error); // update the DIV
+            	$('#output').text(response); // update the DIV
             }
         	
         }

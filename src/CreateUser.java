@@ -171,7 +171,7 @@ public class CreateUser extends HttpServlet {
 			return;
 		
 			
-		} catch (Exception ex) { ex.printStackTrace(out); }
+		} catch (Exception ex) {  ex.printStackTrace(out);}
 	}
 
 	/**
