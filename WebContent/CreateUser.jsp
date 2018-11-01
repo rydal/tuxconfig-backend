@@ -35,7 +35,8 @@ function set_repository(name) {
 </script>
 </head>
 <body>
-	<img src="./img/linuxconf.png" height="200" width="400">
+<div align="center">
+	<img src="./img/tux_banner.png" height="200" width="400">
 	<br>
 	<%
 		DataSource dataSource = CustomDataSource.getInstance();
@@ -94,25 +95,23 @@ function set_repository(name) {
 				
 
 			    out.println("<b> Submitted repository details: </b>");
-			    int vote_difference = bean.getUpvotes()  - bean.getDownvotes();
+			    float vote_difference = bean.getUpvotes()  - bean.getDownvotes();
 			    if (vote_difference < 0) {
 			    	out.println("<font color='red'>");
 			    }
 			    if (vote_difference < 0) {
 			    	out.println("<font color='green'>");
 			    }
-				out.print("Repository:\t" + bean.getGit_url() + "\t" + "Vote difference:\t");
+				out.print("Repository:\t" + bean.getGit_url() + "\t" + "<br>Commit hash:" + bean.getCommit_hash()  + "Vote difference:\t");
 						if (vote_difference < 0) {
 					    	out.println("<font color='red'>");
 					    }
-					    if (vote_difference < 0) {
+					    if (vote_difference > 0) {
 					    	out.println("<font color='green'>");
 					    }
 						
 						out.print( vote_difference + "</font><br>");
-				
-			    out.println("<b>Repository:\t</b>" + bean.getGit_url() + "<br>Commit hash:" + bean.getCommit_hash() + "<br>Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()) + "<br>");
-			}
+				}
 			}
 			int i = 0;
 			while (i < clone_urls.size()) {
@@ -129,7 +128,6 @@ function set_repository(name) {
 			out.println("Select a repository:");
 		    out.println("<div id=\"content\"> </div>");
 			out.println("Distribution name");
-		    out.println("<input type='text' name='distribution' id='distribution' required maxlength='255' ><br>");
 		   out.println("<input type='submit' value='submit repository' >");
 
 			out.println("</form>");
@@ -138,6 +136,7 @@ function set_repository(name) {
 			ex.printStackTrace(new java.io.PrintWriter(out));
 		}
 	%>
+	</div>
 </body>
 <script>
 

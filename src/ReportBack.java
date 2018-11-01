@@ -48,6 +48,7 @@ public class ReportBack extends HttpServlet {
 		String code = request.getParameter("code");
 		String git_url = request.getParameter("git_url");
 		String device_id = request.getParameter("device_id");
+		String commit_hash = request.getParameter("commit_hash");
 		
 		JSONObject json3 = new JSONObject();
 		
@@ -55,6 +56,7 @@ public class ReportBack extends HttpServlet {
 		if (success == null) json3.put("Error", "Success status not recieved correctly");
 		if (device_id == null) json3.put("Error", "Device id not received correctly");
 		if (code  == null) json3.put("Error", "Code not recieved correctly");
+		if (commit_hash == null) json3.put("Error", "Commit hash not recieved correctly");
 		
 		if (json3.length() != 0) {
 			out.print(json3);
@@ -80,14 +82,14 @@ public class ReportBack extends HttpServlet {
 				
 				
 				if (success.equals("true")) {
-					DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ?",success_results,code,device_id,git_url);
+					DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ? and commit_hash = ? ",success_results,code,device_id,git_url,commit_hash);
 					if (log_success == null) {
 						JSONObject json2 = new JSONObject();
 						json2.put("Error", "code not found" );
 						out.println(json2);
 						return;
 					} else {
-						int increment_upvote = run.update("update git_url set upvotes = upvotes + 1 where git_url = ? ",git_url);
+						int increment_upvote = run.update("update git_url set upvotes = upvotes + 1 where git_url = ? and commit_hash = ? ",git_url,commit_hash);
 							JSONObject json2 = new JSONObject();
 							json2.put("Success", "Votes Updated" );
 							out.println(json2);
@@ -98,14 +100,14 @@ public class ReportBack extends HttpServlet {
 				}
 				
 				else if (success.equals("false")) {
-					DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ?",success_results,code,device_id,git_url);
+					DBSuccess log_success = run.query("select * from success_code where success_code = ? and device_id = ? and git_url = ? and commit_hash = ? ",success_results,code,device_id,git_url,commit_hash);
 					if (log_success == null) {
 						JSONObject json2 = new JSONObject();
 						json2.put("Error", "Code not found" );
 						out.println(json2);
 						return;
 					} else {
-						int increment_upvote = run.update("update git_url set downvotes = downvotes + 1 where  git_url = ? ",git_url);
+						int increment_upvote = run.update("update git_url set downvotes = downvotes + 1 where  git_url = ? and commit_hash = ?",git_url,commit_hash);
 							JSONObject json2 = new JSONObject();
 							json2.put("Success", "Votes Updated" );
 							out.println(json2);
