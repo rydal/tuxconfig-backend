@@ -92,7 +92,7 @@ function set_repository(name) {
 				while (it.hasNext()) {
 				DBDevice bean = it.next();
 				
-<<<<<<< HEAD
+
 			    out.println("<b> Submitted repository details: </b>");
 			    int vote_difference = bean.getUpvotes()  - bean.getDownvotes();
 			    if (vote_difference < 0) {
@@ -111,9 +111,7 @@ function set_repository(name) {
 						
 						out.print( vote_difference + "</font><br>");
 				
-=======
 			    out.println("<b>Repository:\t</b>" + bean.getGit_url() + "<br>Commit hash:" + bean.getCommit_hash() + "<br>Vote difference:\t" + (bean.getUpvotes()  - bean.getDownvotes()) + "<br>");
->>>>>>> removed distribution form servlet. added catch in createuser.jsp
 			}
 			}
 			int i = 0;
