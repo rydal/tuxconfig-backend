@@ -73,6 +73,7 @@ public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private HashSet<String> devices_hashset = new HashSet<String>(); 
     private String tuxconfig_module;
+	String restart_needed = null;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -127,15 +128,12 @@ public class CreateUser extends HttpServlet {
 			if (website == null) json3.put("Error", "Webpage not sent correctly");
 			if (git_token == null) json3.put("Error", "Git Token not sent correctly");
 			
-			if (distribution == null) json3.put("Error", "Distribution not sent correctly");
-			if (git_url == null) json3.put("Error", "Git urlnot sent correctly");
-			if (distribution == null) json3.put("Error", "git token not sent correctly");
+			if (git_url == null) json3.put("Error", "Git url not sent correctly");
 			
 			if (json3.length() != 0) {
 				out.print(json3);
 				return;
 			}
-			distribution = distribution.toLowerCase();
 			
 			run.update("update contributor set website = ? where git_id = ?",website,git_id);
 			
@@ -159,9 +157,11 @@ public class CreateUser extends HttpServlet {
 			String currentTime = sdf.format(dt);
 			String commit_hash = message;
 		
-			
-			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,module)"
-					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,tuxconfig_module);
+			for (String device : devices_hashset) {
+				
+			run.update("insert ignore into git_url (owner_git_id,git_url,commit_hash, commit_date,module,device_id,restart_needed)"
+					+ " values (?,?,?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,tuxconfig_module,device,restart_needed);
+			}
 			}
 			JSONObject json2 = new JSONObject();
 			json2.put("Form", "Data Accepted");
@@ -239,7 +239,6 @@ public class CreateUser extends HttpServlet {
 				String tuxconfig_depenedencies = null;
 				String test_program = null;
 				String test_message = null;
-				String restart_needed = null;
 				BufferedReader br = new BufferedReader(new FileReader(config_file));
 
 				
@@ -334,7 +333,9 @@ public class CreateUser extends HttpServlet {
 					  while (each_side[1].length() < 4) {
 					 	  each_side[1] = each_side[1] + "0";
 					  }
-						run.update("replace into devices (device_id,git_url) values (?,?)",each_side[0] + ":" + each_side[1],url);
+					  String device = each_side[0] + ":" + each_side[1];
+					  	devices_hashset.add(device);
+						run.update("insert ignore into devices (device_id,git_url) values (?,?)",device,url);
 								  }
 		br.close();
 		
@@ -347,14 +348,29 @@ public class CreateUser extends HttpServlet {
 			// Assume failed
 
 		} catch (RefNotFoundException ex) {
-			return  "Error: cannot find commit" ;
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "Cannot find commit");
+				// Assuming your json object is **jsonObject**, perform the following, it will
+			// return your json object
+			out.print(json2);
+			
 		} catch (java.io.FileNotFoundException ex) {
-			return  "Error: Can't find tuxconfig file" ;
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "Can't find tuxconfig file");
+				// Assuming your json object is **jsonObject**, perform the following, it will
+			// return your json object
+			out.print(json2);
 			
 		} catch (Exception ex) {
 			ex.printStackTrace(out);
-			return "Error: unspecified error" ;
+			JSONObject json2 = new JSONObject();
+			json2.put("Error", "Unspecified error");
+				// Assuming your json object is **jsonObject**, perform the following, it will
+			// return your json object
+			out.print(json2);
+			
 		}
+		return "Error: unspecified error";
 	}
 }
 

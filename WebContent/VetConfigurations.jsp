@@ -21,7 +21,7 @@
 <title>Linuxconf</title>
 </head>
 <body>
-<img src="./img/linuxconf.png" height="200" width="400"><br>
+<img src="./img/tux_banner.png">
 <div id="output" > </div>
 	<%
 	try {

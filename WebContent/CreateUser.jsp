@@ -151,11 +151,13 @@ $('#create').submit(function() { // catch the form's submit event
         url: $(this).attr('action'), // the file to call
         success: function(response) { // on success..
             if (response.Form) {
-            	$('#output').text(response.Form); // update the DIV	
+            	$("#output").css('color', 'green');                  
+            	
+            	$('#output').append(response.Form + "<br>"); // update the DIV	
             } 
             else  {
-                $("#output").css('color', 'red');                  
-            	$('#output').text(response); // update the DIV
+                $("#output").css('color', 'red');
+                $('#output').append(response.Error + "<br>"); // update the DIV
             }
         	
         }
