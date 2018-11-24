@@ -36,7 +36,7 @@
 		out.write("<h2>Devices awaiting authorisation</h2>");
 		
 		
-		String query_url = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id inner join devices d on d.git_url = g.git_url where g.authorised = 0 order by d.device_id";
+		String query_url = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id where g.authorised = 0";
 		
 		ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
 		List<DBDevice> rows = run.query(query_url, rsh);
@@ -48,9 +48,6 @@
 		int index = 0;
 		while (it.hasNext()) {
 			DBDevice bean = it.next();
-			out.println("Device id: " + bean.getDevice_id());
-			out.println("Device name: " + bean.getName());
-			
 			out.println("<A HREF='" + bean.getGit_url() +"'> " + bean.getGit_url()  + "</A>");
 			out.println("<input type='hidden'  value='" + bean.getCommit_hash() + "' id='" +  "hash" + index  +"'>");
 			out.println("<input type='hidden'  value='" + bean.getGit_url() + "' id='" +  "git_url" + index  +"'><br>");
@@ -70,7 +67,7 @@
 
 		out.write("<h2>Devices authorised</h2>");
 		index = 0;
-		String query_url2 = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id inner join devices d on d.git_url = g.git_url where g.authorised = 1 order by d.device_id";
+		String query_url2 = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id  where g.authorised = 1";
 		
 		ResultSetHandler<List<DBDevice>> rsh2 = new BeanListHandler<DBDevice>(DBDevice.class);
 		List<DBDevice> rows2 = run.query(query_url2, rsh2);

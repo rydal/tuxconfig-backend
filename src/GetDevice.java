@@ -93,7 +93,7 @@ public class GetDevice extends HttpServlet {
 		try { 
 				run.update("update devices set description = ? where device_id = ? ",description,device_id);
 			
-			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
+			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where devices.device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();

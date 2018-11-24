@@ -83,22 +83,37 @@ public class ReportBack extends HttpServlet {
 				
 				if (success.equals("true")) {
 						int increment_upvote = run.update("update git_url set upvotes = upvotes + 1 where git_url = ? and commit_hash = ? ",git_url,commit_hash);
-							JSONObject json2 = new JSONObject();
+						if (increment_upvote == 1 ) {	
+						JSONObject json2 = new JSONObject();
 							json2.put("Success", "Votes Updated" );
 							out.println(json2);
 							return;	
+						} else {
+							JSONObject json2 = new JSONObject();
+							json2.put("Failed", "Repository and commit hash not found" );
+							out.println(json2);
+							return;	
 						
+						}
 					
 					
 				}
 				
 				else if (success.equals("false")) {
-						int increment_upvote = run.update("update git_url set downvotes = downvotes + 1 where  git_url = ? and commit_hash = ?",git_url,commit_hash);
-							JSONObject json2 = new JSONObject();
+						int increment_downvote = run.update("update git_url set downvotes = downvotes + 1 where  git_url = ? and commit_hash = ?",git_url,commit_hash);
+						if (increment_downvote == 1 ) {	
+							
+						JSONObject json2 = new JSONObject();
 							json2.put("Success", "Votes Updated" );
 							out.println(json2);
 							return;	
-						
+				} else {
+					JSONObject json2 = new JSONObject();
+					json2.put("Failed", "Repository and commit hash not found" );
+					out.println(json2);
+					return;	
+				
+				}
 					
 					
 				}else {
