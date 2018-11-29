@@ -37,6 +37,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -73,6 +74,7 @@ public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private HashSet<String> devices_hashset = new HashSet<String>(); 
     private String tuxconfig_module;
+    private long devices_key;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -157,9 +159,14 @@ public class CreateUser extends HttpServlet {
 			String commit_hash = message;
 		
 			
-			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,module)"
+			run.update("insert ignore into git_url (owner_git_id,git_url,commit_hash, commit_date,module)"
 					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,tuxconfig_module);
+			DBDevice fk_constraint = run.query("select git_url_constraint from git_url where git_url = ? and commit_hash = ?" , device_results, git_url, commit_hash);
+			for (String device : devices_hashset) {
+			run.update("insert ignore into devices (device_id,git_url,commit_hash,devices_constraint) values (?,?,?,?)",device,git_url,commit_hash, fk_constraint.getGit_url_constraint());
 			}
+			}
+			
 			JSONObject json2 = new JSONObject();
 			json2.put("Form", "Data Accepted");
 				// Assuming your json object is **jsonObject**, perform the following, it will
@@ -331,8 +338,8 @@ public class CreateUser extends HttpServlet {
 					  while (each_side[1].length() < 4) {
 					 	  each_side[1] = each_side[1] + "0";
 					  }
-						run.update("replace into devices (device_id,git_url,commit_hash) values (?,?,?)",each_side[0] + ":" + each_side[1],url,commit_hash);
-								  }
+					  	devices_hashset.add(each_side[0] + ":" + each_side[1]);
+					  			  }
 				}
 		br.close();
 		

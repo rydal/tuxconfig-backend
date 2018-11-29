@@ -45,3 +45,611 @@ INFO: was plannng on using code 2 weeks or more old to prevent malware.
 2018-06-20	inital commit
 
 
+commit 19ac6f30037ed73340e53c8b98a20758b90e2948
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Sat Nov 24 15:29:09 2018 +0000
+
+    removed device entries in vetconfigurations.
+
+commit 3bafc3ae2f366e9c40b0793c18f2e620d69d1950
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Wed Nov 21 16:36:24 2018 +0000
+
+    changed github logo tto login with github logo
+
+commit 8f0854f31d276e5de880a1507b9b22d3643cd5b4
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Wed Nov 21 16:36:09 2018 +0000
+
+    database constraints added into createuser.java
+
+commit d40ce848e16b18c2a002fdb16c2002cd7abb9bb9
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Tue Nov 20 14:51:55 2018 +0000
+
+    Removed success code usage as this can be faked.
+
+commit 312b7a8862406b37f02a66b771fb36de050fa20e
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Nov 1 19:43:31 2018 +0000
+
+    changed to include git commits as individual
+
+commit 1020b4e1a57c438c6cbacf4edb34ac8a1a1606ff
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Nov 1 05:38:22 2018 +0000
+
+    removed diff on create user
+
+commit d82efc065592a87dcff1aabb61c4f80f18c2bb1a
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Thu Nov 1 05:31:41 2018 +0000
+
+    merger sorted
+
+commit 31bcff831c9b507b206d240eccf3a9e29983716a
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Mon Oct 29 16:58:49 2018 +0000
+
+    How to contribute added.
+
+commit 1f5cb2fea8b568187773ceb131a8b185b318c0bf
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Sun Oct 28 16:44:16 2018 +0000
+
+    added get module name
+
+commit cd2ec721a0c96b789693622bc313a274568b7997
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Thu Oct 25 19:30:59 2018 +0100
+
+    added colour to vote count
+
+commit 3285f1d655017a2f8fc3da77d9aa3efeeaba91f4
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Wed Oct 24 15:30:17 2018 +0100
+
+    Redirect to landing page on session not reachable. GetErorLog by file
+    size
+
+commit 0d79d64a0a9007f12de424d23f8c314b0c5161d4
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Tue Oct 23 13:57:34 2018 +0100
+
+    minor changes v2
+
+commit 5f8cc307c27785ff0e6eca25c2f5417fa8dd27a7
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Tue Oct 23 13:57:13 2018 +0100
+
+    minor changes
+
+commit 4a3b642543d6a65821b53cbfc9b0b3f3ae8fa3db
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Fri Oct 19 14:09:53 2018 +0100
+
+    Removed distribution column from database.
+
+commit 394e805264093351c504054bba150e7c2e95d192
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Wed Oct 17 16:03:37 2018 +0100
+
+    picking up website info now
+
+commit f3990bf78dfb01b1666a3cfd9e2a5ec2ec5091c1
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Wed Oct 17 13:33:41 2018 +0100
+
+    revisions
+
+commit 31ab3812449a4ab858188e6c61d8d5cf20929dd5
+Author: Your Name <rob@rydal.org>
+Date:   Mon Sep 24 15:59:30 2018 +0100
+
+    get contributor details addded.
+    restarr_needed required
+
+commit e0899bdf8efcd123b2af567eb2ff69d80645972d
+Author: Your Name <rob@rydal.org>
+Date:   Thu Sep 20 16:59:42 2018 +0100
+
+    VetConfigurations as it should be. working on uninstall whilst in a
+    ubuntu VM
+
+commit ef7449fc19fa5ea7a250b8c41871ede7bec01d4f
+Author: Your Name <rob@rydal.org>
+Date:   Mon Sep 17 14:14:10 2018 +0100
+
+    Removed vet configurations files in place of using ssh keys to localhost
+
+commit 07a4af2b4de045ba99651a66e8821fad7d3f6755
+Author: Your Name <rob@rydal.org>
+Date:   Sat Sep 15 11:58:42 2018 +0100
+
+    BAckend complete
+
+commit 19f03b6073be4ab6c6e2d93c637829d596dbf839
+Author: Your Name <rob@rydal.org>
+Date:   Sat Sep 15 11:03:11 2018 +0100
+
+    Error 404 when sending to tracker
+
+commit 9a7e4b1526b1445e46336248f2b523483394bac0
+Author: Your Name <rob@rydal.org>
+Date:   Fri Sep 14 21:06:54 2018 +0100
+
+    geterror log then backend done - refactoring sql statements
+
+commit f0efdb90c1031fb394614c048221439cf3876c12
+Author: Your Name <rob@rydal.org>
+Date:   Fri Sep 14 19:24:30 2018 +0100
+
+    get device fixed
+
+commit 92d0ba5f894f2a8424a9261d2e5743c18c9bc740
+Author: Your Name <rob@rydal.org>
+Date:   Fri Sep 14 19:24:30 2018 +0100
+
+    get device fixed
+
+commit 8b0a4fbff6649a9d85612ee72dcd694f791bdf24
+Author: Your Name <rob@rydal.org>
+Date:   Fri Sep 14 17:53:02 2018 +0100
+
+    Database refactored to include description and distro details. former
+    working
+
+commit dbf60a942ef5d061ba479daba368e80c1bd1e989
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Fri Sep 14 17:14:03 2018 +0100
+
+    Creating repositories refactored for new database.
+
+commit bbc8068a3b2972b8b12d5f40caf1ba8a7931eb28
+Author: Your Name <rob@rydal.org>
+Date:   Thu Sep 13 10:25:51 2018 +0100
+
+    seperate page needed for repository values
+
+commit de562d58f26bd857d1d2006a4481ab6e5df423e3
+Author: Your Name <rob@rydal.org>
+Date:   Wed Sep 12 20:36:42 2018 +0100
+
+    redone gitauthcallback
+
+commit c3eabe24682aa958c9d19042bb5944406944fe7b
+Author: Your Name <rob@rydal.org>
+Date:   Tue Sep 11 20:35:06 2018 +0100
+
+    gitauth and gitauthcallback disappeared.  rebuilding
+
+commit b2a4fa1f36dba56fb43cca9888e92a78cdda0880
+Author: Your Name <rob@rydal.org>
+Date:   Sat Sep 8 16:59:03 2018 +0100
+
+    GetHistory checks if device is installed. will also check vote diference
+    to offer upgrades
+
+commit d549a08630bc854d51828501a14c883507d3adbd
+Author: Your Name <rob@rydal.org>
+Date:   Sat Sep 8 15:55:11 2018 +0100
+
+    database restructured, changes made in java too
+
+commit 1cbf8c7ca644e815b639e8aef198d25b2c58c6fa
+Author: roberty <roberty@0.0.0.42>
+Date:   Tue Aug 28 15:23:08 2018 +0100
+
+    problems iterating over devices
+
+commit a58ad94eb0616f1431d39b25731002d01a20d8cc
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 22 15:39:23 2018 +0100
+
+    added get owner class
+
+commit 429a8851447ef0e2f75b7d297140d7794dc50bc0
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Sun Aug 19 19:44:40 2018 +0100
+
+    Front end complete.
+
+commit e40402efe1a31df664de53c72c662b136e16b801
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Sat Aug 18 12:16:31 2018 +0100
+
+    fixing column width on CreaetUser.jsp
+
+commit f1a3ed345b6ec0543162fbcd0ff9f5c4cd5c79d5
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Sat Aug 18 10:43:03 2018 +0100
+
+    web.xml confiured to only allow localhost access.
+
+commit ba2a20a118a9a9c13632b00548253cdcd6b5a062
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Thu Aug 16 15:51:10 2018 +0100
+
+    more bug testing
+
+commit 1d61b9fd3a68734ff401858ccd7d740f948c536f
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Thu Aug 16 13:44:10 2018 +0100
+
+    Vetting page done, search options to add.
+
+commit 24a2c9fdf54b1697d06c77e41f00db4db0d181d6
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 15 17:40:43 2018 +0100
+
+    framework complete
+
+commit b677e8cf23ba110e0ba30c1cedbf9c48f2d02409
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 15 14:39:00 2018 +0100
+
+    everything server side implemented, just need to test
+
+commit 0f3678039e2bc5de14c0b75ad61cb99992da7f38
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 15 14:07:43 2018 +0100
+
+    bugfixing
+
+commit 6de7185fb851f4eb80c8b96c7ab80dbe06e7473c
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 15 12:59:23 2018 +0100
+
+    admin console done. need to move to seperate webapp
+
+commit bc25644b0f9c3d1bf9a616a4c5918e0f0f9bb667
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Aug 14 21:41:54 2018 +0100
+
+    login framework in place
+
+commit 30cc8a93ac8a36ea01b8b93dc7a5592d49476fb4
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Aug 14 17:06:20 2018 +0100
+
+    building admin console to authroize users.
+
+commit fa213d52e1b2b27f0dd6fedea872829b4e7d2781
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Aug 14 15:41:58 2018 +0100
+
+    admin console taking shape
+
+commit 018e922c4188e8fedb90426ae59dd8ff25763041
+Merge: 461a9a4 f267372
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Aug 14 15:41:37 2018 +0100
+
+    login system implemented, needs more testing
+
+commit 461a9a46f9b72f71060b89bbd06563cccdb90914
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 8 20:14:24 2018 +0100
+
+    User login taking shape
+
+commit 0c195a0c41396fc961da91aae461592301408a22
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 8 17:57:54 2018 +0100
+
+    refactored copied in code
+
+commit c16eeeef6e5e37d0d36fc37453c71f8ff4e43f67
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 8 16:25:30 2018 +0100
+
+    last commit was empty
+
+commit 0905e1c4ea2970bcb6458848d70a34b51731a149
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 8 16:23:18 2018 +0100
+
+    copying in admin login from a previous project i have built.
+
+commit 8f2a7e759245d1874b8b9eebe73d94797b76d885
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Aug 8 12:26:53 2018 +0100
+
+    minor bux fixes.
+
+commit f26737245e732c3b6008f3716f320b4af08f4360
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Tue Aug 7 17:48:55 2018 +0100
+
+    Got rid of version in place of commit ids.
+
+commit 25861f5d331ded312ced817d72fef50f4b14e276
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Mon Aug 6 17:26:59 2018 +0100
+
+    It Lives :)
+
+commit 291c050353ce51a41cedfb7aae4408a6113fc815
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Mon Aug 6 14:54:39 2018 +0100
+
+    git pulling, iterator problems
+
+commit f8824f654c3eee23ac24a31f05c2b7dab3a37669
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Mon Aug 6 11:28:59 2018 +0100
+
+    Changes to createuser.jsp may not be correct
+
+commit 4370fa266dd0ca4fad75b6b50b9084ea47ead818
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sun Aug 5 20:31:18 2018 +0100
+
+    errors sending json data. commit id space refactored.
+
+commit a4a11d74f32a1b063c35030edd90c6024565fbe0
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sun Aug 5 14:57:42 2018 +0100
+
+    working on refefing device details as file parameters
+
+commit a6155eee5a39055a93b8c143ad9d572f13ede406
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sat Aug 4 17:12:07 2018 +0100
+
+    Changed system to read in variables as defined in penguin.sh.
+    
+    As opposed to entering device information in a web browser. Still to
+    consider getting specific commits.
+
+commit 3ca3fc5a9129ff1b3f2a4c2b52646f3ccd9f5ff0
+Author: Penguin <sputnik2012@gmail.com>
+Date:   Fri Aug 3 14:08:29 2018 +0100
+
+    created git_logs.txt
+
+commit d6f4361a81aca4eac4b42b59af337e22d2a7e347
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Mon Jul 30 21:07:26 2018 +0100
+
+    made several changes, need to test.
+
+commit 23028ae15797f59985e2a43b813452fae0b92cd0
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Sun Jul 29 16:47:36 2018 +0100
+
+    database pulling highest values
+
+commit 66f4162d8d912d3ed595db22443a2a97d6aac947
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Fri Jul 27 13:49:26 2018 +0100
+
+    Got contributor token.
+
+commit fefa76d13e3cc57b89fbb683aeae6d3566b8e1a6
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Fri Jul 27 12:25:52 2018 +0100
+
+    Added http status checks on github.
+
+commit 6eb8a483545aa091b43e153e00ebaed31d889433
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Fri Jul 27 12:03:06 2018 +0100
+
+    Error reporting working. backend nearly done.
+
+commit f021ba9a9eff315175f5be4e4f1d414468a45fd1
+Author: Penguin <sputnik2012@gmail.com>
+Date:   Thu Jul 26 18:31:57 2018 +0100
+
+    oauth logging in
+
+commit c04a232c56ebc4d2f67b28de38ce16a9904f0452
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Thu Jul 26 13:14:34 2018 +0100
+
+    using app based authetciation, working on file uploads not parsing
+
+commit a983b5876554b91ab4aa01b986a14c4124dc3ebe
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Jul 25 18:34:18 2018 +0100
+
+    Failed posting issue. Gist?
+
+commit 7b51f7d81875aeea7e7564aa6fee8ef27d329f84
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Jul 24 22:02:12 2018 +0100
+
+    getting issues
+
+commit 657be71be39d74254c909179b4e94910f877d20a
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Jul 24 17:31:15 2018 +0100
+
+    still working on ouath logins
+
+commit cbac342f715660874623365cc9cecc6a42df39be
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Jul 24 17:30:51 2018 +0100
+
+    working on issue oauth logins
+
+commit f595de2cd4d9ea38dbfc2567c27072fde77279fd
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Fri Jul 20 21:24:00 2018 +0100
+
+    referencing master branch
+
+commit 9f6b614d6201872480f9cef80c114b2aa81c516f
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jul 19 16:57:12 2018 +0100
+
+    might not work
+
+commit 63b7ee58df3ddffe2764bb13e8cd3f14ad9776ff
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Jul 18 17:04:22 2018 +0100
+
+    displaying commit ids
+
+commit ea23b76cae85e00dffa6af9a6e9644b21b53ba7c
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Sun Jul 15 21:40:22 2018 +0100
+
+    create user displaying commits.
+
+commit b37d1cde11010fc794bc82d45e8b830198dbe440
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Sun Jul 15 20:47:25 2018 +0100
+
+    data being sent correctly
+
+commit bc028dfb5932010a5762108e06cdcf7d2284039f
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sun Jul 15 16:35:50 2018 +0100
+
+    tomcat 8 errors
+
+commit 96bc330a02eedbb342e4da3701ff997e612896f8
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jul 12 15:32:42 2018 +0100
+
+    javascript submitting, empty response from servlet.
+
+commit 131f5a2c98fedc8911a9458da5d91d165e3721a2
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Jul 11 18:58:39 2018 +0100
+
+    device id bugging out
+
+commit 8cff9eb84ab4a70553e6f9738bc49d8238232028
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Jul 11 14:00:40 2018 +0100
+
+    git stuff in progress
+
+commit 3cc3bb8747c5832181f2b3d7030ef1953c64a673
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Jul 10 17:47:06 2018 +0100
+
+    Textfield checks properly sorted.
+
+commit ce9b4410e48e3ea07cd2cc100368037fe0ecaecd
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Jul 10 17:31:27 2018 +0100
+
+    Error checked the setrepositries input
+
+commit c01fbc20379959fcada0fcd919c016c635aa4bdd
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Tue Jul 10 12:36:04 2018 +0100
+
+    got commit time
+
+commit 35c006a5d9586110b3907fa97fe520221f1dca84
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Mon Jul 9 12:12:20 2018 +0100
+
+    working on getting commit description
+
+commit 5b282a3ee9ccc766353d03517e3018a3f7385e87
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Mon Jul 9 11:46:45 2018 +0100
+
+    refactor to get specific commit
+
+commit 58ffc78a18c230b3caa8685aaaa5c47cb5691c21
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Mon Jul 9 09:01:38 2018 +0100
+
+    createuser now retains details.
+
+commit 28356675736eacbd69749848a3afa2725b2345a4
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sun Jul 8 21:15:25 2018 +0100
+
+    Base cases done.
+
+commit d0af4fe5f618bb015e26b137829b3fc75e14b428
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sun Jul 8 19:22:52 2018 +0100
+
+    get device draft.
+
+commit 3abc7315503b4fc3b5c5e25ff5197f4d6ef8ac2f
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Sat Jul 7 17:54:21 2018 +0100
+
+    create user page working, cookies next
+
+commit 0eba85786594b873889ef06b48a81161f2a3b9bb
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Sat Jul 7 13:01:49 2018 +0100
+
+    refactored img folder
+
+commit 1bafa6f27afadb05ea083dd663e613cb3fb42431
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jul 5 20:19:07 2018 +0100
+
+    add device kind of working
+
+commit 45845e651b9d43d302a5cf01da30b057e6477bca
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jul 5 18:21:01 2018 +0100
+
+    sorting textfield sizes
+
+commit a154bf9554c2a50c0ff96cffccd387438c4519fc
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jul 5 17:54:11 2018 +0100
+
+    working on devices page
+
+commit 1675f7f0661557f4d59103e3237c7a7eaa5cf744
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Mon Jul 2 18:30:00 2018 +0100
+
+    got repositry urls
+
+commit da266bddf2f4f86e57ac8db5dd0b137f074bf272
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Mon Jul 2 18:18:28 2018 +0100
+
+    Working on select urls.
+
+commit a2478e3cbff9cb80f2843d4d4244fc687e95c297
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Sat Jun 30 18:21:38 2018 +0100
+
+    Got clone urls.
+
+commit 62cdc17be987a818a108237fa0c3b138d62ebb2a
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jun 28 18:43:03 2018 +0100
+
+    grep errors
+
+commit 7f50abd458a6cef5d3bb7e98b5dfe7a042eaf36b
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Thu Jun 28 14:16:48 2018 +0100
+
+    oauth login working
+
+commit dc71cbb6b4e1ed9de93c523861aa39957313a137
+Author: Rob Brew <rb602@kent.ac.uk>
+Date:   Wed Jun 27 13:19:56 2018 +0100
+
+    buiding git ouath
+
+commit f8e82ea9b9af3c1a1f5f6dde20f438df08b996b2
+Author: Roblet <sputnik2012@gmail.com>
+Date:   Mon Jun 25 19:15:04 2018 +0100
+
+    databse implemented
+
+commit 76ced8a1fe57887688dfcef5add08d6f61f120c2
+Author: R.Brew <rb602@kent.ac.uk>
+Date:   Wed Jun 20 13:23:37 2018 +0100
+
+    inital commit
