@@ -107,5 +107,11 @@ public long getGit_url_constraint() {
 public void setGit_url_constraint(long git_url_constraint) {
 	this.git_url_constraint = git_url_constraint;
 }
-
+String description;
+public String getDescription() {
+	return description;
+}
+public void setDescription(String description) {
+	this.description = description;
+}
 }
