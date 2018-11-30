@@ -7,18 +7,20 @@
 <body>
 How to contribute:
 
-Create a github repository to configure your device using Makfiles.
+Create a github repository to configure your device using Makefiles.
 Add the file "tuxconfig" to the root of your github repository.
 
 The following lines need to be added:
 
-
-device_ids=""  whitespace delimited device ids. include surrounding zeros at the start and end of the id.
+device_ids=""  whitespace delimited device ids. include surrounding zeros at the start and end of the id where applicable.
 tuxconfig_module=""  The module to be inserted to the kernel using modprobe.
-dependencies=""	The dependencies to be added by apt-undo (an apt-get clone which accepts the same parameters.
-test_program=""	The (graphical) program to be run to ensure the device works correctly.
+dependencies=""	The dependencies to be added by apt-undo (an apt-get clone which accepts the same parameters).
+test_program=""	The (graphical) program to be run to ensure the device works correctly*.
 test_message=""	A message to the user to ask if the afformentioned test program worked.
-restart_needed="" Defines if a reboot is needed for this device install.
+restart_needed="" Defines if a reboot is needed for this device install, "yes/no".
+
+*Test program should use the format "sudo -u\#$PKEXEC_UID \<command\>" as the shell will run as root user. 
+This will run applications as the calling user.  
 
 Submit your github.com repository at <A HREF="https://linuxconf.feedthepenguin.org/hehe/GitAuth.html"> Contribute repository</A>
 

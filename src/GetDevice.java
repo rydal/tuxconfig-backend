@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.jgit.api.Git;
@@ -54,7 +56,7 @@ public class GetDevice extends HttpServlet {
 		DataSource dataSource = CustomDataSource.getInstance();
 		QueryRunner run = new QueryRunner(dataSource);
       ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
-      ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
+		ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
       ResultSetHandler<DBSuccess> success_results = new BeanHandler<DBSuccess>(DBSuccess.class);
 
 		String device_id = request.getParameter("deviceid");
@@ -92,8 +94,17 @@ public class GetDevice extends HttpServlet {
 			device_id = each_side[0] + ":" + each_side[1];
 		try { 
 				run.update("update devices set description = ? where device_id = ? ",description,device_id);
-			
-			DBDevice db_device = run.query("select * from devices inner join git_url on devices.git_url = git_url.git_url where devices.device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
+			ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
+			List<DBDevice> rows = (List<DBDevice>) run.query("select * from devices inner join git_url on devices.devices_constraint = git_url. where devices.device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
+			 if (Integer.parseInt(attempt_number) > rows.size()) {
+					JSONObject json2 = new JSONObject();
+					json2.put("Error", "Device not found");
+					// Assuming your json object is **jsonObject**, perform the following, it will
+					// return your json object
+					out.print(json2);
+					return;
+			 }
+			DBDevice db_device = rows.get(Integer.parseInt(attempt_number));
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();

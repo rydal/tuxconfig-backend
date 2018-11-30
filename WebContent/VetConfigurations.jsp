@@ -33,7 +33,7 @@
 		out.write("<h1> Review proposed configurations</h1>");
 	
 		
-		out.write("<h2>Devices awaiting authorisation</h2>");
+		out.write("<h2>Repositories awaiting authorisation</h2>");
 		
 		
 		String query_url = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id where g.authorised = 0";
@@ -65,7 +65,7 @@
 			index++;
 		}
 
-		out.write("<h2>Devices authorised</h2>");
+		out.write("<h2>Repositories authorised</h2>");
 		index = 0;
 		String query_url2 = "SELECT * from contributor c inner join git_url g on c.git_id = g.owner_git_id  where g.authorised = 1";
 		

@@ -163,8 +163,9 @@ public class CreateUser extends HttpServlet {
 					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,tuxconfig_module);
 			DBDevice fk_constraint = run.query("select git_url_constraint from git_url where git_url = ? and commit_hash = ?" , device_results, git_url, commit_hash);
 			for (String device : devices_hashset) {
-			run.update("insert ignore into devices (device_id,git_url,commit_hash,devices_constraint) values (?,?,?,?)",device,git_url,commit_hash, fk_constraint.getGit_url_constraint());
+			run.update("insert ignore into devices (device_id,devices_constraint) values (?,?)",device, fk_constraint.getGit_url_constraint());
 			}
+			devices_hashset.clear();
 			}
 			
 			JSONObject json2 = new JSONObject();
