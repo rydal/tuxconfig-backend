@@ -62,6 +62,7 @@ public class GetDevice extends HttpServlet {
 		String device_id = request.getParameter("deviceid");
 		String attempt_number  = request.getParameter("attempt");
 		String description = request.getParameter("description");
+		String name = request.getParameter("name");
 		PrintWriter out = response.getWriter();
 		
 		if(device_id == null ) {
@@ -93,9 +94,8 @@ public class GetDevice extends HttpServlet {
 				  }
 			device_id = each_side[0] + ":" + each_side[1];
 		try { 
-				run.update("update devices set description = ? where device_id = ? ",description,device_id);
-			ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
-			List<DBDevice> rows = (List<DBDevice>) run.query("select * from devices inner join git_url on devices.devices_constraint = git_url. where devices.device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc  limit ?",device_results,device_id,Integer.parseInt(attempt_number));
+				run.update("update devices set description = ?, name = ? where device_id = ? ",description,name, device_id);
+			List<DBDevice> rows = (List<DBDevice>) run.query("select * from devices inner join git_url on devices.devices_constraint = git_url.git_url_constraint where devices.device_id = ? and git_url.authorised = '1' order by (git_url.upvotes - git_url.downvotes) desc",new BeanListHandler(DBDevice.class),device_id);
 			 if (Integer.parseInt(attempt_number) > rows.size()) {
 					JSONObject json2 = new JSONObject();
 					json2.put("Error", "Device not found");
@@ -104,7 +104,7 @@ public class GetDevice extends HttpServlet {
 					out.print(json2);
 					return;
 			 }
-			DBDevice db_device = rows.get(Integer.parseInt(attempt_number));
+			DBDevice db_device = rows.get(Integer.parseInt(attempt_number) - 1);
 				
 			if (db_device == null) {
 				JSONObject json2 = new JSONObject();

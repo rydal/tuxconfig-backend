@@ -10,8 +10,7 @@
 <%@ page import="org.apache.commons.dbutils.handlers.BeanHandler"%>
 <%@ page import="org.apache.commons.dbutils.handlers.BeanListHandler"%>
 <%@ page import="javax.sql.DataSource"%>
-<%@ taglib prefix="f"  uri="http://java.sun.com/jsf/core"%>
-<%@ taglib prefix="h"  uri="http://java.sun.com/jsf/html"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -36,6 +35,7 @@ while (it.hasNext()) {
 	out.println("<hr>");
 	DBDevice bean = it.next();
 	out.println("Device id: " + bean.getDevice_id() + "<br>");
+	out.println("Name: " + bean.getName() + "<br>");
 	out.println("Descritpion: " + bean.getDescription() + "<br>");
 	out.println("Git Url:" + bean.getGit_url() + "<br>");
 	out.println("Module:" + bean.getModule() + "<br>");
