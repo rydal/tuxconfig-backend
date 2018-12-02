@@ -113,6 +113,7 @@ public class GitAuthCallback extends HttpServlet {
 		ResultSetHandler<DBcontributor> contributor_results= new BeanHandler<DBcontributor>(DBcontributor.class);
       ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
       int contributor_result = run.update("insert ignore into contributor (email, website, name,location,git_id,git_token,bio,avatar_url ) values (?,?,?,?,?,?,?,?)",email,website,git_name, location,git_id,accessToken.getAccessToken(),bio,avatar);
+      run.update("update contributor set git_token = ? where git_id = ?",accessToken.getAccessToken(),git_id);
       session.setAttribute("git_id", Integer.toString(git_id));
       session.setAttribute("git_token", accessToken.getAccessToken());
   	List<String> names = new ArrayList<>();
