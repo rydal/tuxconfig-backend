@@ -1,0 +1,11 @@
+<map id="RunConfig::install" name="RunConfig::install">
+<area shape="rect" id="node2" href="$class_device.html#ace938c6c2efffdcc2d17d49440cb55b7" title="Device::getDeviceid" alt="" coords="198,5,338,32"/>
+<area shape="rect" id="node3" href="$class_device.html#a6ba1792dd4f33f99e7b3ff97c4fae153" title="Device::getDescription" alt="" coords="191,56,345,83"/>
+<area shape="rect" id="node4" href="$class_device.html#abbf7d73cde4dc08996414956fc25188d" title="Device::getVoteDifference" alt="" coords="180,107,356,133"/>
+<area shape="rect" id="node5" href="$class_device.html#ae5b04fdd1bf82d2dba2ec249e92e4da5" title="Device::getCommit" alt="" coords="201,157,335,184"/>
+<area shape="rect" id="node6" href="$class_device.html#a19c62e8fa746efc12e6c0521b690bf03" title="Device::getSuccessCode" alt="" coords="183,208,353,235"/>
+<area shape="rect" id="node7" href="$class_device.html#a7c1221950b9ec064b023c4033454774a" title="Device::getDevicename" alt="" coords="187,259,349,285"/>
+<area shape="rect" id="node8" href="$class_device.html#a77eeec87fea2ffc4d4140b315613bb1b" title="Device::getModulename" alt="" coords="187,309,349,336"/>
+<area shape="rect" id="node9" href="$class_device.html#a96f94097331f294afc73c6358918d408" title="Device::getGitUrl" alt="" coords="207,360,329,387"/>
+<area shape="rect" id="node10" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="219,411,317,437"/>
+</map>

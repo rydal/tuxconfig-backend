@@ -44,7 +44,7 @@ public class GitAuth extends HttpServlet {
 	        final String clientSecret = "37260e1b85ec32a26530486562879071765c5b24";
 	        final OAuth20Service service = new ServiceBuilder(clientId)
 	                .apiSecret(clientSecret)
-	                .scope("repo")
+	                .scope("public_repo")
 	                .callback("https://linuxconf.feedthepenguin.org/hehe/gitauthcallback")
 	                .build(GitHubApi.instance());
 	        

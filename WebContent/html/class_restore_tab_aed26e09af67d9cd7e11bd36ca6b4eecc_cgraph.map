@@ -1,0 +1,4 @@
+<map id="RestoreTab::SuccessButton" name="RestoreTab::SuccessButton">
+<area shape="rect" id="node2" href="$class_get_o_s.html#a7b99affc7fab2998f0b3a08fc657f1bc" title="GetOS::reset_reboot" alt="" coords="240,5,383,32"/>
+<area shape="rect" id="node3" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="431,5,529,32"/>
+</map>

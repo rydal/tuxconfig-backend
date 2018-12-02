@@ -25,7 +25,7 @@ QueryRunner run = new QueryRunner(dataSource);
 ResultSetHandler<DBcontributor> contributor_results = new BeanHandler<DBcontributor>(DBcontributor.class);
 ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
 
-String sql = "select device_id, descripion, git_url, module from devices d inner join git_url g on d.devices_condtraint = g.git_url_constraint";
+String sql = "select device_id, description, git_url, module from devices d inner join git_url g on d.devices_condtraint = g.git_url_constraint";
 ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
 List<DBDevice> rows = run.query(sql, rsh);
 

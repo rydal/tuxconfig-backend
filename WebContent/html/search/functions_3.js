@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['getaptinstalled',['getAptInstalled',['../classDevice.html#a2ea735319a841af580e6ada8ab3b4076',1,'Device']]],
+  ['getattemptedinstall',['getAttemptedInstall',['../classDevice.html#a068c25d48712783fd0dc759d4505c615',1,'Device']]],
+  ['getavatarimage',['getAvatarImage',['../classContributorTab2.html#aed6aceb6bd6c0fb3d32e435a731133d8',1,'ContributorTab2']]],
+  ['getcommit',['getCommit',['../classDevice.html#ae5b04fdd1bf82d2dba2ec249e92e4da5',1,'Device']]],
+  ['getdescription',['getDescription',['../classDevice.html#a6ba1792dd4f33f99e7b3ff97c4fae153',1,'Device']]],
+  ['getdeviceid',['getDeviceid',['../classDevice.html#ace938c6c2efffdcc2d17d49440cb55b7',1,'Device']]],
+  ['getdevicename',['getDevicename',['../classDevice.html#a7c1221950b9ec064b023c4033454774a',1,'Device']]],
+  ['getgiturl',['getGitUrl',['../classDevice.html#a96f94097331f294afc73c6358918d408',1,'Device']]],
+  ['getinfo',['getinfo',['../classDevice.html#a2036c2bc77979808046f7ecae94ec602',1,'Device']]],
+  ['getinstalledstatus',['getInstalledStatus',['../classDevice.html#abdadd7bc6fa1760aeaa9f87dd2f96f59',1,'Device']]],
+  ['getmodulename',['getModulename',['../classDevice.html#a77eeec87fea2ffc4d4140b315613bb1b',1,'Device']]],
+  ['getownergitid',['getOwnerGitId',['../classDevice.html#a2b4556e5a3b1f955c3e498e1de75051c',1,'Device']]],
+  ['getsetcommand',['getSetCommand',['../classDevice.html#a3c0a93766217f57848cf6871aeb9ffc2',1,'Device']]],
+  ['getstatus',['getStatus',['../classDevice.html#ad49afa64f231ac899736cc21027766f2',1,'Device']]],
+  ['getsuccesscode',['getSuccessCode',['../classDevice.html#a19c62e8fa746efc12e6c0521b690bf03',1,'Device']]],
+  ['getvotedifference',['getVoteDifference',['../classDevice.html#abbf7d73cde4dc08996414956fc25188d',1,'Device']]]
+];

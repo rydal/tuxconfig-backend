@@ -1,0 +1,13 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$class_get_o_s.html#a860a6baf194a499df4466d393be1cad5" title="GetOS::is_gui_present" alt="" coords="139,5,293,32"/>
+<area shape="rect" id="node3" href="$class_get_history.html#acbfb517d46d7a80ffb59386c82745924" title="GetHistory::getInstalled\lDevices" alt="" coords="136,57,296,98"/>
+<area shape="rect" id="node6" href="$class_notebook_g_u_i.html#a884a0fcff797d5e04c649417b813bde6" title="NotebookGUI::changeTab" alt="" coords="129,123,303,149"/>
+<area shape="rect" id="node7" href="$class_restore_g_u_i.html#ac6b5762f54f83312872ca663890b8d66" title="RestoreGUI::CommandLineInstall" alt="" coords="107,173,325,200"/>
+<area shape="rect" id="node9" href="$class_check_connection.html#a1c4c6ce94485bd09f815b238a696527e" title="CheckConnection::CheckNetwork" alt="" coords="105,224,327,251"/>
+<area shape="rect" id="node11" href="$class_notebook_g_u_i.html#a44dc0f2eb98b47a447c2088216512f2e" title="NotebookGUI::showResultButtons" alt="" coords="104,275,328,301"/>
+<area shape="rect" id="node12" href="$class_notebook_g_u_i.html#a189f72dabffb1e71e02a1705288f021f" title="NotebookGUI::showFailButton" alt="" coords="116,325,316,352"/>
+<area shape="rect" id="node4" href="$class_device.html#a3f71228960ac3bfca0a1cca254ea782b" title="Device::setDescription" alt="" coords="380,39,535,65"/>
+<area shape="rect" id="node5" href="$class_device.html#a09e9d9bbcfa76268b7ebc30afa680c69" title="Device::setModulename" alt="" coords="376,89,539,116"/>
+<area shape="rect" id="node8" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="408,173,507,200"/>
+<area shape="rect" id="node10" href="$_check_connection_8cpp.html#aa4d9a82493d7d09b11d02fead4f540bc" title="write_data" alt="" coords="416,224,499,251"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="RunConfig::restore" name="RunConfig::restore">
+<area shape="rect" id="node2" href="$class_device.html#ace938c6c2efffdcc2d17d49440cb55b7" title="Device::getDeviceid" alt="" coords="195,5,335,32"/>
+<area shape="rect" id="node3" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="215,56,314,83"/>
+<area shape="rect" id="node4" href="$class_device.html#a2ea735319a841af580e6ada8ab3b4076" title="Device::getAptInstalled" alt="" coords="185,107,344,133"/>
+</map>

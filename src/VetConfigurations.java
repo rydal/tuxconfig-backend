@@ -101,13 +101,13 @@ public class VetConfigurations extends HttpServlet {
 					
 					if (rows_updated != 0) {
 						JSONObject json2 = new JSONObject();
-						json2.put("form", "Device authorised");
+						json2.put("form", "Configuration authorised");
 						// Assuming your json object is **jsonObject**, perform the following, it will
 						// return your json object
 						out.print(json2);
 					} else {
 						JSONObject json2 = new JSONObject();
-						json2.put("form", "Device not found");
+						json2.put("form", "Configuration not found");
 						// Assuming your json object is **jsonObject**, perform the following, it will
 						// return your json object
 					}
@@ -116,7 +116,7 @@ public class VetConfigurations extends HttpServlet {
 					int rows_updated  = run.update("update git_url set authorised = '0' where git_url = ? and commit_hash = ? ",git_url,commit_hash);
 					if (rows_updated != 0) {
 						JSONObject json2 = new JSONObject();
-						json2.put("form", "Device unauthorised");
+						json2.put("form", "Configuration unauthorised");
 						// Assuming your json object is **jsonObject**, perform the following, it will
 						// return your json object
 						out.print(json2);
@@ -132,13 +132,13 @@ public class VetConfigurations extends HttpServlet {
 					int rows_updated  = run.update("delete from git_url where git_url = ?  and commit_hash = ? ",git_url,commit_hash);
 					if (rows_updated != 0) {
 						JSONObject json2 = new JSONObject();
-						json2.put("form", "Device unauthorised");
+						json2.put("form", "Configuration unauthorised");
 						// Assuming your json object is **jsonObject**, perform the following, it will
 						// return your json object
 						out.print(json2);
 					} else {
 						JSONObject json2 = new JSONObject();
-						json2.put("form", "Device not found");
+						json2.put("form", "Configuration not found");
 						// Assuming your json object is **jsonObject**, perform the following, it will
 						// return your json object
 					}

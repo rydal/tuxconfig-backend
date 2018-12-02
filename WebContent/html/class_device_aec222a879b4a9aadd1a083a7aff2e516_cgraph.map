@@ -1,0 +1,4 @@
+<map id="Device::setIsInstalled" name="Device::setIsInstalled">
+<area shape="rect" id="node2" href="$class_device.html#a15d7c755aed944da8514902d06d21ea9" title="Device::setAptInstalled" alt="" coords="203,5,361,32"/>
+<area shape="rect" id="node3" href="$class_device.html#a2ea735319a841af580e6ada8ab3b4076" title="Device::getAptInstalled" alt="" coords="203,56,361,83"/>
+</map>

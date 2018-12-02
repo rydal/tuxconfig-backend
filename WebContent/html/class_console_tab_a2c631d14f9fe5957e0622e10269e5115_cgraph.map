@@ -1,0 +1,7 @@
+<map id="ConsoleTab::ConsoleTab" name="ConsoleTab::ConsoleTab">
+<area shape="rect" id="node2" href="$class_console_tab.html#a866367073a3150527988f7cb841d5002" title="ConsoleTab::works_result" alt="" coords="232,5,407,32"/>
+<area shape="rect" id="node5" href="$class_console_tab.html#a7b2d0987db00c8b9af7ece7b36a82624" title="ConsoleTab::fails_result" alt="" coords="238,56,401,83"/>
+<area shape="rect" id="node6" href="$class_console_tab.html#a312dd40624d78a7d8506f97eb837c492" title="ConsoleTab::RebootMachine" alt="" coords="224,107,415,133"/>
+<area shape="rect" id="node3" href="$class_get_o_s.html#a7b99affc7fab2998f0b3a08fc657f1bc" title="GetOS::reset_reboot" alt="" coords="463,31,605,57"/>
+<area shape="rect" id="node4" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="653,31,752,57"/>
+</map>

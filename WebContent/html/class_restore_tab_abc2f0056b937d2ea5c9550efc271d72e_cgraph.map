@@ -1,0 +1,6 @@
+<map id="RestoreTab::RestoreButton" name="RestoreTab::RestoreButton">
+<area shape="rect" id="node2" href="$class_run_config.html#adc4527f1397bf44a015659fa67cfcfd8" title="RunConfig::restore" alt="" coords="236,56,368,83"/>
+<area shape="rect" id="node3" href="$class_device.html#ace938c6c2efffdcc2d17d49440cb55b7" title="Device::getDeviceid" alt="" coords="425,5,565,32"/>
+<area shape="rect" id="node4" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="446,56,545,83"/>
+<area shape="rect" id="node5" href="$class_device.html#a2ea735319a841af580e6ada8ab3b4076" title="Device::getAptInstalled" alt="" coords="416,107,575,133"/>
+</map>

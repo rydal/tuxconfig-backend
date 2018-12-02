@@ -142,15 +142,7 @@ public class GetErrorLog extends HttpServlet {
 
 
 						// Check status
-			DBSuccess log_success = run.query(
-					"select * from success_code where success_code = ? and device_id = ? and git_url = ?",
-					success_results, code, device_id, git_url);
-			if (log_success == null) {
-				JSONObject json2 = new JSONObject();
-				json2.put("Error", "success_token not found");
-				out.println(json2);
-				return;
-			}
+			
 			DBcontributor get_git_token = run.query(
 					"select a.git_token  from contributor a, git_url b, success_code c where a.git_id = b.owner_git_id  and b.git_url = c.git_url and c.git_url = ?",
 					contributor_results, git_url);
@@ -208,8 +200,7 @@ public class GetErrorLog extends HttpServlet {
 				//StringEntity json_parameters = new StringEntity ( "{ \"title\" : \"Configure me " + md5hash + " \""
 					//	+ " , \"body\" : \"" + body_string.trim() + "\" }");
 				  
-				StringEntity json_parameters = new StringEntity("{  \"title\": \"Tuxconfig " + uploaded_log.hashCode() + " \", \"body\": \"" +  body_string + " \" }");
-				out.write("{  \"title\": \"Tuxconfig " + file_size + " \", \"body\": \"" +  body_string + " \" }");
+				StringEntity json_parameters = new StringEntity("{  \"title\": \"Tuxconfig " + file_size + " \", \"body\": \"" +  body_string + " \" }");
 				httpPost.setEntity(json_parameters);
 				    
 				    CloseableHttpResponse post_response = send_issue_client.execute(httpPost);

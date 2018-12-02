@@ -1,0 +1,5 @@
+<map id="RunTab::uninstallButton" name="RunTab::uninstallButton">
+<area shape="rect" id="node2" href="$class_run_config.html#a4faba2a90a4a9f7f5848d98afe68bbe6" title="RunConfig::uninstall" alt="" coords="216,31,356,57"/>
+<area shape="rect" id="node3" href="$class_device.html#ace938c6c2efffdcc2d17d49440cb55b7" title="Device::getDeviceid" alt="" coords="415,5,555,32"/>
+<area shape="rect" id="node4" href="$class_device.html#a77eeec87fea2ffc4d4140b315613bb1b" title="Device::getModulename" alt="" coords="404,56,567,83"/>
+</map>

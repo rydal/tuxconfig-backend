@@ -1,0 +1,9 @@
+<map id="Feedback::Feedback" name="Feedback::Feedback">
+<area shape="rect" id="node2" href="$class_device.html#ace938c6c2efffdcc2d17d49440cb55b7" title="Device::getDeviceid" alt="" coords="215,5,355,32"/>
+<area shape="rect" id="node3" href="$class_device.html#a6ba1792dd4f33f99e7b3ff97c4fae153" title="Device::getDescription" alt="" coords="208,56,363,83"/>
+<area shape="rect" id="node4" href="$class_device.html#abbf7d73cde4dc08996414956fc25188d" title="Device::getVoteDifference" alt="" coords="197,107,373,133"/>
+<area shape="rect" id="node5" href="$class_device.html#ae5b04fdd1bf82d2dba2ec249e92e4da5" title="Device::getCommit" alt="" coords="218,157,353,184"/>
+<area shape="rect" id="node6" href="$class_device.html#a19c62e8fa746efc12e6c0521b690bf03" title="Device::getSuccessCode" alt="" coords="200,208,371,235"/>
+<area shape="rect" id="node7" href="$class_device.html#a7c1221950b9ec064b023c4033454774a" title="Device::getDevicename" alt="" coords="204,259,367,285"/>
+<area shape="rect" id="node8" href="$class_device.html#a96f94097331f294afc73c6358918d408" title="Device::getGitUrl" alt="" coords="224,309,347,336"/>
+</map>

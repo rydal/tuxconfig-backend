@@ -1,0 +1,11 @@
+<map id="ContributorTab2::updateScreen" name="ContributorTab2::updateScreen">
+<area shape="rect" id="node2" href="$class_contributor_tab2.html#a7bc323cf603d03913d96ade9536d8f7e" title="ContributorTab2::clearLayout" alt="" coords="268,5,459,32"/>
+<area shape="rect" id="node3" href="$class_contributor_tab2.html#a5b9c63b5497b9e095624cd01969f0101" title="ContributorTab2::DownloadInfo" alt="" coords="262,56,465,83"/>
+<area shape="rect" id="node4" href="$class_device.html#a2b4556e5a3b1f955c3e498e1de75051c" title="Device::getOwnerGitId" alt="" coords="286,107,441,133"/>
+<area shape="rect" id="node5" href="$class_contributor_tab2.html#aed6aceb6bd6c0fb3d32e435a731133d8" title="ContributorTab2::getAvatar\lImage" alt="" coords="274,158,453,199"/>
+<area shape="rect" id="node8" href="$class_contributor_tab2.html#a22fb06bbd151a407ff40404897cabb4d" title="ContributorTab2::on\l_description_linkActivated" alt="" coords="276,223,451,265"/>
+<area shape="rect" id="node10" href="$class_contributor_tab2.html#a3b818b61d87562521615de0b57f29a58" title="ContributorTab2::RebootMachine" alt="" coords="256,289,471,316"/>
+<area shape="rect" id="node6" href="$class_h_t_t_p_downloader.html#a3b93cc45c2132ffd04c35e45e9a32d8c" title="HTTPDownloader::download" alt="" coords="519,165,708,192"/>
+<area shape="rect" id="node7" href="$_h_t_t_p_downloader_8cpp.html#ab371bf579e243a6a91e3edddfd024e68" title="write_data2" alt="" coords="756,165,845,192"/>
+<area shape="rect" id="node9" href="$class_get_o_s.html#ab6860b2c5abf50d49e216967503a5e4f" title="GetOS::runEmail" alt="" coords="553,231,674,257"/>
+</map>

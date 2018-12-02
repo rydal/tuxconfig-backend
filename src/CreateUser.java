@@ -159,7 +159,7 @@ public class CreateUser extends HttpServlet {
 			String commit_hash = message;
 		
 			
-			run.update("insert ignore into git_url (owner_git_id,git_url,commit_hash, commit_date,module)"
+			run.update("replace into git_url (owner_git_id,git_url,commit_hash, commit_date,module)"
 					+ " values (?,?,?,?,?)",git_id,git_url,commit_hash,currentTime,tuxconfig_module);
 			DBDevice fk_constraint = run.query("select git_url_constraint from git_url where git_url = ? and commit_hash = ?" , device_results, git_url, commit_hash);
 			for (String device : devices_hashset) {

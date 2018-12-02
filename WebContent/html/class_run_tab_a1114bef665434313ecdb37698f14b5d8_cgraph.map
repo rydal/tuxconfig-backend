@@ -1,0 +1,33 @@
+<map id="RunTab::RunTab" name="RunTab::RunTab">
+<area shape="rect" id="node2" href="$class_run_tab.html#a9543f31e26a44eb097b15a319a6d605e" title="RunTab::updateLayout" alt="" coords="176,523,331,549"/>
+<area shape="rect" id="node3" href="$class_get_local_devices.html#a018c0984e1d9a4908220a8af573ea51c" title="GetLocalDevices::listdevices" alt="" coords="589,129,781,156"/>
+<area shape="rect" id="node5" href="$class_get_remote_config.html#af62a8872ab4f1931f84e633bc04610d3" title="GetRemoteConfig::GetConfiguration" alt="" coords="829,436,1063,463"/>
+<area shape="rect" id="node22" href="$class_run_tab.html#a365c10b3ea780707cfe7a78914570698" title="RunTab::installButton" alt="" coords="611,624,759,651"/>
+<area shape="rect" id="node28" href="$class_run_tab.html#a7f6949dfb2b64fd5b39844a7487257bf" title="RunTab::upgrade" alt="" coords="399,497,521,524"/>
+<area shape="rect" id="node30" href="$class_run_tab.html#ad7c9fdbc6697b8ba55059c9c32abef3e" title="RunTab::uninstallButton" alt="" coords="379,599,541,625"/>
+<area shape="rect" id="node32" href="$class_run_tab.html#a965700df008f390b46f64d097f58a9fe" title="RunTab::clearLayout" alt="" coords="389,649,531,676"/>
+<area shape="rect" id="node4" href="$class_get_o_s.html#af120e30a1ceb3bcc80c0dd857600e4f1" title="GetOS::exec" alt="" coords="1385,132,1483,159"/>
+<area shape="rect" id="node6" href="$class_device.html#ace938c6c2efffdcc2d17d49440cb55b7" title="Device::getDeviceid" alt="" coords="1139,689,1279,716"/>
+<area shape="rect" id="node7" href="$class_device.html#ae5b04fdd1bf82d2dba2ec249e92e4da5" title="Device::getCommit" alt="" coords="1141,537,1276,564"/>
+<area shape="rect" id="node8" href="$class_get_o_s.html#a7ce8e4159395a9e42c5e0b43ddcc2ca9" title="GetOS::getLocalMchineDistro" alt="" coords="1111,132,1307,159"/>
+<area shape="rect" id="node9" href="$class_device.html#a6ba1792dd4f33f99e7b3ff97c4fae153" title="Device::getDescription" alt="" coords="1131,588,1286,615"/>
+<area shape="rect" id="node10" href="$class_device.html#ae8587aa062a7a2f2b5b77e9a15569e53" title="Device::setGitUrl" alt="" coords="1147,183,1270,209"/>
+<area shape="rect" id="node11" href="$class_device.html#ae70b727a6230454baccc6da6cfd819a7" title="Device::setSuccessCode" alt="" coords="1123,233,1294,260"/>
+<area shape="rect" id="node12" href="$class_device.html#acf378aa086771dd7c64626abb8a74821" title="Device::setVoteDifference" alt="" coords="1121,284,1297,311"/>
+<area shape="rect" id="node13" href="$class_device.html#a2d549bad1c70b5768698dbc2175669ef" title="Device::setCommit" alt="" coords="1141,335,1276,361"/>
+<area shape="rect" id="node14" href="$class_device.html#aabc16749d0fe22ec25ca525fbd2b9dc2" title="Device::setOwnerGitId" alt="" coords="1131,385,1286,412"/>
+<area shape="rect" id="node15" href="$class_device.html#a09e9d9bbcfa76268b7ebc30afa680c69" title="Device::setModulename" alt="" coords="1127,436,1290,463"/>
+<area shape="rect" id="node16" href="$class_device.html#abbf7d73cde4dc08996414956fc25188d" title="Device::getVoteDifference" alt="" coords="1121,639,1297,665"/>
+<area shape="rect" id="node17" href="$class_device.html#a3b5d4af66cacd8e1b0e45219c16ee084" title="Device::setIsUpgradeable" alt="" coords="1122,487,1295,513"/>
+<area shape="rect" id="node19" href="$class_device.html#aec222a879b4a9aadd1a083a7aff2e516" title="Device::setIsInstalled" alt="" coords="1134,31,1283,57"/>
+<area shape="rect" id="node18" href="$class_device.html#a1078839b751f8366b5170d4daefa26b4" title="Device::isUpgradeable" alt="" coords="1357,487,1511,513"/>
+<area shape="rect" id="node20" href="$class_device.html#a15d7c755aed944da8514902d06d21ea9" title="Device::setAptInstalled" alt="" coords="1355,5,1513,32"/>
+<area shape="rect" id="node21" href="$class_device.html#a2ea735319a841af580e6ada8ab3b4076" title="Device::getAptInstalled" alt="" coords="1355,56,1513,83"/>
+<area shape="rect" id="node23" href="$class_run_config.html#a5bf30574ec8400f70c03fa73aec39143" title="RunConfig::install" alt="" coords="883,680,1009,707"/>
+<area shape="rect" id="node24" href="$class_device.html#a19c62e8fa746efc12e6c0521b690bf03" title="Device::getSuccessCode" alt="" coords="1123,841,1294,868"/>
+<area shape="rect" id="node25" href="$class_device.html#a7c1221950b9ec064b023c4033454774a" title="Device::getDevicename" alt="" coords="1127,892,1290,919"/>
+<area shape="rect" id="node26" href="$class_device.html#a77eeec87fea2ffc4d4140b315613bb1b" title="Device::getModulename" alt="" coords="1127,943,1290,969"/>
+<area shape="rect" id="node27" href="$class_device.html#a96f94097331f294afc73c6358918d408" title="Device::getGitUrl" alt="" coords="1147,791,1270,817"/>
+<area shape="rect" id="node29" href="$class_run_config.html#a09e13b480e957af436d9fa072f3c803b" title="RunConfig::upgrade" alt="" coords="616,497,755,524"/>
+<area shape="rect" id="node31" href="$class_run_config.html#a4faba2a90a4a9f7f5848d98afe68bbe6" title="RunConfig::uninstall" alt="" coords="876,731,1016,757"/>
+</map>

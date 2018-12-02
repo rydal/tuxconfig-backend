@@ -77,8 +77,6 @@
 			DBDevice bean2 = it2.next();
 
 			
-			out.println("Device id: " + bean2.getDevice_id());
-			out.println("Device name: " + bean2.getName());
 			
 			out.println("<A HREF='" + bean2.getGit_url() +"'> " + bean2.getGit_url()  + "</A>");
 			out.println("<input type='hidden'  value='" + bean2.getCommit_hash() + "' id='" +  "hash" + index  +"'>");

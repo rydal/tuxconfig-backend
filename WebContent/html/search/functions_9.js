@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['sendreboot',['sendReboot',['../classConsoleTab.html#af58a230f2f192469205839920dd7fa66',1,'ConsoleTab']]],
+  ['sendtoconsole',['sendToConsole',['../classConsoleTab.html#a695bb64854ca658dc9cc0a44c7a08f2c',1,'ConsoleTab']]],
+  ['setaptinstalled',['setAptInstalled',['../classDevice.html#a15d7c755aed944da8514902d06d21ea9',1,'Device']]],
+  ['setattemptedinstall',['setAttemptedInstall',['../classDevice.html#af2591540bf77d38b8e4c09b90e8dfaba',1,'Device']]],
+  ['setcommit',['setCommit',['../classDevice.html#a2d549bad1c70b5768698dbc2175669ef',1,'Device']]],
+  ['setdescription',['setDescription',['../classDevice.html#a3f71228960ac3bfca0a1cca254ea782b',1,'Device']]],
+  ['setdeviceid',['setDeviceid',['../classDevice.html#a8bd16b3e099e864db3c09ba4f6225fb0',1,'Device']]],
+  ['setdevicename',['setDevicename',['../classDevice.html#ad1f6005dcab32855477814fa9533315d',1,'Device']]],
+  ['setgiturl',['setGitUrl',['../classDevice.html#ae8587aa062a7a2f2b5b77e9a15569e53',1,'Device']]],
+  ['setisinstalled',['setIsInstalled',['../classDevice.html#aec222a879b4a9aadd1a083a7aff2e516',1,'Device']]],
+  ['setisupgradeable',['setIsUpgradeable',['../classDevice.html#a3b5d4af66cacd8e1b0e45219c16ee084',1,'Device']]],
+  ['setmodulename',['setModulename',['../classDevice.html#a09e9d9bbcfa76268b7ebc30afa680c69',1,'Device']]],
+  ['setownergitid',['setOwnerGitId',['../classDevice.html#aabc16749d0fe22ec25ca525fbd2b9dc2',1,'Device']]],
+  ['setsetcommand',['setSetCommand',['../classDevice.html#afad48633a288b303f88f7d607c64cca3',1,'Device']]],
+  ['setstatus',['setStatus',['../classDevice.html#a46b5e30da5b43b09c0785a054bfb678a',1,'Device']]],
+  ['setsuccesscode',['setSuccessCode',['../classDevice.html#ae70b727a6230454baccc6da6cfd819a7',1,'Device']]],
+  ['settab',['setTab',['../classConsoleTab.html#afbcbf3f97fa59e43aa9fe86c9549ebed',1,'ConsoleTab']]],
+  ['setvotedifference',['setVoteDifference',['../classDevice.html#acf378aa086771dd7c64626abb8a74821',1,'Device']]],
+  ['showbuttons',['showButtons',['../classConsoleTab.html#abda9ef659782544e72f0e4561c5583f0',1,'ConsoleTab']]]
+];
