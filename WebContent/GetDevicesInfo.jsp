@@ -15,7 +15,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Tuxconfig - devices</title>
 </head>
 <body>
 <b>Device details listing:</b>
@@ -25,7 +25,7 @@ QueryRunner run = new QueryRunner(dataSource);
 ResultSetHandler<DBcontributor> contributor_results = new BeanHandler<DBcontributor>(DBcontributor.class);
 ResultSetHandler<DBDevice> device_results = new BeanHandler<DBDevice>(DBDevice.class);
 
-String sql = "select device_id, description, git_url, module from devices d inner join git_url g on d.devices_condtraint = g.git_url_constraint";
+String sql = "select device_id, name, description, git_url, module from devices d inner join git_url g on d.devices_constraint = g.git_url_constraint group by d.device_id";
 ResultSetHandler<List<DBDevice>> rsh = new BeanListHandler<DBDevice>(DBDevice.class);
 List<DBDevice> rows = run.query(sql, rsh);
 

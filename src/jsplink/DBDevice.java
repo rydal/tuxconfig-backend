@@ -43,7 +43,15 @@ private String commit_hash;
 private int authorised;
 private float min_kernel_verison;
 private float max_kernel_version;
-private float upvotes;
+private int upvotes;
+
+private String restart_needed;
+public String getRestart_needed() {
+	return restart_needed;
+}
+public void setRestart_needed(String restart_needed) {
+	this.restart_needed = restart_needed;
+}
 private String owner_git_id;
 private String name;
 private String email;
@@ -72,20 +80,34 @@ public String getOwner_git_id() {
 public void setOwner_git_id(String owner_git_id) {
 	this.owner_git_id = owner_git_id;
 }
-public float getUpvotes() {
+public int getUpvotes() {
 	return upvotes;
 }
-public void setUpvotes(float upvotes) {
+public void setUpvotes(int upvotes) {
 	this.upvotes = upvotes;
 }
-public float getDownvotes() {
+public int getDownvotes() {
 	return downvotes;
 }
-public void setDownvotes(float downvotes) {
+public void setDownvotes(int downvotes) {
 	this.downvotes = downvotes;
 }
-float downvotes;
+int downvotes;
 
+String module;
+public String getModule() {
+	return module;
+}
+public void setModule(String module) {
+	this.module = module;
+}
+long git_url_constraint;
+public long getGit_url_constraint() {
+	return git_url_constraint;
+}
+public void setGit_url_constraint(long git_url_constraint) {
+	this.git_url_constraint = git_url_constraint;
+}
 String description;
 public String getDescription() {
 	return description;
@@ -93,5 +115,4 @@ public String getDescription() {
 public void setDescription(String description) {
 	this.description = description;
 }
-
 }
