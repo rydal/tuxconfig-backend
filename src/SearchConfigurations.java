@@ -124,8 +124,6 @@ public class SearchConfigurations extends HttpServlet {
 
 		
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/linuxconf", "arwen", "imleaving");
 
 			PreparedStatement stmt = con.prepareStatement("SELECT email, password FROM user where email = ? ");
 			stmt.setObject(1, email);
