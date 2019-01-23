@@ -46,8 +46,6 @@ function set_repository(name) {
 
 		try {
 
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/linuxconf", "arwen", "imleaving");
 
 			String url = "";
 			String description = "";
