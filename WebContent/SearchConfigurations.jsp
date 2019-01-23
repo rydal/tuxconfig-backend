@@ -92,18 +92,7 @@ function send_post(input, command){
 				 return;
 				// Assuming your json object is **jsonObject**, perform the following, it will return your json object  
 				}
-			Class.forName("com.mysql.jdbc.Driver");
-
-			final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-			final String DB_URL = "jdbc:mysql://localhost/linuxconf";
-
-			//  Database credentials
-			final String USER = "arwen";
-			final String PASS = "imleaving";
-
-
-			Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
+	
 			String user_type = (String) session.getAttribute("user_type");
 			PreparedStatement stmt = conn.prepareStatement("SELECT email,password,authorised FROM user where email = ?");
 			stmt.setObject(1, myemail);
