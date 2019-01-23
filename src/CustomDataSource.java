@@ -8,8 +8,8 @@ public class CustomDataSource {
    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
 
    //  Database credentials
-   static final String USER = "arwen";
-   static final String PASS = "imleaving";
+   static final String USER = "XXXX";
+   static final String PASS = "XXXX";
    private static DataSource datasource;
    private static final BasicDataSource basicDataSource;
 
