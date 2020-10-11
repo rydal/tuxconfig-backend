@@ -3,31 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <title>Linuxconf Gitiub auth</title>
+<style>
+    img {
+        display: block;
+        margin: 0 auto;
+    }
+    input { display: block;
+        margin: 0 auto; }
+</style>
 </head>
 <body>
-<div align="center">
 
 <img src="./img/tux_banner.png">
+<div align="center">
 <h1>Tuxconfig</h1>
-
-This is a platform and application to facilitate the installation of devices for the Ubuntu linux distribution.
-Developers can sign in with their GitHub.com account to submit repositories to make a range of devices work
-on a client platform.   
-Each code submission is checked to ensure that it will not damage the host system.
-
-The client downloads the package below in order to install devices where a configuration has been submitted.
-A backup of the state of the module configuration is made, which will restore the system  
-to it's previous state, in situations where an installation fails.
-
-
+</div>
+    A client /server system to make installing Linux kernel modules easier. The server (written in Java) allows<br>
+    developers to contribute kernel configuration modules using their GitHub account. <br>
+    The client program installs these kernel modules using a graphical interface (written in C++) removing the need for a user<br>
+    to use the terminal.  This solution could overcome a major obstacle of Linux adoption, by configuring new<br>
+    devices in an easy to use manor.  It is a proof of concept and not a final product. I believe with time i can<br>
+    make this production ready.
+<div align="center">
 <p> For Developers to Contribute: </p>
 Details of how to contribute at <A HREF="https://linuxconf.feedthepenguin.org/hehe/Contribute.html">This page</A>
 <form method="post" action="https://linuxconf.feedthepenguin.org/hehe/gitauth">
 <input type="image" src="./img/github.png" alt="Submit Form" />
 </form>
-<p> For users to Download:</p>
-<A HREF="https://linuxconf.feedthepenguin.org/hehe/tuxconfig-0.7.deb" download><img src="./img/download.png"></A>
-Ubuntu only (at present)
+<p> For users to Download:</p><br>
+<A HREF="https://linuxconf.feedthepenguin.org/hehe/tuxconfig-0.7.deb" download><img src="./img/download.png"></A><br>
+Ubuntu only (at present)<BR>
 </div>
+    This was my dissertation for my degree at Kent University.  The text is <a href="dissertation.pdf" download>here </a><br>
+    I am happy to continue it's development, not only for Ubuntu linux but all distributions.<br>
+    What I need: As at it's core this application this system inserts binary code into the Kernel, the system<br>
+    would need a team to vet each configuration submitted, ensuring that the Makefiles are not malicious and <br>
+    that binary drivers are from a legitimate source.
+
+    My other projects are:<br>
+    GPS over Wifi:<br>
+    <A HREF="https://github.com/rydal/underground"> Underground</A>
+    <A HREF="https://github.com/rydal/overground"> Overground</A><br>
+    Likeme.mx<br>
+    <A HREF="https://likeme.mx"> LikeMe</A>
+
+    My  <A HREF="https://www.linkedin.com/in/rob-brew-7156a879/">LinkedIn</A>
 </body>
 </html>

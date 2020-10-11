@@ -168,9 +168,9 @@
     <version>2.1</version>
     <configuration>
         <url>http://localhost:8082/manager/text</url>
-        <username>XXXX</username>
-        <password>XXXX</password>
-        <path>/hehe</path>
+        <username>arwen</username>
+        <password>imleaving</password>
+        <path>/tuxconfig</path>
        <warSourceDirectory>/var/lib/tomcat8/webapps/</warSourceDirectory>
        
     </configuration>
