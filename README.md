@@ -47,3 +47,6 @@ Why? Because at the time I thought all languages were as hard to master as these
 
 What are the shortcomings of what we have now?
 It's vulnerable to SQL injections.  It also doesn't deal with connection issues. It is, albeit a bit flakey, proof that this can be done.
+
+Video demonstration:
+https://www.youtube.com/watch?v=BRD7r_C3gXI
